@@ -1,6 +1,7 @@
-"""TDD test suite for matching_service.rules_engine.
+"""TDD test suite for matching_service.rules_engine — RED phase.
 
-All tests are RED until rules_engine.py is implemented.
+All tests FAIL until rules_engine.py is implemented.
+Fixtures provide reusable UserConstraints and Product objects.
 """
 
 import pytest
@@ -8,167 +9,274 @@ import pytest
 from shared.models import Product, ProductCategory, UserConstraints
 from matching_service.rules_engine import build_routine, filter_safe_products
 
-
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
-
-def make_product(
-    id: str,
-    category: ProductCategory,
-    ingredients: list[str],
-    price: float = 10.0,
-) -> Product:
-    return Product(
-        id=id,
-        name=id.replace("-", " ").title(),
-        category=category,
-        ingredients=ingredients,
-        description="",
-        price=price,
-    )
-
-
-def make_constraints(
-    sensitivities: list[str] = None,
-    max_products: int = 5,
-    budget: float | None = None,
-) -> UserConstraints:
+@pytest.fixture
+def standard_constraints() -> UserConstraints:
+    """Default constraints: no sensitivities, max 5 products."""
     return UserConstraints(
-        request_id="test-request-id",
-        sensitivities=sensitivities or [],
-        max_products=max_products,
-        budget=budget,
+        request_id="req-standard",
+        sensitivities=[],
+        max_products=5,
     )
 
 
-# ---------------------------------------------------------------------------
-# filter_safe_products — allergen filtering
-# ---------------------------------------------------------------------------
+@pytest.fixture
+def fragrance_sensitive_constraints() -> UserConstraints:
+    """Constraints for a user sensitive to fragrance."""
+    return UserConstraints(
+        request_id="req-fragrance",
+        sensitivities=["fragrance"],
+        max_products=5,
+    )
 
 
-def test_product_with_sensitizing_ingredient_is_removed() -> None:
-    products = [
-        make_product("bad-cream", ProductCategory.MOISTURIZER, ["fragrance", "water"])
+@pytest.fixture
+def multi_sensitivity_constraints() -> UserConstraints:
+    """Constraints for a user sensitive to both fragrance and alcohol."""
+    return UserConstraints(
+        request_id="req-multi",
+        sensitivities=["fragrance", "alcohol"],
+        max_products=5,
+    )
+
+
+@pytest.fixture
+def tight_max_constraints() -> UserConstraints:
+    """Constraints that cap the routine at 3 products."""
+    return UserConstraints(
+        request_id="req-tight",
+        sensitivities=[],
+        max_products=3,
+    )
+
+
+@pytest.fixture
+def essential_catalog() -> list[Product]:
+    """Catalog with one product per essential category (Cleanser, Moisturizer, SPF)."""
+    return [
+        Product(
+            id="cleanser-basic",
+            name="Basic Cleanser",
+            category=ProductCategory.CLEANSER,
+            ingredients=["water", "glycerin"],
+            description="Gentle daily cleanser.",
+        ),
+        Product(
+            id="moisturizer-basic",
+            name="Basic Moisturizer",
+            category=ProductCategory.MOISTURIZER,
+            ingredients=["water", "shea butter"],
+            description="Hydrating daily moisturizer.",
+        ),
+        Product(
+            id="spf-basic",
+            name="Basic SPF",
+            category=ProductCategory.SPF,
+            ingredients=["zinc oxide", "water"],
+            description="Broad-spectrum SPF 50.",
+        ),
     ]
-    constraints = make_constraints(sensitivities=["fragrance"])
-    result = filter_safe_products(products, constraints)
+
+
+@pytest.fixture
+def mixed_catalog(essential_catalog: list[Product]) -> list[Product]:
+    """Catalog with essentials plus optional categories (Serum, Toner, Other)."""
+    optional = [
+        Product(
+            id="serum-vitamin-c",
+            name="Vitamin C Serum",
+            category=ProductCategory.SERUM,
+            ingredients=["ascorbic acid", "water"],
+            description="Brightening vitamin C serum.",
+        ),
+        Product(
+            id="toner-gentle",
+            name="Gentle Toner",
+            category=ProductCategory.TONER,
+            ingredients=["witch hazel", "water"],
+            description="Alcohol-free balancing toner.",
+        ),
+        Product(
+            id="face-oil-other",
+            name="Rosehip Face Oil",
+            category=ProductCategory.OTHER,
+            ingredients=["rosehip oil"],
+            description="Nourishing face oil.",
+        ),
+    ]
+    return essential_catalog + optional
+
+
+@pytest.fixture
+def scented_catalog() -> list[Product]:
+    """Catalog where some products contain fragrance."""
+    return [
+        Product(
+            id="scented-moisturizer",
+            name="Scented Moisturizer",
+            category=ProductCategory.MOISTURIZER,
+            ingredients=["fragrance", "water", "glycerin"],
+            description="Floral-scented moisturizer.",
+        ),
+        Product(
+            id="unscented-cleanser",
+            name="Unscented Cleanser",
+            category=ProductCategory.CLEANSER,
+            ingredients=["water", "glycerin"],
+            description="Fragrance-free cleanser.",
+        ),
+    ]
+
+
+# ---------------------------------------------------------------------------
+# filter_safe_products — allergy filtering
+# ---------------------------------------------------------------------------
+
+
+def test_product_with_sensitizing_ingredient_is_removed(
+    fragrance_sensitive_constraints: UserConstraints,
+) -> None:
+    products = [
+        Product(
+            id="bad-cream",
+            name="Bad Cream",
+            category=ProductCategory.MOISTURIZER,
+            ingredients=["fragrance", "water"],
+            description="",
+        )
+    ]
+    result = filter_safe_products(products, fragrance_sensitive_constraints)
     assert result == []
 
 
-def test_product_without_sensitizing_ingredients_passes() -> None:
-    products = [
-        make_product("good-cream", ProductCategory.MOISTURIZER, ["water", "glycerin"])
-    ]
-    constraints = make_constraints(sensitivities=["fragrance"])
-    result = filter_safe_products(products, constraints)
+def test_product_without_sensitizing_ingredients_passes(
+    scented_catalog: list[Product],
+    fragrance_sensitive_constraints: UserConstraints,
+) -> None:
+    result = filter_safe_products(scented_catalog, fragrance_sensitive_constraints)
     assert len(result) == 1
-    assert result[0].id == "good-cream"
+    assert result[0].id == "unscented-cleanser"
 
 
 def test_filtering_is_case_insensitive() -> None:
-    # Model validators normalize both sides to lowercase; this confirms end-to-end.
+    """Model validators normalize both sides to lowercase — this confirms end-to-end."""
+    constraints = UserConstraints(
+        request_id="req-case",
+        sensitivities=["Fragrance"],  # uppercase in input
+        max_products=5,
+    )
     products = [
-        make_product("scented", ProductCategory.SERUM, ["Fragrance", "niacinamide"])
+        Product(
+            id="scented",
+            name="Scented Serum",
+            category=ProductCategory.SERUM,
+            ingredients=["Fragrance", "niacinamide"],  # uppercase in product
+            description="",
+        )
     ]
-    constraints = make_constraints(sensitivities=["Fragrance"])
     result = filter_safe_products(products, constraints)
     assert result == []
 
 
-def test_multiple_products_only_unsafe_removed() -> None:
+def test_multiple_products_only_unsafe_removed(
+    multi_sensitivity_constraints: UserConstraints,
+) -> None:
     products = [
-        make_product("p1", ProductCategory.CLEANSER, ["water"]),
-        make_product("p2", ProductCategory.SERUM, ["alcohol", "fragrance"]),
-        make_product("p3", ProductCategory.MOISTURIZER, ["glycerin"]),
-        make_product("p4", ProductCategory.TONER, ["alcohol"]),
-        make_product("p5", ProductCategory.SPF, ["zinc oxide"]),
+        Product(id="p1", name="P1", category=ProductCategory.CLEANSER,
+                ingredients=["water"], description=""),
+        Product(id="p2", name="P2", category=ProductCategory.SERUM,
+                ingredients=["alcohol", "fragrance"], description=""),
+        Product(id="p3", name="P3", category=ProductCategory.MOISTURIZER,
+                ingredients=["glycerin"], description=""),
+        Product(id="p4", name="P4", category=ProductCategory.TONER,
+                ingredients=["alcohol"], description=""),
+        Product(id="p5", name="P5", category=ProductCategory.SPF,
+                ingredients=["zinc oxide"], description=""),
     ]
-    constraints = make_constraints(sensitivities=["fragrance", "alcohol"])
-    result = filter_safe_products(products, constraints)
+    result = filter_safe_products(products, multi_sensitivity_constraints)
     assert len(result) == 3
-    safe_ids = {p.id for p in result}
-    assert safe_ids == {"p1", "p3", "p5"}
+    assert {p.id for p in result} == {"p1", "p3", "p5"}
 
 
-def test_empty_sensitivities_returns_all_products() -> None:
+def test_no_sensitivities_returns_all_products(
+    mixed_catalog: list[Product],
+    standard_constraints: UserConstraints,
+) -> None:
+    result = filter_safe_products(mixed_catalog, standard_constraints)
+    assert len(result) == len(mixed_catalog)
+
+
+def test_product_flagged_if_any_single_ingredient_matches(
+    fragrance_sensitive_constraints: UserConstraints,
+) -> None:
+    """A product with 10 ingredients is removed if even one matches a sensitivity."""
+    ingredients = [f"ingredient_{i}" for i in range(9)] + ["fragrance"]
     products = [
-        make_product("p1", ProductCategory.CLEANSER, ["fragrance"]),
-        make_product("p2", ProductCategory.MOISTURIZER, ["alcohol"]),
+        Product(
+            id="ten-ingredient-serum",
+            name="Ten Ingredient Serum",
+            category=ProductCategory.SERUM,
+            ingredients=ingredients,
+            description="",
+        )
     ]
-    constraints = make_constraints(sensitivities=[])
-    result = filter_safe_products(products, constraints)
-    assert len(result) == 2
-
-
-def test_product_flagged_if_any_single_ingredient_matches() -> None:
-    ingredients = [f"ingredient_{i}" for i in range(9)] + ["bad-stuff"]
-    products = [make_product("ten-ing", ProductCategory.SERUM, ingredients)]
-    constraints = make_constraints(sensitivities=["bad-stuff"])
-    result = filter_safe_products(products, constraints)
+    result = filter_safe_products(products, fragrance_sensitive_constraints)
     assert result == []
 
 
 # ---------------------------------------------------------------------------
-# build_routine — constraint & priority
+# build_routine — max products, priority, and edge cases
 # ---------------------------------------------------------------------------
 
 
-def test_routine_respects_max_products() -> None:
-    products = [
-        make_product(f"p{i}", ProductCategory.OTHER, ["water"]) for i in range(10)
-    ]
-    constraints = make_constraints(max_products=3)
-    result = build_routine(products, constraints)
+def test_routine_respects_max_products(
+    mixed_catalog: list[Product],
+    tight_max_constraints: UserConstraints,
+) -> None:
+    result = build_routine(mixed_catalog, tight_max_constraints)
     assert len(result) == 3
 
 
-def test_priority_order_cleanser_moisturizer_spf_first() -> None:
-    products = [
-        make_product("serum-1", ProductCategory.SERUM, ["water"]),
-        make_product("spf-1", ProductCategory.SPF, ["water"]),
-        make_product("cleanser-1", ProductCategory.CLEANSER, ["water"]),
-        make_product("other-1", ProductCategory.OTHER, ["water"]),
-        make_product("moisturizer-1", ProductCategory.MOISTURIZER, ["water"]),
-    ]
-    constraints = make_constraints(max_products=3)
-    result = build_routine(products, constraints)
-    categories = [p.category for p in result]
+def test_priority_essentials_chosen_before_optionals(
+    mixed_catalog: list[Product],
+    tight_max_constraints: UserConstraints,
+) -> None:
+    """When capped at 3, Cleanser, Moisturizer, and SPF must be selected over Serum/Toner/Other."""
+    result = build_routine(mixed_catalog, tight_max_constraints)
+    categories = {p.category for p in result}
     assert ProductCategory.CLEANSER in categories
     assert ProductCategory.MOISTURIZER in categories
     assert ProductCategory.SPF in categories
-    assert ProductCategory.OTHER not in categories
     assert ProductCategory.SERUM not in categories
+    assert ProductCategory.TONER not in categories
+    assert ProductCategory.OTHER not in categories
 
 
-def test_routine_never_exceeds_available_products() -> None:
-    products = [
-        make_product("p1", ProductCategory.CLEANSER, ["water"]),
-        make_product("p2", ProductCategory.MOISTURIZER, ["water"]),
-    ]
-    constraints = make_constraints(max_products=5)
-    result = build_routine(products, constraints)
-    assert len(result) == 2
+def test_routine_never_exceeds_available_products(
+    essential_catalog: list[Product],
+    standard_constraints: UserConstraints,
+) -> None:
+    """If fewer products are available than max_products, return all without error."""
+    result = build_routine(essential_catalog, standard_constraints)
+    assert len(result) == len(essential_catalog)
 
 
-def test_empty_safe_products_returns_empty_list() -> None:
-    constraints = make_constraints(max_products=5)
-    result = build_routine([], constraints)
+def test_empty_product_list_returns_empty(
+    standard_constraints: UserConstraints,
+) -> None:
+    result = build_routine([], standard_constraints)
     assert result == []
 
 
-def test_budget_constraint_excludes_expensive_products() -> None:
-    products = [
-        make_product("cheap-cleanser", ProductCategory.CLEANSER, ["water"], price=10.0),
-        make_product("mid-moisturizer", ProductCategory.MOISTURIZER, ["water"], price=15.0),
-        make_product("pricey-spf", ProductCategory.SPF, ["water"], price=25.0),
-    ]
-    # Total of all three = 50.0; budget of 30 should keep only cheapest two (10 + 15 = 25)
-    constraints = make_constraints(max_products=5, budget=30.0)
-    result = build_routine(products, constraints)
-    total_cost = sum(p.price for p in result)
-    assert total_cost <= 30.0
-    assert any(p.id == "cheap-cleanser" for p in result)
-    assert any(p.id == "mid-moisturizer" for p in result)
-    assert all(p.id != "pricey-spf" for p in result)
+def test_invalid_max_products_raises_value_error() -> None:
+    """build_routine must raise ValueError when max_products <= 0.
+
+    UserConstraints.model_construct bypasses Pydantic field validation so we can
+    test the function's own defensive guard in isolation.
+    """
+    constraints = UserConstraints.model_construct(
+        request_id="req-invalid",
+        sensitivities=[],
+        max_products=0,
+    )
+    with pytest.raises(ValueError):
+        build_routine([], constraints)

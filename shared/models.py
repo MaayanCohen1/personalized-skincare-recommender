@@ -33,7 +33,6 @@ class Product(BaseModel):
     category: ProductCategory
     ingredients: list[str]
     description: str
-    price: float
 
     @field_validator("ingredients", mode="before")
     @classmethod
@@ -45,7 +44,6 @@ class UserConstraints(BaseModel):
     request_id: str
     sensitivities: list[str] = Field(default_factory=list)
     max_products: int = Field(default=5, ge=1, le=10)
-    budget: Optional[float] = None
     image_path: Optional[str] = None
 
     @field_validator("sensitivities", mode="before")
