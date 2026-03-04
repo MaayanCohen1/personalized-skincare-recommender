@@ -63,8 +63,12 @@ def matcher() -> SemanticMatcher:
 
     sentence_transformers is patched via sys.modules above, so __init__
     assigns a MagicMock to self._model — no real model is loaded.
+    Call history is reset each time so call_args_list[0] always refers to
+    the first encode() call made within the current test.
     """
-    return SemanticMatcher()
+    m = SemanticMatcher()
+    m._model.encode.reset_mock()
+    return m
 
 
 # ---------------------------------------------------------------------------

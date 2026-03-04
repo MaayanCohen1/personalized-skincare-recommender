@@ -28,6 +28,41 @@ class SemanticMatcher:
         skin_conditions: list[str],
         products: list[Product],
     ) -> list[Product]:
-        """Return products sorted by cosine similarity to skin_conditions (highest first)."""
-        # TODO: implement semantic ranking
-        raise NotImplementedError
+        """Return products sorted by cosine similarity to skin_conditions (highest first).
+
+        Steps:
+        1. Join skin conditions into one query string.
+        2. Encode the query and all product descriptions.
+        3. Compute cosine similarity: dot(q, p) / (‖q‖ · ‖p‖).
+        4. Return products sorted by score descending.
+        """
+        import numpy as np  # noqa: PLC0415
+
+        if not products:
+            return []
+
+        query_text: str = " ".join(skin_conditions)
+        descriptions: list[str] = [p.description for p in products]
+
+        query_vec: np.ndarray = self._model.encode(query_text)
+        product_vecs: np.ndarray = self._model.encode(descriptions)
+
+        # Cosine similarity: dot product of each product vector with the query,
+        # divided by the product of their L2 norms.
+        query_norm = np.linalg.norm(query_vec)
+        product_norms = np.linalg.norm(product_vecs, axis=1)
+
+        # Avoid division by zero for zero-magnitude vectors.
+        denominator = query_norm * product_norms
+        denominator = np.where(denominator == 0, 1e-10, denominator)
+
+        scores: np.ndarray = product_vecs.dot(query_vec) / denominator
+
+        ranked_indices = np.argsort(scores)[::-1]
+
+        logger.debug(
+            "SemanticMatcher ranked %d products; top score=%.4f",
+            len(products),
+            float(scores[ranked_indices[0]]),
+        )
+        return [products[i] for i in ranked_indices]
