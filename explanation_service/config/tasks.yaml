@@ -1,0 +1,45 @@
+research_task:
+  description: >
+    User skin conditions: {skin_conditions}.
+    Product: {product_name}.
+    Ingredients: {ingredients}.
+
+    For EACH ingredient, call IngredientEvidenceTool and return STRICT JSON only.
+  expected_output: >
+    STRICT JSON array only (no markdown, no prose, no code fences):
+    [{"ingredient":"<name>","fact":"<safe guidance>","source":"<source_id>"}]
+  agent: ingredient_analyst
+
+draft_task:
+  description: >
+    Using the strict JSON evidence from research_task, write a friendly plain-English
+    explanation for why the product may suit the provided skin conditions.
+
+    Rules:
+    - Exactly 2 sentences.
+    - Plain English, user-friendly tone.
+    - Forbidden medical terms: diagnose, diagnosis, cure, treat, treatment,
+      medication, prescription, heal, therapy, disease, clinical, medical.
+    - Forbidden phrases: guaranteed results, will cure.
+  expected_output: >
+    Exactly 2 sentences of plain-English text.
+  agent: user_explainer
+
+audit_task:
+  description: >
+    Validate the drafted explanation and produce final STRICT JSON.
+
+    Rules:
+    - explanation_text must be exactly 2 sentences.
+    - No forbidden medical terms or forbidden phrases.
+    - sources must be a subset of the research_task sources.
+    - If only generic sources exist, return a safe generic explanation and
+      sources as ["generic"].
+
+    Forbidden medical terms: diagnose, diagnosis, cure, treat, treatment,
+    medication, prescription, heal, therapy, disease, clinical, medical.
+    Forbidden phrases: guaranteed results, will cure.
+  expected_output: >
+    STRICT JSON only:
+    {"explanation_text":"<2 sentences>","sources":["<source_id>"]}
+  agent: safety_auditor
