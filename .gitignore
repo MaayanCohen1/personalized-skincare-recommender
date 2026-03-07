@@ -138,6 +138,9 @@ celerybeat.pid
 .env
 .envrc
 .venv
+
+# RAG knowledge base pickle (binary build artifact)
+explanation_service/knowledge_base.pkl
 env/
 venv/
 ENV/

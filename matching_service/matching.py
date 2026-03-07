@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import time
 from typing import Any
 
 import pika
@@ -102,11 +103,32 @@ def publish_routine_matched(
     )
 
 
-def _build_channel() -> tuple[pika.BlockingConnection, pika.adapters.blocking_connection.BlockingChannel]:
-    connection = pika.BlockingConnection(pika.URLParameters(RABBITMQ_URL))
-    channel = connection.channel()
-    channel.exchange_declare(exchange=EXCHANGE_NAME, exchange_type="direct", durable=True)
-    return connection, channel
+def _build_channel(
+    max_retries: int = 10,
+    retry_delay: float = 5.0,
+) -> tuple[pika.BlockingConnection, pika.adapters.blocking_connection.BlockingChannel]:
+    for attempt in range(1, max_retries + 1):
+        try:
+            connection = pika.BlockingConnection(pika.URLParameters(RABBITMQ_URL))
+            channel = connection.channel()
+            channel.exchange_declare(exchange=EXCHANGE_NAME, exchange_type="direct", durable=True)
+            logger.info("Connected to RabbitMQ (attempt %d/%d)", attempt, max_retries)
+            return connection, channel
+        except pika.exceptions.AMQPConnectionError:
+            if attempt == max_retries:
+                logger.critical(
+                    "Failed to connect to RabbitMQ after %d attempts — giving up",
+                    max_retries,
+                )
+                raise
+            logger.warning(
+                "RabbitMQ not ready, retrying in %ds... (attempt %d/%d)",
+                retry_delay,
+                attempt,
+                max_retries,
+            )
+            time.sleep(retry_delay)
+    raise RuntimeError("Unreachable")
 
 
 def _handle_requested_payload(payload: dict[str, Any], correlation_id: str | None) -> tuple[RoutineMatchedEvent, str]:

@@ -18,7 +18,8 @@ import pytest
 # This lets SemanticMatcher.__init__ run without downloading any model.
 # ---------------------------------------------------------------------------
 _st_mock = MagicMock()
-sys.modules.setdefault("sentence_transformers", _st_mock)
+_original_st = sys.modules.get("sentence_transformers")
+sys.modules["sentence_transformers"] = _st_mock
 
 from shared.models import Product, ProductCategory  # noqa: E402
 from matching_service.core.semantic_search import SemanticMatcher  # noqa: E402
@@ -27,6 +28,17 @@ from matching_service.core.semantic_search import SemanticMatcher  # noqa: E402
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
+
+@pytest.fixture(autouse=True)
+def _patch_st_module():
+    """Keep sentence_transformers mocked for every test, then restore."""
+    sys.modules["sentence_transformers"] = _st_mock
+    yield
+    if _original_st is not None:
+        sys.modules["sentence_transformers"] = _original_st
+    else:
+        sys.modules.pop("sentence_transformers", None)
 
 
 @pytest.fixture

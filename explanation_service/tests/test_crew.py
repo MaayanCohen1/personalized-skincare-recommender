@@ -228,6 +228,75 @@ def test_crew_configures_output_log_file(monkeypatch: pytest.MonkeyPatch) -> Non
     assert kwargs["cache"] is True
 
 
+def test_audit_json_string_output_parses_without_exception() -> None:
+    """Regression: audit_task returns raw JSON string (not Pydantic). The
+    pipeline must parse it into a valid FinalExplanation dict without
+    TypeError or double-encoding."""
+    raw_json = (
+        '{"explanation_text":"Niacinamide supports the skin barrier and helps maintain '
+        'an even tone. It is widely used in daily skincare routines.",'
+        '"sources":["ingredients_dictionary.md#p1"]}'
+    )
+
+    mock_result = MagicMock()
+    mock_result.pydantic = None
+    mock_result.raw = raw_json
+
+    crew_instance = MagicMock()
+    crew_instance.kickoff.return_value = mock_result
+
+    project = MagicMock()
+    project.crew.return_value = crew_instance
+
+    with patch("explanation_service.crew.ExplanationCrew", return_value=project):
+        result = generate_explanation_for_product(
+            skin_conditions=["oily"],
+            product_name="Barrier Cream",
+            ingredients=["niacinamide"],
+        )
+
+    assert isinstance(result, dict)
+    assert "explanation_text" in result
+    assert "sources" in result
+    assert isinstance(result["explanation_text"], str)
+    assert isinstance(result["sources"], list)
+    validated = FinalExplanation.model_validate(result)
+    assert count_sentences(validated.explanation_text) == 2
+
+
+def test_audit_pydantic_object_in_raw_parses_without_exception() -> None:
+    """Regression: CrewAI sometimes puts a Pydantic object in .raw instead of
+    a string. The pipeline must still succeed."""
+    pydantic_obj = FinalExplanation(
+        explanation_text=(
+            "Niacinamide supports the skin barrier and helps maintain an even tone. "
+            "It is widely used in daily skincare routines."
+        ),
+        sources=["ingredients_dictionary.md#p1"],
+    )
+
+    mock_result = MagicMock()
+    mock_result.pydantic = pydantic_obj
+    mock_result.raw = pydantic_obj
+
+    crew_instance = MagicMock()
+    crew_instance.kickoff.return_value = mock_result
+
+    project = MagicMock()
+    project.crew.return_value = crew_instance
+
+    with patch("explanation_service.crew.ExplanationCrew", return_value=project):
+        result = generate_explanation_for_product(
+            skin_conditions=["oily"],
+            product_name="Barrier Cream",
+            ingredients=["niacinamide"],
+        )
+
+    assert isinstance(result, dict)
+    assert isinstance(result["explanation_text"], str)
+    assert isinstance(result["sources"], list)
+
+
 def test_missing_api_key_uses_deterministic_fallback(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

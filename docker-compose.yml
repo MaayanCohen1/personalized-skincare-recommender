@@ -63,6 +63,7 @@ services:
     restart: unless-stopped
     environment:
       - RABBITMQ_URL=${RABBITMQ_URL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
       rabbitmq:
         condition: service_healthy
