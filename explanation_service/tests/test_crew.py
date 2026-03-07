@@ -15,6 +15,11 @@ from explanation_service.crew import ExplanationCrew, generate_explanation_for_p
 from explanation_service.output_models import FinalExplanation
 
 
+@pytest.fixture(autouse=True)
+def _set_dummy_api_key(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("OPENAI_API_KEY", "dummy-key")
+
+
 def _mock_project_with_raw(raw_output: str) -> MagicMock:
     kickoff_result = MagicMock()
     kickoff_result.raw = raw_output
@@ -221,3 +226,25 @@ def test_crew_configures_output_log_file(monkeypatch: pytest.MonkeyPatch) -> Non
     kwargs = mock_crew_cls.call_args.kwargs
     assert kwargs["output_log_file"] == "logs/explanation_service.json"
     assert kwargs["cache"] is True
+
+
+def test_missing_api_key_uses_deterministic_fallback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("GOOGLE_API_KEY", raising=False)
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.delenv("AZURE_OPENAI_API_KEY", raising=False)
+
+    with patch("explanation_service.crew.ExplanationCrew") as mock_project:
+        result = generate_explanation_for_product(
+            skin_conditions=["dryness"],
+            product_name="HydraGlow Moisturizer",
+            ingredients=["glycerin"],
+            request_id="req-no-key",
+        )
+
+    assert result["sources"] == ["generic"]
+    assert count_sentences(result["explanation_text"]) == 2
+    assert not mock_project.called

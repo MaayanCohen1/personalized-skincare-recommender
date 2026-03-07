@@ -346,6 +346,21 @@ def _build_safe_fallback(product_name: str) -> FinalExplanation:
     )
 
 
+def _has_any_llm_api_key() -> bool:
+    candidate_keys = (
+        "OPENAI_API_KEY",
+        "ANTHROPIC_API_KEY",
+        "GOOGLE_API_KEY",
+        "GEMINI_API_KEY",
+        "AZURE_OPENAI_API_KEY",
+    )
+    for key in candidate_keys:
+        value = os.getenv(key, "").strip()
+        if value:
+            return True
+    return False
+
+
 def _is_cache_enabled() -> bool:
     raw = os.getenv("EXPLAIN_CACHE", "true").strip().lower()
     return raw in {"1", "true", "yes", "on"}
@@ -403,15 +418,24 @@ def _summarize_task_output(task_output: Any) -> str:
 
 
 def generate_explanation_for_product(
-    skin_conditions: list[str], product_name: str, ingredients: list[str]
+    skin_conditions: list[str],
+    product_name: str,
+    ingredients: list[str],
+    request_id: str | None = None,
 ) -> dict[str, Any]:
     """Generate final explanation JSON from the audit task output."""
-    project = ExplanationCrew()
-    project._current_request_id = _build_request_id(
+    resolved_request_id = request_id or _build_request_id(
         skin_conditions=skin_conditions,
         product_name=product_name,
         ingredients=ingredients,
     )
+
+    if not _has_any_llm_api_key():
+        logger.warning("API key missing -> fallback request_id=%s", resolved_request_id)
+        return _build_safe_fallback(product_name).model_dump()
+
+    project = ExplanationCrew()
+    project._current_request_id = resolved_request_id
     try:
         result = project.crew().kickoff(
             inputs={

@@ -2,10 +2,10 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY api_service/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
-COPY ../shared ./shared
+COPY api_service/ ./api_service/
+COPY shared/ ./shared/
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "api_service.main:app", "--host", "0.0.0.0", "--port", "8000"]

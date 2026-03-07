@@ -4,6 +4,7 @@ services:
   rabbitmq:
     image: rabbitmq:3.13-management
     container_name: rabbitmq
+    restart: unless-stopped
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -13,40 +14,55 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   api_service:
-    build: ./api_service
+    build:
+      context: .
+      dockerfile: api_service/Dockerfile
     container_name: api_service
+    restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
-      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - REDIS_URL=${REDIS_URL}
     depends_on:
       rabbitmq:
         condition: service_healthy
-
-  vision_service:
-    build: ./vision_service
-    container_name: vision_service
-    environment:
-      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
-    depends_on:
-      rabbitmq:
+      redis:
         condition: service_healthy
 
   matching_service:
-    build: ./matching_service
+    build:
+      context: .
+      dockerfile: matching_service/Dockerfile
     container_name: matching_service
+    restart: unless-stopped
     environment:
-      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+      - RABBITMQ_URL=${RABBITMQ_URL}
     depends_on:
       rabbitmq:
         condition: service_healthy
 
   explanation_service:
-    build: ./explanation_service
+    build:
+      context: .
+      dockerfile: explanation_service/Dockerfile
     container_name: explanation_service
+    restart: unless-stopped
     environment:
-      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/
+      - RABBITMQ_URL=${RABBITMQ_URL}
     depends_on:
       rabbitmq:
         condition: service_healthy
