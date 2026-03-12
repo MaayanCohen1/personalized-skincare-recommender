@@ -7,7 +7,7 @@ Fixtures provide reusable UserConstraints and Product objects.
 import pytest
 
 from shared.models import Product, ProductCategory, UserConstraints
-from matching_service.rules_engine import build_routine, filter_safe_products
+from matching_service.rules_engine import build_routine, filter_safe_products, match_products
 
 @pytest.fixture
 def standard_constraints() -> UserConstraints:
@@ -280,3 +280,112 @@ def test_invalid_max_products_raises_value_error() -> None:
     )
     with pytest.raises(ValueError):
         build_routine([], constraints)
+
+
+# ---------------------------------------------------------------------------
+# match_products — full pipeline orchestration
+# ---------------------------------------------------------------------------
+
+
+def _reverse_ranker(
+    skin_conditions: list[str],
+    products: list[Product],
+) -> list[Product]:
+    """Deterministic fake ranker that reverses the input order."""
+    return list(reversed(products))
+
+
+def test_match_products_with_ranker_preserves_semantic_order(
+    mixed_catalog: list[Product],
+    standard_constraints: UserConstraints,
+) -> None:
+    """When a ranker is supplied, its ordering (not category priority) is used."""
+    result = match_products(
+        catalog=mixed_catalog,
+        constraints=standard_constraints,
+        skin_conditions=["oily"],
+        ranker=_reverse_ranker,
+    )
+    expected = list(reversed(mixed_catalog))[: standard_constraints.max_products]
+    assert [p.id for p in result] == [p.id for p in expected]
+
+
+def test_match_products_with_ranker_respects_max_products(
+    mixed_catalog: list[Product],
+    tight_max_constraints: UserConstraints,
+) -> None:
+    result = match_products(
+        catalog=mixed_catalog,
+        constraints=tight_max_constraints,
+        skin_conditions=["dry"],
+        ranker=_reverse_ranker,
+    )
+    assert len(result) == 3
+
+
+def test_match_products_without_ranker_falls_back_to_category_priority(
+    mixed_catalog: list[Product],
+    tight_max_constraints: UserConstraints,
+) -> None:
+    """Without a ranker, match_products delegates to build_routine (category priority)."""
+    result = match_products(
+        catalog=mixed_catalog,
+        constraints=tight_max_constraints,
+    )
+    categories = {p.category for p in result}
+    assert ProductCategory.CLEANSER in categories
+    assert ProductCategory.MOISTURIZER in categories
+    assert ProductCategory.SPF in categories
+
+
+def test_match_products_ranker_ignored_when_no_skin_conditions(
+    mixed_catalog: list[Product],
+    tight_max_constraints: UserConstraints,
+) -> None:
+    """Ranker is only invoked when skin_conditions is non-empty."""
+    result = match_products(
+        catalog=mixed_catalog,
+        constraints=tight_max_constraints,
+        skin_conditions=[],
+        ranker=_reverse_ranker,
+    )
+    categories = {p.category for p in result}
+    assert ProductCategory.CLEANSER in categories
+
+
+def test_match_products_filters_before_ranking(
+    scented_catalog: list[Product],
+    fragrance_sensitive_constraints: UserConstraints,
+) -> None:
+    """Unsafe products must be removed before the ranker sees them."""
+    seen_by_ranker: list[list[Product]] = []
+
+    def spy_ranker(conditions: list[str], products: list[Product]) -> list[Product]:
+        seen_by_ranker.append(products)
+        return products
+
+    result = match_products(
+        catalog=scented_catalog,
+        constraints=fragrance_sensitive_constraints,
+        skin_conditions=["acne"],
+        ranker=spy_ranker,
+    )
+    assert all(p.id != "scented-moisturizer" for p in seen_by_ranker[0])
+    assert all(p.id != "scented-moisturizer" for p in result)
+
+
+def test_match_products_empty_catalog(
+    standard_constraints: UserConstraints,
+) -> None:
+    result = match_products(catalog=[], constraints=standard_constraints)
+    assert result == []
+
+
+def test_match_products_invalid_max_products_raises() -> None:
+    constraints = UserConstraints.model_construct(
+        request_id="req-bad",
+        sensitivities=[],
+        max_products=0,
+    )
+    with pytest.raises(ValueError):
+        match_products(catalog=[], constraints=constraints)

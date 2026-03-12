@@ -1,4 +1,4 @@
-"""Hard-filter rules engine — allergen filtering and routine assembly.
+"""Hard-filter rules engine — allergen filtering, ranking, and routine assembly.
 
 Intentionally pure: no I/O, no RabbitMQ, no HTTP dependencies.
 """
@@ -6,6 +6,7 @@ Intentionally pure: no I/O, no RabbitMQ, no HTTP dependencies.
 from __future__ import annotations
 
 import logging
+from collections.abc import Callable
 
 from shared.models import Product, ProductCategory, UserConstraints
 
@@ -79,3 +80,42 @@ def build_routine(
         constraints.max_products,
     )
     return routine
+
+
+# Signature expected by the *ranker* parameter of match_products.
+RankerFn = Callable[[list[str], list[Product]], list[Product]]
+
+
+def match_products(
+    catalog: list[Product],
+    constraints: UserConstraints,
+    skin_conditions: list[str] | None = None,
+    ranker: RankerFn | None = None,
+) -> list[Product]:
+    """Full matching pipeline: filter -> rank -> top-k.
+
+    When *ranker* and *skin_conditions* are both provided the semantic
+    ordering is preserved and the list is simply truncated to
+    ``max_products``.  Otherwise the result falls back to
+    ``build_routine`` which applies deterministic category-priority
+    ordering.
+    """
+    if constraints.max_products <= 0:
+        raise ValueError(
+            f"max_products must be >= 1, got {constraints.max_products}"
+        )
+
+    safe = filter_safe_products(catalog, constraints)
+
+    if ranker is not None and skin_conditions:
+        ranked = ranker(skin_conditions, safe)
+        selected = ranked[: constraints.max_products]
+        logger.debug(
+            "request_id=%s match_products (semantic): %d/%d selected",
+            constraints.request_id,
+            len(selected),
+            len(safe),
+        )
+        return selected
+
+    return build_routine(safe, constraints)

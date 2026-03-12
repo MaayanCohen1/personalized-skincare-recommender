@@ -14,7 +14,7 @@ from typing import Any
 import pika
 
 from matching_service.core.semantic_search import SemanticMatcher
-from matching_service.rules_engine import build_routine, filter_safe_products
+from matching_service.rules_engine import match_products
 from shared.models import (
     Product,
     ProductCategory,
@@ -67,21 +67,20 @@ def default_catalog() -> list[Product]:
     ]
 
 
-def rank_products_if_possible(
-    safe_products: list[Product],
-    skin_conditions: list[str],
-) -> list[Product]:
-    if not safe_products:
-        return []
-    if not skin_conditions:
-        return list(safe_products)
+_semantic_matcher: SemanticMatcher | None = None
 
+
+def _get_semantic_ranker() -> SemanticMatcher | None:
+    """Return a lazily-initialised SemanticMatcher, or None on failure."""
+    global _semantic_matcher
+    if _semantic_matcher is not None:
+        return _semantic_matcher
     try:
-        matcher = SemanticMatcher()
-        return matcher.rank(skin_conditions=skin_conditions, products=safe_products)
+        _semantic_matcher = SemanticMatcher()
+        return _semantic_matcher
     except Exception:
-        logger.exception("Semantic rank failed; falling back to unsorted safe products")
-        return list(safe_products)
+        logger.exception("SemanticMatcher init failed; ranking will use category priority")
+        return None
 
 
 def publish_routine_matched(
@@ -140,10 +139,14 @@ def _handle_requested_payload(payload: dict[str, Any], correlation_id: str | Non
         raise ValueError("Missing request_id in envelope and correlation_id")
 
     profile = SkinProfile(request_id=request_id, skin_conditions=[])
-    products = default_catalog()
-    safe = filter_safe_products(products=products, constraints=event.constraints)
-    ranked = rank_products_if_possible(safe_products=safe, skin_conditions=profile.skin_conditions)
-    routine = build_routine(safe_products=ranked, constraints=event.constraints)
+
+    matcher = _get_semantic_ranker()
+    routine = match_products(
+        catalog=default_catalog(),
+        constraints=event.constraints,
+        skin_conditions=profile.skin_conditions or None,
+        ranker=matcher.rank if matcher else None,
+    )
 
     matched_event = RoutineMatchedEvent(
         matched_products=routine,
