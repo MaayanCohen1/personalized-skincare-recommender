@@ -8,13 +8,28 @@ from unittest.mock import MagicMock
 import pytest
 
 from api_service.main import (
+    QUEUE_IMAGE_UPLOADED,
     RESULT_TTL_SECONDS,
-    extract_completed_envelope,
-    publish_routine_requested,
+    extract_request_id,
+    publish_image_uploaded,
     redis_result_key,
     store_completed_result,
 )
-from shared.models import RoutineRequestedEvent, UserConstraints
+from matching_service.core.models import Sensitivity, SkinType, UserPreferences
+
+
+def _sample_prefs() -> UserPreferences:
+    return UserPreferences(
+        skin_type=SkinType.OILY,
+        has_breakouts=True,
+        sensitivities=[Sensitivity.FRAGRANCE],
+        is_cruelty_free_required=False,
+    )
+
+
+# ------------------------------------------------------------------
+# Redis helpers
+# ------------------------------------------------------------------
 
 
 def test_redis_key_format_and_ttl_usage() -> None:
@@ -35,47 +50,64 @@ def test_redis_result_key_helper() -> None:
     assert redis_result_key("abc") == "result:abc"
 
 
-def test_publish_routine_requested_routing_and_correlation() -> None:
+# ------------------------------------------------------------------
+# publish_image_uploaded
+# ------------------------------------------------------------------
+
+
+def test_publish_image_uploaded_sends_correct_payload() -> None:
     channel = MagicMock()
     request_id = "req-xyz"
-    event = RoutineRequestedEvent(
-        constraints=UserConstraints(
-            request_id=request_id,
-            sensitivities=["fragrance"],
-            max_products=3,
-            image_path=None,
-        ),
-        catalog_ref="default_catalog",
-    )
+    prefs = _sample_prefs()
 
-    publish_routine_requested(channel, event=event, request_id=request_id)
+    publish_image_uploaded(
+        channel,
+        request_id=request_id,
+        image_path="/images/face.jpg",
+        user_preferences=prefs,
+    )
 
     channel.basic_publish.assert_called_once()
     kwargs = channel.basic_publish.call_args.kwargs
-    assert kwargs["exchange"] == "routine.events"
-    assert kwargs["routing_key"] == "routine.requested"
-    assert kwargs["properties"].correlation_id == request_id
+    assert kwargs["exchange"] == ""
+    assert kwargs["routing_key"] == QUEUE_IMAGE_UPLOADED
+    assert kwargs["properties"].delivery_mode == 2
 
     payload = json.loads(kwargs["body"])
     assert payload["request_id"] == request_id
-    assert payload["event"]["constraints"]["request_id"] == request_id
-    assert payload["event"]["catalog_ref"] == "default_catalog"
+    assert payload["image_path"] == "/images/face.jpg"
+    assert payload["user_preferences"]["skin_type"] == "oily"
+    assert payload["user_preferences"]["has_breakouts"] is True
+    assert payload["user_preferences"]["sensitivities"] == ["fragrance"]
 
 
-def test_extract_completed_envelope_rejects_missing_event() -> None:
-    with pytest.raises(ValueError, match="Missing 'event'"):
-        extract_completed_envelope(payload={"request_id": "req-1"}, correlation_id=None)
-
-
-def test_extract_completed_envelope_rejects_missing_request_id() -> None:
-    with pytest.raises(ValueError, match="Missing request_id"):
-        extract_completed_envelope(payload={"event": {"matched_products": [], "explanations": {}}}, correlation_id=None)
-
-
-def test_extract_completed_envelope_uses_correlation_id_fallback() -> None:
-    request_id, event = extract_completed_envelope(
-        payload={"event": {"matched_products": [], "explanations": {}}},
-        correlation_id="req-from-correlation",
+def test_publish_image_uploaded_body_is_bytes() -> None:
+    channel = MagicMock()
+    publish_image_uploaded(
+        channel,
+        request_id="req-bytes",
+        image_path="/img.jpg",
+        user_preferences=_sample_prefs(),
     )
-    assert request_id == "req-from-correlation"
-    assert event.explanations == {}
+    body = channel.basic_publish.call_args.kwargs["body"]
+    assert isinstance(body, bytes)
+
+
+# ------------------------------------------------------------------
+# extract_request_id
+# ------------------------------------------------------------------
+
+
+def test_extract_request_id_returns_id() -> None:
+    payload = {"request_id": "req-abc", "matched_products": []}
+    assert extract_request_id(payload) == "req-abc"
+
+
+def test_extract_request_id_rejects_missing_id() -> None:
+    with pytest.raises(ValueError, match="Missing request_id"):
+        extract_request_id({"matched_products": []})
+
+
+def test_extract_request_id_rejects_empty_string() -> None:
+    with pytest.raises(ValueError, match="Missing request_id"):
+        extract_request_id({"request_id": ""})

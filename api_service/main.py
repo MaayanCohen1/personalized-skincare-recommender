@@ -1,10 +1,10 @@
 """API Service — async request ingress + result polling via Redis.
 
-Flow in this vertical slice:
-  POST /recommend -> publish routine.requested
-  GET /result/{request_id} -> read completed result from Redis
+Flow:
+  POST /recommend -> publish to image.uploaded queue
+  GET /result/{request_id} -> read matched result from Redis
 
-A background RabbitMQ consumer stores routine.completed events into Redis.
+A background RabbitMQ consumer stores products.matched events into Redis.
 """
 
 from __future__ import annotations
@@ -20,23 +20,21 @@ from typing import Any
 import pika
 import redis
 from fastapi import FastAPI
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
-from shared.models import RoutineCompletedEvent, RoutineRequestedEvent, UserConstraints
+from matching_service.core.models import UserPreferences
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 app = FastAPI(title="SafeGlow AI — API Service")
 
-RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://guest:guest@localhost:5672/")
-REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+RABBITMQ_URL: str = os.getenv("RABBITMQ_URL", "amqp://guest:guest@localhost:5672/")
+REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
-EXCHANGE_NAME = "routine.events"
-ROUTING_KEY_REQUESTED = "routine.requested"
-ROUTING_KEY_COMPLETED = "routine.completed"
-QUEUE_COMPLETED = "api.routine.completed.q"
-RESULT_TTL_SECONDS = 20 * 60
+QUEUE_IMAGE_UPLOADED: str = "image.uploaded"
+QUEUE_PRODUCTS_MATCHED: str = "products.matched"
+RESULT_TTL_SECONDS: int = 20 * 60
 
 _stop_event = threading.Event()
 _consumer_thread: threading.Thread | None = None
@@ -44,10 +42,8 @@ _redis_client: redis.Redis | None = None
 
 
 class RecommendRequest(BaseModel):
-    sensitivities: list[str] = Field(default_factory=list)
-    max_products: int = Field(default=5, ge=1, le=10)
-    image_path: str | None = None
-    catalog_ref: str = "default"
+    image_path: str
+    user_preferences: UserPreferences
 
 
 def redis_result_key(request_id: str) -> str:
@@ -72,22 +68,27 @@ def read_completed_result(redis_client: redis.Redis, request_id: str) -> dict[st
     return json.loads(payload)
 
 
-def publish_routine_requested(
+def publish_image_uploaded(
     channel: pika.adapters.blocking_connection.BlockingChannel,
-    event: RoutineRequestedEvent,
     request_id: str,
+    image_path: str,
+    user_preferences: UserPreferences,
 ) -> None:
-    body = {"request_id": request_id, "event": event.model_dump(mode="json")}
-    props = pika.BasicProperties(
-        content_type="application/json",
-        correlation_id=request_id,
-        delivery_mode=2,
-    )
+    """Publish an image.uploaded event to start the pipeline."""
+    payload: dict[str, Any] = {
+        "request_id": request_id,
+        "image_path": image_path,
+        "user_preferences": user_preferences.model_dump(mode="json"),
+    }
     channel.basic_publish(
-        exchange=EXCHANGE_NAME,
-        routing_key=ROUTING_KEY_REQUESTED,
-        properties=props,
-        body=json.dumps(body),
+        exchange="",
+        routing_key=QUEUE_IMAGE_UPLOADED,
+        properties=pika.BasicProperties(
+            content_type="application/json",
+            content_encoding="utf-8",
+            delivery_mode=2,
+        ),
+        body=json.dumps(payload).encode("utf-8"),
     )
 
 
@@ -99,7 +100,8 @@ def _build_rabbitmq_channel(
         try:
             connection = pika.BlockingConnection(pika.URLParameters(RABBITMQ_URL))
             channel = connection.channel()
-            channel.exchange_declare(exchange=EXCHANGE_NAME, exchange_type="direct", durable=True)
+            channel.queue_declare(queue=QUEUE_IMAGE_UPLOADED, durable=True)
+            channel.queue_declare(queue=QUEUE_PRODUCTS_MATCHED, durable=True)
             logger.info("Connected to RabbitMQ (attempt %d/%d)", attempt, max_retries)
             return connection, channel
         except pika.exceptions.AMQPConnectionError:
@@ -119,47 +121,36 @@ def _build_rabbitmq_channel(
     raise RuntimeError("Unreachable")
 
 
-def _consume_completed_events() -> None:
+def _consume_matched_events() -> None:
+    """Background thread: consume products.matched and store results in Redis."""
     global _redis_client
 
     if _redis_client is None:
         _redis_client = redis.Redis.from_url(REDIS_URL, decode_responses=False)
 
     connection, channel = _build_rabbitmq_channel()
-    channel.queue_declare(queue=QUEUE_COMPLETED, durable=True)
-    channel.queue_bind(
-        queue=QUEUE_COMPLETED,
-        exchange=EXCHANGE_NAME,
-        routing_key=ROUTING_KEY_COMPLETED,
-    )
 
     def on_message(
         ch: pika.adapters.blocking_connection.BlockingChannel,
         method: pika.spec.Basic.Deliver,
-        properties: pika.BasicProperties,
+        _properties: pika.BasicProperties,
         body: bytes,
     ) -> None:
         try:
-            payload = json.loads(body.decode("utf-8"))
-            request_id, event = extract_completed_envelope(
-                payload=payload,
-                correlation_id=properties.correlation_id,
-            )
-            store_completed_result(
-                _redis_client,
-                request_id,
-                event.model_dump(mode="json"),
-            )
-            logger.info("Stored completed result request_id=%s in Redis", request_id)
+            logger.info("Received message from %s", QUEUE_PRODUCTS_MATCHED)
+            payload: dict[str, Any] = json.loads(body.decode("utf-8"))
+            request_id = extract_request_id(payload)
+            store_completed_result(_redis_client, request_id, payload)
+            logger.info("Stored matched result request_id=%s in Redis", request_id)
             ch.basic_ack(delivery_tag=method.delivery_tag)
         except Exception:
-            logger.exception("Failed to handle routine.completed message")
+            logger.exception("Failed to handle products.matched message")
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
 
     channel.basic_qos(prefetch_count=1)
-    channel.basic_consume(queue=QUEUE_COMPLETED, on_message_callback=on_message)
+    channel.basic_consume(queue=QUEUE_PRODUCTS_MATCHED, on_message_callback=on_message)
 
-    logger.info("API completion consumer started queue=%s", QUEUE_COMPLETED)
+    logger.info("API result consumer started queue=%s", QUEUE_PRODUCTS_MATCHED)
     while not _stop_event.is_set():
         connection.process_data_events(time_limit=1.0)
 
@@ -175,7 +166,7 @@ def on_startup() -> None:
 
     _redis_client = redis.Redis.from_url(REDIS_URL, decode_responses=False)
     _stop_event.clear()
-    _consumer_thread = threading.Thread(target=_consume_completed_events, daemon=True)
+    _consumer_thread = threading.Thread(target=_consume_matched_events, daemon=True)
     _consumer_thread.start()
 
 
@@ -189,26 +180,23 @@ def on_shutdown() -> None:
 @app.post("/recommend")
 async def recommend(request: RecommendRequest) -> dict[str, str]:
     request_id = uuid.uuid4().hex
-    constraints = UserConstraints(
-        request_id=request_id,
-        sensitivities=request.sensitivities,
-        max_products=request.max_products,
-        image_path=request.image_path,
-    )
-    event = RoutineRequestedEvent(
-        constraints=constraints,
-        catalog_ref="default",
-    )
 
     connection, channel = _build_rabbitmq_channel()
     try:
-        publish_routine_requested(channel, event, request_id=request_id)
-        logger.info("Published routine.requested request_id=%s", request_id)
+        publish_image_uploaded(
+            channel,
+            request_id=request_id,
+            image_path=request.image_path,
+            user_preferences=request.user_preferences,
+        )
+        logger.info("Published image.uploaded request_id=%s", request_id)
     finally:
-        channel.close()
-        connection.close()
+        if channel.is_open:
+            channel.close()
+        if connection.is_open:
+            connection.close()
 
-    return {"request_id": request_id}
+    return {"status": "processing", "request_id": request_id}
 
 
 @app.get("/result/{request_id}")
@@ -222,14 +210,9 @@ async def get_result(request_id: str) -> dict[str, Any]:
     return {"status": "completed", "request_id": request_id, "result": result}
 
 
-def extract_completed_envelope(
-    payload: dict[str, Any],
-    correlation_id: str | None,
-) -> tuple[str, RoutineCompletedEvent]:
-    request_id = payload.get("request_id") or correlation_id
+def extract_request_id(payload: dict[str, Any]) -> str:
+    """Extract and validate request_id from a products.matched payload."""
+    request_id: str | None = payload.get("request_id")
     if not request_id:
-        raise ValueError("Missing request_id in envelope and correlation_id")
-    if "event" not in payload:
-        raise ValueError("Missing 'event' in routine.completed envelope")
-    event = RoutineCompletedEvent.model_validate(payload["event"])
-    return request_id, event
+        raise ValueError("Missing request_id in products.matched payload")
+    return request_id
