@@ -1,0 +1,2422 @@
+{
+    "products": [
+        {
+            "id": "cleanser_001",
+            "name": "ZitAway Facial Cleanser",
+            "brand": "SeboCalm",
+            "category": "CLEANSER",
+            "description": "Water-based facial cleanser for oily, acne-prone skin. Gently cleanses without harsh surfactants, helps soothe the skin, and is suitable for daily use.",
+            "skin_types": [
+                "oily"
+            ],
+            "concerns": [
+                "acne",
+                "oiliness",
+                "sensitivity"
+            ],
+            "benefits": [
+                "gentle_cleansing",
+                "soothing",
+                "anti_inflammatory",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "aqua",
+                "disodium laureth sulfosuccinate",
+                "propanediol",
+                "decyl glucoside",
+                "cocamidopropyl betaine",
+                "sodium lauroyl sarcosinate",
+                "xanthan gum",
+                "hydroxyacetophenone",
+                "panthenol",
+                "cucumis sativus fruit extract",
+                "sorbitan oleate decylglucoside crosspolymer",
+                "copaifera officinalis resin",
+                "leptospermum scoparium oil",
+                "glycerin",
+                "boswellia serrata extract",
+                "ethylhexylglycerin",
+                "lysine carboxymethyl cysteinate",
+                "sodium phytate",
+                "caprylhydroxamic acid",
+                "lysine thiazolidine carboxylate",
+                "tocopherol",
+                "parfum",
+                "linalool",
+                "limonene",
+                "citronellol",
+                "hexyl cinnamal"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "spf_001",
+            "name": "PRO-AGING Day Cream SPF50+",
+            "brand": "SeboCalm",
+            "category": "SPF",
+            "description": "Broad-spectrum SPF50+ facial sunscreen for oily, combination, and mature skin. Lightweight, non-greasy, absorbs easily, does not leave a white cast, and provides hydration and soothing support.",
+            "skin_types": [
+                "oily",
+                "combination",
+                "mature"
+            ],
+            "concerns": [
+                "sun_protection",
+                "dehydration",
+                "fine_lines"
+            ],
+            "benefits": [
+                "uva_uvb_protection",
+                "lightweight",
+                "non_greasy",
+                "no_white_cast",
+                "hydrating",
+                "soothing",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "aqua",
+                "dibutyl adipate",
+                "c12-15 alkyl benzoate",
+                "propanediol",
+                "butyl methoxydibenzoylmethane",
+                "ethylhexyl triazone",
+                "ethylhexyl salicylate",
+                "bis-ethylhexyloxyphenol methoxyphenyl triazine",
+                "phenylbenzimidazole sulfonic acid",
+                "methylene bis-benzotriazolyl tetramethylbutylphenol",
+                "silica",
+                "hydroxyethyl acrylate/sodium acryloyldimethyl taurate copolymer",
+                "capryloyl glycerin/sebacic acid copolymer",
+                "tocopheryl acetate",
+                "panthenol",
+                "hydroxyacetophenone",
+                "sodium hyaluronate",
+                "acetyl hexapeptide-8",
+                "phenethyl alcohol",
+                "xanthan gum",
+                "caprylhydroxamic acid",
+                "decyl glucoside",
+                "lauryl glucoside",
+                "myristyl glucoside",
+                "polyglyceryl-6 laurate",
+                "ethylhexylglycerin",
+                "polyacrylate crosspolymer-6",
+                "sodium phytate",
+                "sodium hydroxide",
+                "parfum",
+                "simmondsia chinensis seed oil",
+                "propylene glycol",
+                "citric acid",
+                "alcohol",
+                "caprylyl glycol"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": true,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "serum_001",
+            "name": "PEEL & REVIVE",
+            "brand": "ICONIX",
+            "category": "SERUM",
+            "description": "Evening facial serum with 12% acids for pigmentation, melasma, enlarged pores, blackheads, uneven texture, and redness. Exfoliates, brightens, refines skin texture, and supports skin renewal.",
+            "skin_types": [
+                "oily",
+                "combination",
+                "normal"
+            ],
+            "concerns": [
+                "pigmentation",
+                "melasma",
+                "pores",
+                "blackheads",
+                "uneven_texture",
+                "redness"
+            ],
+            "benefits": [
+                "exfoliating",
+                "brightening",
+                "pore_refining",
+                "texture_smoothing",
+                "antioxidant",
+                "soothing"
+            ],
+            "ingredients": [
+                "aqua",
+                "glycolic acid",
+                "glycerin",
+                "caprylic/capric triglyceride",
+                "lactic acid",
+                "octadecenedioic acid",
+                "ethoxydiglycol",
+                "salix nigra bark extract",
+                "polyacrylate crosspolymer-6",
+                "butylene glycol",
+                "cucumis sativus fruit extract",
+                "caprylyl glycol",
+                "camellia sinensis leaf extract",
+                "bakuchiol",
+                "cetyl alcohol",
+                "plantago lanceolata leaf extract",
+                "phenoxyethanol",
+                "cryptomeria japonica bud extract",
+                "sodium hydroxide",
+                "zinc gluconate",
+                "magnesium aspartate",
+                "xanthan gum",
+                "copper gluconate"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "moisturizer_001",
+            "name": "PRO-AGING Retinol Night Cream",
+            "brand": "SeboCalm",
+            "category": "MOISTURIZER",
+            "description": "Night face cream with retinol and vitamin C derivative that helps renew the skin, improve texture, support collagen, and reduce the appearance of fine lines while providing nourishing moisture.",
+            "skin_types": [
+                "dry",
+                "normal",
+                "combination",
+                "sensitive",
+                "mature"
+            ],
+            "concerns": [
+                "fine_lines",
+                "uneven_texture",
+                "dullness",
+                "loss_of_firmness"
+            ],
+            "benefits": [
+                "skin_renewing",
+                "texture_smoothing",
+                "brightening",
+                "collagen_support",
+                "nourishing",
+                "hydrating"
+            ],
+            "ingredients": [
+                "aqua",
+                "caprylic/capric triglyceride",
+                "cetearyl ethylhexanoate",
+                "squalane",
+                "propanediol",
+                "cocos nucifera oil",
+                "cetearyl isononanoate",
+                "cetearyl alcohol",
+                "arachidyl alcohol",
+                "dipalmitoyl hydroxyproline",
+                "behenyl alcohol",
+                "cetearyl glucoside",
+                "arachidyl glucoside",
+                "peg-100 stearate",
+                "glyceryl stearate",
+                "glycine soja sterol",
+                "ascorbyl tetraisopalmitate",
+                "retinol",
+                "polyacrylamide",
+                "c13-14 isoparaffin",
+                "caprylyl glycol",
+                "triethanolamine",
+                "chlorphenesin",
+                "phenoxyethanol",
+                "disodium edta",
+                "laureth-7",
+                "polymethyl methacrylate",
+                "tricaprylin",
+                "parfum",
+                "linalool",
+                "limonene",
+                "hexyl cinnamal",
+                "hydroxycitronellal",
+                "bht"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": null,
+                "nursing_safe": null,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "cleanser_002",
+            "name": "Sensibio Gel Moussant",
+            "brand": "BIODERMA",
+            "category": "CLEANSER",
+            "description": "Water-based gel facial cleanser with a short ingredient list and gentle cleansing agents that help preserve the skin’s natural balance. Suitable for sensitive skin and helps leave the skin comfortable and not dry after rinsing.",
+            "skin_types": [
+                "sensitive"
+            ],
+            "concerns": [
+                "sensitivity",
+                "dehydration"
+            ],
+            "benefits": [
+                "gentle_cleansing",
+                "hydrating",
+                "non_stripping",
+                "barrier_support"
+            ],
+            "ingredients": [
+                "aqua",
+                "sodium cocoamphoacetate",
+                "propanediol",
+                "sodium lauroyl sarcosinate",
+                "citric acid",
+                "coco-glucoside",
+                "glyceryl oleate",
+                "sodium citrate",
+                "peg-90 glyceryl isostearate",
+                "mannitol",
+                "xylitol",
+                "laureth-2",
+                "rhamnose",
+                "fructooligosaccharides",
+                "tocopherol",
+                "hydrogenated palm glycerides citrate",
+                "lecithin",
+                "ascorbyl palmitate"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "spf_002",
+            "name": "Photoderm Nude Touch SPF 50 Very Light Color",
+            "brand": "BIODERMA",
+            "category": "SPF",
+            "description": "Tinted mineral facial sunscreen with SPF 50 for daily morning use. Provides broad sun protection, contains oil-absorbing powders for a matte finish, and is suitable for sensitive skin.",
+            "skin_types": [
+                "sensitive",
+                "oily",
+                "combination"
+            ],
+            "concerns": [
+                "sun_protection",
+                "oiliness"
+            ],
+            "benefits": [
+                "uva_uvb_protection",
+                "tinted_coverage",
+                "matte_finish",
+                "oil_control"
+            ],
+            "ingredients": [
+                "zinc oxide",
+                "dimethicone",
+                "isododecane",
+                "isostearyl isostearate",
+                "butyrospermum parkii oil",
+                "titanium dioxide",
+                "propylheptyl caprylate",
+                "dipropylene glycol",
+                "methyl methacrylate crosspolymer",
+                "silica",
+                "polymethylsilsesquioxane",
+                "aqua",
+                "polyhydroxystearic acid",
+                "hdi/trimethylol hexyllactone crosspolymer",
+                "iron oxides",
+                "peg-10 dimethicone",
+                "polysilicone-11",
+                "triethoxycaprylylsilane",
+                "salicylic acid",
+                "butylene glycol",
+                "capryloyl glycine",
+                "propyl gallate",
+                "hydrogenated lecithin",
+                "caprylyl glycol",
+                "decyl glucoside",
+                "tocopherol",
+                "ectoine",
+                "mannitol",
+                "xylitol",
+                "alumina",
+                "magnesium oxide"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "serum_002",
+            "name": "Renew Me",
+            "brand": "FRE SKINCARE",
+            "category": "SERUM",
+            "description": "Emulsion-texture facial serum for all skin types that supports skin renewal, strengthens the skin barrier, and provides anti-aging, anti-inflammatory, and antioxidant benefits.",
+            "skin_types": [
+                "dry",
+                "normal",
+                "combination",
+                "oily",
+                "sensitive"
+            ],
+            "concerns": [
+                "fine_lines",
+                "loss_of_firmness",
+                "dehydration",
+                "sensitivity"
+            ],
+            "benefits": [
+                "skin_renewing",
+                "barrier_support",
+                "anti_inflammatory",
+                "antioxidant",
+                "hydrating",
+                "soothing",
+                "collagen_support"
+            ],
+            "ingredients": [
+                "water",
+                "pentylene glycol",
+                "coco-caprylate",
+                "propanediol",
+                "biosaccharide gum-1",
+                "niacinamide",
+                "silica",
+                "dicaprylyl carbonate",
+                "glycerin",
+                "simmondsia chinensis seed oil",
+                "argania spinosa kernel oil",
+                "polyacrylate crosspolymer-6",
+                "bakuchiol",
+                "panthenol",
+                "tocopherol",
+                "allantoin",
+                "bisabolol",
+                "sodium hyaluronate",
+                "cymbopogon flexuosus oil",
+                "lavandula angustifolia flower oil",
+                "pelargonium graveolens flower oil",
+                "citrus aurantium bergamia fruit oil",
+                "palmitoyl tripeptide-1",
+                "argania spinosa sprout cell extract",
+                "c14-22 alcohols",
+                "c12-20 alkyl glucoside",
+                "argania spinosa leaf extract",
+                "sodium phytate",
+                "alcohol"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": true,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "cleanser_003",
+            "name": "DAILY ROUTINE Sensitive Skin Facial Cleanser Chamomile Flowers",
+            "brand": "SeboCalm",
+            "category": "CLEANSER",
+            "description": "Water-based facial cleanser for sensitive skin with gentle cleansing agents that help cleanse without being harsh. Suitable for daily use and includes chamomile extract for soothing support.",
+            "skin_types": [
+                "sensitive"
+            ],
+            "concerns": [
+                "sensitivity"
+            ],
+            "benefits": [
+                "gentle_cleansing",
+                "soothing",
+                "non_stripping"
+            ],
+            "ingredients": [
+                "aqua",
+                "sodium laurylglucosides hydroxypropylsulfonate",
+                "cocamidopropyl betaine",
+                "sodium cocoamphoacetate",
+                "maris sal",
+                "xanthan gum",
+                "chamomilla recutita flower extract",
+                "sclerotium gum",
+                "sodium benzoate",
+                "sodium chloride",
+                "polyacrylate crosspolymer-6",
+                "citric acid",
+                "parfum",
+                "linalool",
+                "benzyl salicylate"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "moisturizer_002",
+            "name": "DAILY ROUTINE Rich Night Cream",
+            "brand": "SeboCalm",
+            "category": "MOISTURIZER",
+            "description": "Rich night face cream for dry or mature skin that helps nourish, support the skin barrier, soothe irritation, and provide antioxidant protection during the night.",
+            "skin_types": [
+                "dry",
+                "mature"
+            ],
+            "concerns": [
+                "dryness",
+                "loss_of_firmness",
+                "sensitivity"
+            ],
+            "benefits": [
+                "nourishing",
+                "hydrating",
+                "barrier_support",
+                "soothing",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "aqua",
+                "ethylhexyl stearate",
+                "glycerin",
+                "cetyl palmitate",
+                "glyceryl stearate se",
+                "cocoglycerides",
+                "glyceryl stearate",
+                "glycine soja sterols",
+                "lanolin alcohol",
+                "dimethicone",
+                "peg-16 soy sterol",
+                "peg-10 soy sterol",
+                "phenoxyethanol",
+                "propanediol",
+                "caprylyl glycol",
+                "centella asiatica leaf extract",
+                "butylene glycol",
+                "calendula officinalis flower extract",
+                "triethanolamine",
+                "carbomer",
+                "chlorphenesin",
+                "tocopherol",
+                "beta-sitosterol",
+                "squalene",
+                "caprylhydroxamic acid",
+                "disodium edta",
+                "parfum",
+                "hexyl cinnamal",
+                "linalool",
+                "citronellol",
+                "geraniol",
+                "terpineol",
+                "hexamethylindanopyran",
+                "potassium sorbate",
+                "sorbic acid"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "moisturizer_003",
+            "name": "DAILY ROUTINE Rich Moisturizer for Preventing Facial Dryness",
+            "brand": "SeboCalm",
+            "category": "MOISTURIZER",
+            "description": "Restorative moisturizer for normal to dry skin that helps prevent dryness, support the skin barrier, soothe the skin, and provide nourishing moisture.",
+            "skin_types": [
+                "normal",
+                "dry"
+            ],
+            "concerns": [
+                "dryness",
+                "dehydration",
+                "sensitivity"
+            ],
+            "benefits": [
+                "hydrating",
+                "nourishing",
+                "barrier_support",
+                "soothing",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "aqua",
+                "ethylhexyl stearate",
+                "glycerin",
+                "cetyl palmitate",
+                "glyceryl stearate se",
+                "cocoglycerides",
+                "glyceryl stearate",
+                "glycine soja sterols",
+                "lanolin alcohol",
+                "dimethicone",
+                "peg-16 soy sterol",
+                "peg-10 soy sterol",
+                "phenoxyethanol",
+                "propanediol",
+                "caprylyl glycol",
+                "centella asiatica leaf extract",
+                "butylene glycol",
+                "calendula officinalis flower extract",
+                "triethanolamine",
+                "carbomer",
+                "chlorphenesin",
+                "tocopherol",
+                "beta-sitosterol",
+                "squalene",
+                "caprylhydroxamic acid",
+                "disodium edta",
+                "parfum",
+                "hexyl cinnamal",
+                "linalool",
+                "citronellol",
+                "geraniol",
+                "terpineol",
+                "hexamethylindanopyran",
+                "potassium sorbate",
+                "sorbic acid"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "cleanser_004",
+            "name": "Sensibio AR H2O",
+            "brand": "BIODERMA",
+            "category": "CLEANSER",
+            "description": "Micellar water for sensitive, redness-prone skin that helps gently cleanse, remove makeup, refresh the skin, and support skin comfort without fragrance.",
+            "skin_types": [
+                "sensitive"
+            ],
+            "concerns": [
+                "redness",
+                "sensitivity",
+                "dehydration"
+            ],
+            "benefits": [
+                "gentle_cleansing",
+                "makeup_removing",
+                "soothing",
+                "hydrating",
+                "redness_support"
+            ],
+            "ingredients": [
+                "aqua",
+                "peg-6 caprylic/capric glycerides",
+                "aloe barbadensis leaf extract",
+                "cucumis sativus fruit extract",
+                "mannitol",
+                "xylitol",
+                "rhamnose",
+                "fructooligosaccharides",
+                "lecithin",
+                "ginkgo biloba leaf extract",
+                "camellia sinensis leaf extract",
+                "propylene glycol",
+                "disodium edta",
+                "cetrimonium bromide",
+                "sodium hydroxide",
+                "citric acid"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "serum_003",
+            "name": "Pigmentbio C-Concentrate",
+            "brand": "BIODERMA",
+            "category": "SERUM",
+            "description": "Evening facial serum with vitamin C derivative and active acids that helps brighten pigmentation and dark spots, even skin tone, support renewal, and provide antioxidant benefits. Suitable for all skin types except very sensitive skin.",
+            "skin_types": [
+                "dry",
+                "normal",
+                "combination",
+                "oily"
+            ],
+            "concerns": [
+                "pigmentation",
+                "dark_spots",
+                "uneven_tone",
+                "dullness"
+            ],
+            "benefits": [
+                "brightening",
+                "exfoliating",
+                "skin_renewing",
+                "antioxidant",
+                "tone_evening",
+                "pore_refining"
+            ],
+            "ingredients": [
+                "aqua",
+                "propanediol",
+                "glycolic acid",
+                "glycerin",
+                "dipropylene glycol",
+                "propylheptyl caprylate",
+                "sodium hydroxide",
+                "ascorbyl glucoside",
+                "niacinamide",
+                "salicylic acid",
+                "ammonium acryloyldimethyltaurate/vp copolymer",
+                "sorbitan sesquioleate",
+                "pentylene glycol",
+                "tocopheryl acetate",
+                "xanthan gum",
+                "sodium citrate",
+                "lysine",
+                "azelaic acid",
+                "mannitol",
+                "xylitol",
+                "sodium metabisulfite",
+                "andrographis paniculata leaf extract",
+                "rhamnose",
+                "saccharide isomerate",
+                "glycyrrhiza glabra root extract",
+                "tocopherol",
+                "fructooligosaccharides",
+                "caprylic/capric triglyceride",
+                "laminaria ochroleuca extract",
+                "parfum"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "cleanser_005",
+            "name": "2% Salicylic Acid Acne Treatment Foaming Cleanser",
+            "brand": "Asif Cosmetics",
+            "category": "CLEANSER",
+            "description": "Water-based foaming facial cleanser with 2% salicylic acid and botanical extracts for oily, combination, and acne-prone skin. Helps cleanse pores, support acne care, balance excess oil, and soothe the skin.",
+            "skin_types": [
+                "oily",
+                "combination"
+            ],
+            "concerns": [
+                "acne",
+                "oiliness",
+                "pores"
+            ],
+            "benefits": [
+                "gentle_cleansing",
+                "pore_cleansing",
+                "acne_support",
+                "soothing"
+            ],
+            "ingredients": [
+                "water",
+                "glycerin",
+                "decyl glucoside",
+                "salicylic acid",
+                "cocamidopropyl betaine",
+                "aloe barbadensis leaf juice",
+                "melaleuca alternifolia extract",
+                "hamamelis virginiana leaf water",
+                "helianthus annuus seed oil",
+                "symphytum officinale leaf extract",
+                "cucurbita pepo seed extract",
+                "potassium sorbate",
+                "citric acid",
+                "sodium benzoate",
+                "perfume"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": null,
+                "nursing_safe": null,
+                "cruelty_free": null,
+                "sensitive_skin_tested": null
+            }
+        },
+        {
+            "id": "spf_003",
+            "name": "SPF50 Mineral Fluid For Face",
+            "brand": "CLINIQUE",
+            "category": "SPF",
+            "description": "Mineral facial sunscreen with broad-spectrum UVA and UVB protection. Lightweight formula with even spread, suitable for daily use, helps create a smooth-looking finish, and is suitable for sensitive skin.",
+            "skin_types": [
+                "sensitive"
+            ],
+            "concerns": [
+                "sun_protection"
+            ],
+            "benefits": [
+                "uva_uvb_protection",
+                "lightweight",
+                "even_finish",
+                "makeup_base"
+            ],
+            "ingredients": [
+                "water",
+                "dimethicone",
+                "titanium dioxide",
+                "butyloctyl salicylate",
+                "polydiethylsiloxane",
+                "c12-15 alkyl benzoate",
+                "isononyl isononanoate",
+                "diethylhexyl succinate",
+                "neopentyl glycol diheptanoate",
+                "methyl trimethicone",
+                "butylene glycol",
+                "ethylhexyl methoxycrylene",
+                "lauryl peg-9 polydimethylsiloxyethyl dimethicone",
+                "silica",
+                "dipentaerythrityl tri-polyhydroxystearate",
+                "laureth-4",
+                "cetyl peg/ppg-10/1 dimethicone",
+                "dimethicone/peg-10/15 crosspolymer",
+                "dimethicone silylate",
+                "hydrolyzed wheat protein/pvp crosspolymer",
+                "triethoxycaprylylsilane",
+                "dimethicone crosspolymer-3",
+                "isostearic acid",
+                "caprylyl glycol",
+                "polyhydroxystearic acid",
+                "dipropylene glycol",
+                "phenoxyethanol",
+                "zinc oxide",
+                "iron oxides"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "moisturizer_004",
+            "name": "Exomega Control Rich Face and Body Cream",
+            "brand": "A-DERMA",
+            "category": "MOISTURIZER",
+            "description": "Rich face and body cream for sensitive, irritated, red, and very dry skin. Helps nourish the skin, support the skin barrier, reduce discomfort and redness, and provide soothing daily moisture.",
+            "skin_types": [
+                "dry",
+                "sensitive"
+            ],
+            "concerns": [
+                "dryness",
+                "redness",
+                "sensitivity",
+                "barrier_damage"
+            ],
+            "benefits": [
+                "hydrating",
+                "nourishing",
+                "barrier_support",
+                "soothing",
+                "anti_inflammatory",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "water",
+                "caprylic/capric triglyceride",
+                "glycerin",
+                "cetearyl alcohol",
+                "niacinamide",
+                "10-hydroxydecenoic acid",
+                "avena sativa leaf/stem extract",
+                "benzoic acid",
+                "caprylyl glycol",
+                "cetearyl glucoside",
+                "cetyl alcohol",
+                "glyceryl stearate",
+                "oenothera biennis oil",
+                "peg-100 stearate",
+                "polyacrylate-13",
+                "polyisobutene",
+                "polysorbate 20",
+                "sodium hydroxide",
+                "sorbitan isostearate",
+                "tocopherol",
+                "tocopheryl acetate"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "moisturizer_005",
+            "name": "SA Smoothing Moisturizing Cream",
+            "brand": "CERAVE",
+            "category": "MOISTURIZER",
+            "description": "Body moisturizer with salicylic acid for dry, rough, and bumpy skin. Helps smooth texture, support gentle exfoliation, improve barrier function, and provide hydration. Suitable for keratosis pilaris, strawberry legs, and body breakouts.",
+            "skin_types": [
+                "dry"
+            ],
+            "concerns": [
+                "dryness",
+                "rough_texture",
+                "keratosis_pilaris",
+                "body_acne"
+            ],
+            "benefits": [
+                "hydrating",
+                "exfoliating",
+                "texture_smoothing",
+                "barrier_support",
+                "pore_cleansing"
+            ],
+            "ingredients": [
+                "aqua",
+                "glycerin",
+                "paraffinum liquidum",
+                "glyceryl stearate",
+                "cetearyl alcohol",
+                "triethanolamine",
+                "salicylic acid",
+                "niacinamide",
+                "cetyl alcohol",
+                "ammonium lactate",
+                "behentrimonium methosulfate",
+                "peg-100 stearate",
+                "zea mays oil",
+                "ceramide np",
+                "ceramide ap",
+                "ceramide eop",
+                "carbomer",
+                "dimethicone",
+                "sodium lauroyl lactylate",
+                "cholecalciferol",
+                "cholesterol",
+                "phenoxyethanol",
+                "disodium edta",
+                "tocopherol",
+                "propylparaben",
+                "hydrolyzed hyaluronic acid",
+                "phytosphingosine",
+                "xanthan gum"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "cleanser_006",
+            "name": "Foaming Shower Oil Cleanser",
+            "brand": "CERAVE",
+            "category": "CLEANSER",
+            "description": "Oil-based foaming cleanser for evening use that helps remove makeup, dirt, and daily impurities while supporting the skin barrier and maintaining moisture balance. Suitable for all skin types, especially dry and sensitive skin.",
+            "skin_types": [
+                "dry",
+                "sensitive",
+                "normal",
+                "combination",
+                "oily"
+            ],
+            "concerns": [
+                "dehydration",
+                "sensitivity",
+                "barrier_damage"
+            ],
+            "benefits": [
+                "makeup_removing",
+                "gentle_cleansing",
+                "hydrating",
+                "barrier_support",
+                "non_stripping"
+            ],
+            "ingredients": [
+                "aqua",
+                "glycerin",
+                "peg-200 hydrogenated glyceryl palmate",
+                "coco-betaine",
+                "disodium cocoyl glutamate",
+                "peg-120 methyl glucose dioleate",
+                "polysorbate 20",
+                "peg-7 glyceryl cocoate",
+                "squalane",
+                "ceramide np",
+                "ceramide ap",
+                "ceramide eop",
+                "carbomer",
+                "triethyl citrate",
+                "sodium chloride",
+                "sodium hydroxide",
+                "sodium cocoyl glutamate",
+                "sodium benzoate",
+                "sodium lauroyl lactylate",
+                "sodium hyaluronate",
+                "cholesterol",
+                "citric acid",
+                "capryloyl glycine",
+                "hydroxyacetophenone",
+                "caprylyl glycol",
+                "caprylic/capric triglyceride",
+                "trisodium ethylenediamine disuccinate",
+                "phytosphingosine",
+                "xanthan gum",
+                "benzoic acid",
+                "peg-150 pentaerythrityl tetrastearate",
+                "ppg-5-ceteth-20",
+                "peg-6 caprylic/capric glycerides"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "toner_001",
+            "name": "Thermal Spring Water",
+            "brand": "AVENE",
+            "category": "TONER",
+            "description": "Thermal water face mist with a minimal sterile formula for sensitive and irritated skin. Helps soothe discomfort, reduce irritation, and refresh the skin throughout the day.",
+            "skin_types": [
+                "sensitive"
+            ],
+            "concerns": [
+                "sensitivity",
+                "redness",
+                "irritation",
+                "post_procedure"
+            ],
+            "benefits": [
+                "soothing",
+                "anti_inflammatory",
+                "refreshing",
+                "comforting"
+            ],
+            "ingredients": [
+                "avene thermal spring water",
+                "nitrogen"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "cleanser_007",
+            "name": "Water Boost Micellar Facial Gel Wash",
+            "brand": "Simple",
+            "category": "CLEANSER",
+            "description": "Micellar gel facial cleanser for all skin types with gentle cleansing agents and hydrating ingredients that help cleanse without disrupting the skin barrier.",
+            "skin_types": [
+                "dry",
+                "normal",
+                "combination",
+                "oily",
+                "sensitive"
+            ],
+            "concerns": [
+                "dehydration",
+                "sensitivity",
+                "barrier_damage"
+            ],
+            "benefits": [
+                "gentle_cleansing",
+                "hydrating",
+                "barrier_support",
+                "soothing",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "aqua",
+                "cocamidopropyl betaine",
+                "propylene glycol",
+                "hydroxypropyl methylcellulose",
+                "panthenol",
+                "sodium chloride",
+                "citric acid",
+                "disodium edta",
+                "glycerin",
+                "hydroxypropyl cyclodextrin",
+                "iodopropynyl butylcarbamate",
+                "pantolactone",
+                "phenoxyethanol",
+                "potassium chloride",
+                "saccharide isomerate",
+                "sodium benzoate",
+                "sodium citrate",
+                "sodium hydroxide",
+                "tocopheryl acetate"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": null
+            }
+        },
+        {
+            "id": "cleanser_008",
+            "name": "Kind to Skin Refreshing Facial Wash",
+            "brand": "Simple",
+            "category": "CLEANSER",
+            "description": "Lightweight facial gel cleanser for sensitive skin that helps gently cleanse the skin without heaviness. Suitable for daily morning and evening use, especially for oily and combination skin.",
+            "skin_types": [
+                "sensitive",
+                "oily",
+                "combination"
+            ],
+            "concerns": [
+                "sensitivity",
+                "oiliness"
+            ],
+            "benefits": [
+                "gentle_cleansing",
+                "soothing",
+                "non_stripping",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "aqua",
+                "cocamidopropyl betaine",
+                "propylene glycol",
+                "hydroxypropyl methylcellulose",
+                "panthenol",
+                "disodium edta",
+                "hydroxypropyl cyclodextrin",
+                "iodopropynyl butylcarbamate",
+                "pantolactone",
+                "phenoxyethanol",
+                "sodium benzoate",
+                "sodium chloride",
+                "sodium hydroxide",
+                "tocopheryl acetate"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "cleanser_009",
+            "name": "Gentle Soothing Facial Cleansing Foam",
+            "brand": "Pharmaceris",
+            "category": "CLEANSER",
+            "description": "Gentle water-based facial cleansing foam that helps cleanse without stripping the skin barrier, supports moisture balance, and provides soothing and microbiome-supporting care.",
+            "skin_types": [
+                "sensitive"
+            ],
+            "concerns": [
+                "sensitivity",
+                "dehydration",
+                "barrier_damage"
+            ],
+            "benefits": [
+                "gentle_cleansing",
+                "hydrating",
+                "soothing",
+                "microbiome_support",
+                "non_stripping"
+            ],
+            "ingredients": [
+                "aqua",
+                "glycerin",
+                "betaine",
+                "cocamidopropyl betaine",
+                "methyl gluceth-20",
+                "polyglyceryl-4 caprate",
+                "panthenol",
+                "lonicera caprifolium flower extract",
+                "lonicera japonica flower extract",
+                "inulin",
+                "alpha-glucan oligosaccharide",
+                "peg-7 glyceryl cocoate",
+                "hydroxyacetophenone",
+                "hydroxyethylcellulose",
+                "sodium phytate",
+                "citric acid"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": null
+            }
+        },
+        {
+            "id": "cleanser_010",
+            "name": "CLEAR Facial Cleansing Gel for Oily Acne-Prone Skin",
+            "brand": "Kamedis",
+            "category": "CLEANSER",
+            "description": "Water-based facial cleansing gel with salicylic acid for oily, combination, and acne-prone skin. Helps cleanse gently, support pore cleaning, and assist with acne-prone skin without heavily disrupting the skin barrier.",
+            "skin_types": [
+                "oily",
+                "combination"
+            ],
+            "concerns": [
+                "acne",
+                "oiliness",
+                "pores"
+            ],
+            "benefits": [
+                "gentle_cleansing",
+                "pore_cleansing",
+                "acne_support",
+                "soothing"
+            ],
+            "ingredients": [
+                "water",
+                "cocamidopropyl betaine",
+                "sodium lauroyl methyl isethionate",
+                "glycerin",
+                "sodium methyl cocoyl taurate",
+                "sodium chloride",
+                "cocamide mea",
+                "glyceryl stearate se",
+                "sodium cocoyl apple amino acids",
+                "myristic acid",
+                "salicylic acid",
+                "stearic acid",
+                "portulaca oleracea extract",
+                "sapindus mukurossi fruit extract",
+                "squalane",
+                "hydrolyzed jojoba ester",
+                "tocopheryl acetate",
+                "propanediol",
+                "hexylene glycol",
+                "methyl glucose caprate / caprylate / oleate",
+                "trisodium ethylenediamine disuccinate",
+                "xanthan gum",
+                "benzyl alcohol",
+                "lauroyl lysine",
+                "chlorphenesin",
+                "tetrasodium edta",
+                "sodium hydroxide",
+                "parfum"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "serum_004",
+            "name": "Hydra Vegetal 100H Hydration Serum",
+            "brand": "YVES ROCHER",
+            "category": "SERUM",
+            "description": "Hydrating facial serum that provides immediate and long-lasting moisture, helps soothe the skin, supports water retention, and reduces feelings of dryness and discomfort.",
+            "skin_types": [
+                "dry",
+                "normal",
+                "combination",
+                "sensitive"
+            ],
+            "concerns": [
+                "dehydration",
+                "sensitivity",
+                "redness"
+            ],
+            "benefits": [
+                "hydrating",
+                "soothing",
+                "anti_inflammatory",
+                "barrier_support"
+            ],
+            "ingredients": [
+                "aqua",
+                "glycerin",
+                "diglycerin",
+                "1,2-heptanediol",
+                "carpobrotus edulis extract",
+                "aloe barbadensis leaf juice powder",
+                "caprylyl glycol",
+                "gellan gum",
+                "polyglyceryl-4 caprate",
+                "polyglyceryl-6 caprylate",
+                "parfum",
+                "hyaluronic acid",
+                "sodium hyaluronate",
+                "calcium chloride",
+                "trisodium ethylenediamine disuccinate",
+                "citric acid",
+                "sodium hydroxide"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "cleanser_012",
+            "name": "Cleanance Cleansing Gel",
+            "brand": "AVENE",
+            "category": "CLEANSER",
+            "description": "Refreshing facial cleansing gel for combination to oily skin that helps remove excess oil while remaining gentle enough for sensitive skin. Supports daily cleansing without heavily disrupting the skin barrier.",
+            "skin_types": [
+                "combination",
+                "oily",
+                "sensitive"
+            ],
+            "concerns": [
+                "oiliness",
+                "sensitivity",
+                "redness"
+            ],
+            "benefits": [
+                "gentle_cleansing",
+                "oil_control",
+                "soothing",
+                "non_stripping",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "avene thermal spring water",
+                "water",
+                "zinc coceth sulphate",
+                "lauryl betaine",
+                "decyl glucoside",
+                "ceteareth-60 myristyl glycol",
+                "peg-7 glyceryl cocoate",
+                "polysorbate 20",
+                "citric acid",
+                "parfum",
+                "green 5",
+                "isopropyl alcohol",
+                "peg-40 hydrogenated castor oil",
+                "peg-6",
+                "ppg-26-buteth-26",
+                "silybum marianum fruit extract",
+                "sodium benzoate",
+                "sodium chloride",
+                "sodium hydroxide",
+                "trisodium ethylenediamine disuccinate",
+                "yellow 5",
+                "zinc gluconate"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": true,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "cleanser_013",
+            "name": "MADAGASCAR CENTELLA Cleansing Foam",
+            "brand": "SKIN1004",
+            "category": "CLEANSER",
+            "description": "Gentle foaming facial cleanser with centella asiatica and hydrating ingredients that helps cleanse thoroughly while supporting skin balance and soothing the skin. Suitable especially for normal, combination, and oily skin.",
+            "skin_types": [
+                "normal",
+                "combination",
+                "oily"
+            ],
+            "concerns": [
+                "sensitivity",
+                "redness",
+                "dehydration"
+            ],
+            "benefits": [
+                "gentle_cleansing",
+                "soothing",
+                "hydrating",
+                "barrier_support",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "water",
+                "sodium cocoyl isethionate",
+                "glycerin",
+                "sodium methyl cocoyl taurate",
+                "coco-betaine",
+                "centella asiatica extract",
+                "potassium cocoyl glycinate",
+                "1,2-hexanediol",
+                "potassium cocoate",
+                "potassium benzoate",
+                "polyquaternium-67",
+                "citric acid",
+                "sodium chloride",
+                "butylene glycol",
+                "dextrin",
+                "theobroma cacao extract",
+                "disodium edta",
+                "sodium acetate",
+                "sodium bicarbonate",
+                "coptis chinensis root extract",
+                "sodium hyaluronate",
+                "coccinia indica fruit extract",
+                "eclipta prostrata extract"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": null
+            }
+        },
+        {
+            "id": "spf_004",
+            "name": "Protect Body SPF50",
+            "brand": "FRE SKINCARE",
+            "category": "SPF",
+            "description": "Mineral sunscreen with 24% zinc oxide that provides broad-spectrum UVA and UVB protection while helping nourish, soothe, and support the skin barrier. Suitable for daily morning use on the body.",
+            "skin_types": [
+                "dry",
+                "normal",
+                "combination",
+                "sensitive"
+            ],
+            "concerns": [
+                "sun_protection",
+                "redness",
+                "dehydration"
+            ],
+            "benefits": [
+                "uva_uvb_protection",
+                "barrier_support",
+                "soothing",
+                "nourishing",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "water",
+                "zinc oxide",
+                "coco-caprylate/caprate",
+                "dicaprylyl ether",
+                "glycerin",
+                "propanediol",
+                "polyglyceryl-6 stearate",
+                "silica",
+                "polyhydroxystearic acid",
+                "vitis vinifera seed oil",
+                "rosa canina fruit extract",
+                "niacinamide",
+                "butyrospermum parkii butter",
+                "simmondsia chinensis seed oil",
+                "triethoxycaprylylsilane",
+                "cetyl alcohol",
+                "xanthan gum",
+                "caprylyl glycol",
+                "glyceryl stearate",
+                "argania spinosa kernel oil",
+                "panthenol",
+                "lecithin",
+                "sclerotium gum",
+                "pullulan",
+                "polyglyceryl-6 behenate",
+                "caprylhydroxamic acid",
+                "tocopherol",
+                "pongamia pinnata seed extract",
+                "pongamol",
+                "argania spinosa leaf extract",
+                "argania spinosa callus culture extract",
+                "isomalt",
+                "cananga odorata flower oil"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": null
+            }
+        },
+        {
+            "id": "spf_005",
+            "name": "AM Facial Moisturizing Lotion SPF 50",
+            "brand": "CERAVE",
+            "category": "SPF",
+            "description": "Daily facial moisturizer with SPF 50 for normal to dry skin. Provides sun protection while also supporting hydration and the skin barrier.",
+            "skin_types": [
+                "normal",
+                "dry"
+            ],
+            "concerns": [
+                "sun_protection",
+                "dehydration",
+                "barrier_damage"
+            ],
+            "benefits": [
+                "uva_uvb_protection",
+                "hydrating",
+                "barrier_support"
+            ],
+            "ingredients": [
+                "homosalate",
+                "meradimate",
+                "octinoxate",
+                "octocrylene",
+                "zinc oxide",
+                "water",
+                "niacinamide",
+                "glycerin",
+                "cetearyl alcohol",
+                "behentrimonium methosulfate",
+                "dimethicone",
+                "bht",
+                "ceramide np",
+                "ceramide ap",
+                "ceramide eop",
+                "carbomer",
+                "triethoxycaprylylsilane",
+                "methylparaben",
+                "sodium lauroyl lactylate",
+                "cholesterol",
+                "aluminum starch octenylsuccinate",
+                "disodium edta",
+                "propylparaben",
+                "hydroxyethylcellulose",
+                "hydrolyzed hyaluronic acid",
+                "phytosphingosine",
+                "xanthan gum"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": null,
+                "nursing_safe": null,
+                "cruelty_free": null,
+                "sensitive_skin_tested": null
+            }
+        },
+        {
+            "id": "spf_006",
+            "name": "PROTECT & GO SUPER LIGHT SUNSCREEN SPF50+",
+            "brand": "PROMISE",
+            "category": "SPF",
+            "description": "Lightweight daily facial sunscreen with SPF50+ for all skin types. Provides broad-spectrum UVA and UVB protection, absorbs easily, does not leave a white cast, and gives a glowy finish.",
+            "skin_types": [
+                "dry",
+                "normal",
+                "combination",
+                "oily"
+            ],
+            "concerns": [
+                "sun_protection",
+                "dehydration"
+            ],
+            "benefits": [
+                "uva_uvb_protection",
+                "lightweight",
+                "no_white_cast",
+                "hydrating",
+                "soothing",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "aqua",
+                "dibutyl adipate",
+                "c12-15 alkyl benzoate",
+                "propanediol",
+                "butyl methoxydibenzoylmethane",
+                "ethylhexyl triazone",
+                "ethylhexyl salicylate",
+                "bis-ethylhexyloxyphenol methoxyphenyl triazine",
+                "phenylbenzimidazole sulfonic acid",
+                "methylene bis-benzotriazolyl tetramethylbutylphenol",
+                "silica",
+                "capryloyl glycerin/sebacic acid copolymer",
+                "tocopheryl acetate",
+                "panthenol",
+                "hydroxyacetophenone",
+                "phenethyl alcohol",
+                "xanthan gum",
+                "hydroxyethyl acrylate/sodium acryloyldimethyl taurate copolymer",
+                "caprylhydroxamic acid",
+                "decyl glucoside",
+                "lauryl glucoside",
+                "myristyl glucoside",
+                "polyglyceryl-6 laurate",
+                "ethylhexylglycerin",
+                "polyacrylate crosspolymer-6",
+                "sodium phytate",
+                "sodium hydroxide",
+                "fragrance",
+                "citral"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "cleanser_014",
+            "name": "Cleanse Me",
+            "brand": "FRE SKINCARE",
+            "category": "CLEANSER",
+            "description": "Gentle micellar mousse cleanser for all skin types that helps cleanse without being harsh while supporting hydration, soothing the skin, and leaving it comfortable after rinsing.",
+            "skin_types": [
+                "dry",
+                "normal",
+                "combination",
+                "oily",
+                "sensitive"
+            ],
+            "concerns": [
+                "dehydration",
+                "sensitivity",
+                "barrier_damage"
+            ],
+            "benefits": [
+                "gentle_cleansing",
+                "hydrating",
+                "soothing",
+                "antioxidant",
+                "barrier_support"
+            ],
+            "ingredients": [
+                "water",
+                "argania spinosa leaf extract",
+                "argania spinosa kernel oil",
+                "decyl glucoside",
+                "sodium coceth sulfate",
+                "sodium lauroyl sarcosinate",
+                "disodium cocoyl glutamate",
+                "sodium cocoyl glutamate",
+                "betaine",
+                "sodium pca",
+                "glycerin",
+                "sorbitol",
+                "serine",
+                "glycine glutamic acid",
+                "heptyl glucoside",
+                "hyaluronic acid",
+                "alanine",
+                "lysine",
+                "arginine",
+                "threonine",
+                "proline",
+                "xanthan gum",
+                "saccharide isomerate",
+                "levulinic acid",
+                "p-anisic acid",
+                "azulene",
+                "cananga odorata flower oil",
+                "rosa damascena flower oil"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "spf_007",
+            "name": "SPF 50+ Sun Spray for Face and Body",
+            "brand": "AVENE",
+            "category": "SPF",
+            "description": "Lightweight SPF50+ sunscreen for face and body that spreads easily and provides broad-spectrum UVA and UVB protection. Includes thermal water, glycerin, sunflower seed oil, and antioxidant support.",
+            "skin_types": [
+                "dry",
+                "normal",
+                "combination",
+                "oily",
+                "sensitive"
+            ],
+            "concerns": [
+                "sun_protection",
+                "dehydration",
+                "redness"
+            ],
+            "benefits": [
+                "uva_uvb_protection",
+                "lightweight",
+                "hydrating",
+                "soothing",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "avene thermal spring water",
+                "c12-15 alkyl benzoate",
+                "coco-caprylate/caprate",
+                "methylene bis-benzotriazolyl tetramethylbutylphenol",
+                "diisopropyl adipate",
+                "water",
+                "bis-ethylhexyloxyphenol methoxyphenyl triazine",
+                "diethylhexyl butamido triazone",
+                "polyglyceryl-2 dipolyhydroxystearate",
+                "glycerin",
+                "butyl methoxydibenzoylmethane",
+                "decyl glucoside",
+                "benzoic acid",
+                "butylene glycol",
+                "caprylic/capric triglyceride",
+                "caprylyl glycol",
+                "disodium edta",
+                "parfum",
+                "helianthus annuus seed oil",
+                "hydroxycapric acid",
+                "lauryl glucoside",
+                "oxothiazolidine",
+                "propylene glycol",
+                "sodium benzoate",
+                "sodium citrate",
+                "sodium lauryl glucose carboxylate",
+                "sorbic acid",
+                "tocopherol",
+                "tocopheryl glucoside",
+                "xanthan gum"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "spf_008",
+            "name": "Daily Tinted Fluid Sunscreen SPF30",
+            "brand": "BEAUTY OF JOSEON",
+            "category": "SPF",
+            "description": "Tinted mineral facial sunscreen with SPF30 and a lightweight fluid texture. Provides broad-spectrum UVA and UVB protection, helps even skin tone with light coverage, and includes soothing and antioxidant support.",
+            "skin_types": [
+                "dry",
+                "normal",
+                "combination",
+                "sensitive",
+                "mature"
+            ],
+            "concerns": [
+                "sun_protection",
+                "uneven_tone",
+                "redness"
+            ],
+            "benefits": [
+                "uva_uvb_protection",
+                "tinted_coverage",
+                "soothing",
+                "antioxidant",
+                "matte_finish"
+            ],
+            "ingredients": [
+                "zinc oxide",
+                "water",
+                "butyloctyl salicylate",
+                "isopropyl myristate",
+                "coco-caprylate/caprate",
+                "caprylic/capric triglyceride",
+                "neopentyl glycol diheptanoate",
+                "ethylhexyl isononanoate",
+                "alcohol denat",
+                "polyglyceryl-3 polyricinoleate",
+                "butylene glycol",
+                "c12-15 alkyl benzoate",
+                "propanediol",
+                "silica",
+                "methyl methacrylate crosspolymer",
+                "stearic acid",
+                "polyglyceryl-6 polyhydroxystearate",
+                "hydrogenated olive oil unsaponifiables",
+                "artemisia capillaris extract",
+                "polyglyceryl-4 diisostearate/polyhydroxystearate/sebacate",
+                "stearalkonium hectorite",
+                "undecane",
+                "1,2-hexanediol",
+                "polyglyceryl-6 polyricinoleate",
+                "hydroxyacetophenone",
+                "tridecane",
+                "polyglycerin-6",
+                "isopropyl titanium triisostearate",
+                "tocopherol",
+                "ascorbyl palmitate",
+                "iron oxides"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": true,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": null
+            }
+        },
+        {
+            "id": "moisturizer_006",
+            "name": "Ultra Facial Oil-Free Refillable Moisturizer",
+            "brand": "KIEHL'S",
+            "category": "MOISTURIZER",
+            "description": "Lightweight gel moisturizer that absorbs quickly and is ideal for oily and combination skin. Helps hydrate the skin, reduce excess shine, and support a smoother, more balanced appearance.",
+            "skin_types": [
+                "oily",
+                "combination"
+            ],
+            "concerns": [
+                "oiliness",
+                "pores",
+                "dehydration",
+                "acne"
+            ],
+            "benefits": [
+                "hydrating",
+                "lightweight",
+                "oil_control",
+                "pore_refining",
+                "soothing",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "aqua",
+                "glycerin",
+                "propanediol",
+                "dimethicone",
+                "isononyl isononanoate",
+                "hydroxyethylpiperazine ethane sulfonic acid",
+                "phenoxyethanol",
+                "carbomer",
+                "butylene glycol",
+                "chlorphenesin",
+                "caprylyl glycol",
+                "dimethiconol",
+                "sodium hydroxide",
+                "xanthan gum",
+                "pentylene glycol",
+                "tetrasodium edta",
+                "tocopheryl acetate",
+                "menthoxypropanediol",
+                "pseudoalteromonas ferment extract",
+                "biosaccharide gum-1",
+                "sarcosine",
+                "salicylic acid"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": null
+            }
+        },
+        {
+            "id": "moisturizer_007",
+            "name": "Ultra Facial Moisturiser",
+            "brand": "KIEHL'S",
+            "category": "MOISTURIZER",
+            "description": "Facial moisturizer that helps hydrate, nourish, and support moisture retention with squalane, glycerin, natural oils, and beeswax. Suitable for daily morning and evening use.",
+            "skin_types": [
+                "dry",
+                "normal",
+                "combination"
+            ],
+            "concerns": [
+                "dryness",
+                "dehydration",
+                "barrier_damage"
+            ],
+            "benefits": [
+                "hydrating",
+                "nourishing",
+                "barrier_support",
+                "softening",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "aqua",
+                "squalane",
+                "glycerin",
+                "peg-100 stearate",
+                "glyceryl stearate",
+                "butylene glycol",
+                "triethanolamine",
+                "phenoxyethanol",
+                "sorbitan oleate",
+                "carbomer",
+                "chlorphenesin",
+                "cera alba",
+                "caprylyl glycol",
+                "stearic acid",
+                "palmitic acid",
+                "myristyl alcohol",
+                "prunus amygdalus dulcis oil",
+                "prunus armeniaca kernel oil",
+                "tocopherol",
+                "persea gratissima oil",
+                "myristic acid"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": null
+            }
+        },
+        {
+            "id": "moisturizer_008",
+            "name": "Sensidaily for Very Dry and Irritated Skin",
+            "brand": "BEPANTHEN",
+            "category": "MOISTURIZER",
+            "description": "Rich soothing moisturizer for very dry, sensitive, irritated, and atopy-prone skin. Helps nourish the skin, support the skin barrier, reduce discomfort, and provide long-lasting hydration.",
+            "skin_types": [
+                "dry",
+                "sensitive"
+            ],
+            "concerns": [
+                "dryness",
+                "dehydration",
+                "sensitivity",
+                "redness",
+                "barrier_damage"
+            ],
+            "benefits": [
+                "hydrating",
+                "nourishing",
+                "barrier_support",
+                "soothing",
+                "microbiome_support",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "aqua",
+                "caprylic/capric triglyceride",
+                "glycerin",
+                "olea europaea fruit oil",
+                "isostearyl isostearate",
+                "1,2-hexanediol",
+                "cetearyl alcohol",
+                "panthenol",
+                "butyrospermum parkii butter",
+                "niacinamide",
+                "glyceryl stearate citrate",
+                "alpha-glucan oligosaccharide",
+                "limnanthes alba seed oil",
+                "hydrogenated lecithin",
+                "hippophae rhamnoides fruit extract",
+                "rosmarinus officinalis leaf extract",
+                "xanthan gum",
+                "sclerotium gum",
+                "tocopheryl acetate",
+                "squalane",
+                "tetrasodium glutamate diacetate",
+                "ceramide np",
+                "citric acid"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "serum_005",
+            "name": "SKIN ELIXIR",
+            "brand": "ICONIX",
+            "category": "SERUM",
+            "description": "Vitamin C serum for all skin types, including sensitive skin. Helps brighten the skin, support collagen production, improve texture, and provide hydration and antioxidant protection.",
+            "skin_types": [
+                "dry",
+                "normal",
+                "combination",
+                "oily",
+                "sensitive"
+            ],
+            "concerns": [
+                "dullness",
+                "uneven_tone",
+                "fine_lines",
+                "dehydration"
+            ],
+            "benefits": [
+                "brightening",
+                "antioxidant",
+                "collagen_support",
+                "hydrating",
+                "texture_smoothing"
+            ],
+            "ingredients": [
+                "aqua",
+                "3-o-ethyl ascorbic acid",
+                "glycerin",
+                "dimethyl isosorbide",
+                "ethoxydiglycol",
+                "isopentyldiol",
+                "sodium hyaluronate",
+                "butylene glycol",
+                "hydroxyethyl cellulose",
+                "phenoxyethanol",
+                "marrubium vulgare extract",
+                "dehydroacetic acid",
+                "glyceryl acrylate/acrylic acid copolymer",
+                "benzoic acid",
+                "propylene glycol",
+                "cryptomeria japonica bud extract",
+                "disodium edta",
+                "pvm/ma copolymer",
+                "magnesium aspartate",
+                "zinc gluconate",
+                "lactic acid",
+                "copper gluconate",
+                "citric acid"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "moisturizer_009",
+            "name": "Acnil Ros",
+            "brand": "Acnil",
+            "category": "MOISTURIZER",
+            "description": "Face cream with 15% azelaic acid that helps support skin prone to rosacea, acne, and pigmentation. Provides anti-inflammatory support, helps even skin tone, and includes soothing and hydrating ingredients.",
+            "skin_types": [
+                "normal",
+                "combination",
+                "oily",
+                "sensitive"
+            ],
+            "concerns": [
+                "rosacea",
+                "acne",
+                "pigmentation",
+                "redness"
+            ],
+            "benefits": [
+                "anti_inflammatory",
+                "acne_support",
+                "tone_evening",
+                "brightening",
+                "soothing",
+                "hydrating"
+            ],
+            "ingredients": [
+                "water",
+                "azelaic acid",
+                "propylene glycol",
+                "caprylic/capric triglyceride",
+                "cetearyl alcohol",
+                "glyceryl stearate",
+                "peg-100 stearate",
+                "glycerin",
+                "ceteareth-20",
+                "vp/va copolymer",
+                "laurtrimonium chloride",
+                "butylene glycol",
+                "peg-60 almond glycerides",
+                "caprylyl glycol",
+                "carbomer",
+                "nordihydroguaiaretic acid",
+                "oleanolic acid",
+                "sodium metabisulfite",
+                "xanthan gum",
+                "benzoic acid",
+                "bisabolol",
+                "iron oxides"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": null
+            }
+        },
+        {
+            "id": "serum_006",
+            "name": "AZ Azelaic Acid 10 Serum",
+            "brand": "Cos De BAHA",
+            "category": "SERUM",
+            "description": "Facial serum with 10% azelaic acid for acne, blemishes, post-acne marks, pigmentation, and redness. Helps brighten the skin, calm inflammation, support the skin barrier, and provide lightweight hydration.",
+            "skin_types": [
+                "normal",
+                "combination",
+                "oily",
+                "sensitive"
+            ],
+            "concerns": [
+                "acne",
+                "post_acne_marks",
+                "pigmentation",
+                "redness"
+            ],
+            "benefits": [
+                "anti_inflammatory",
+                "acne_support",
+                "tone_evening",
+                "brightening",
+                "soothing",
+                "hydrating",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "aloe barbadensis leaf extract",
+                "propylene glycol",
+                "azelaic acid",
+                "polysorbate 20",
+                "1,2-hexanediol",
+                "propanediol",
+                "panthenol",
+                "niacinamide",
+                "sodium hyaluronate",
+                "sodium citrate",
+                "camellia sinensis leaf extract",
+                "momordica charantia fruit extract",
+                "sambucus nigra flower extract",
+                "leontopodium alpinum extract"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": null
+            }
+        },
+        {
+            "id": "moisturizer_010",
+            "name": "Multi-Peptides Moisturizer",
+            "brand": "Leaves",
+            "category": "MOISTURIZER",
+            "description": "Rich facial moisturizer with a peptide complex, hydrating and nourishing ingredients, and a lightweight feel on the skin. Helps support the skin barrier, improve hydration, and address fine lines and loss of firmness.",
+            "skin_types": [
+                "dry",
+                "normal",
+                "combination",
+                "sensitive",
+                "mature"
+            ],
+            "concerns": [
+                "fine_lines",
+                "loss_of_firmness",
+                "dehydration",
+                "barrier_damage"
+            ],
+            "benefits": [
+                "hydrating",
+                "nourishing",
+                "barrier_support",
+                "collagen_support",
+                "soothing",
+                "antioxidant",
+                "texture_smoothing"
+            ],
+            "ingredients": [
+                "aqua",
+                "glycerin",
+                "coco-caprylate/caprate",
+                "isohexadecane",
+                "caprylic/capric triglyceride",
+                "niacinamide",
+                "stearyl alcohol",
+                "aluminium starch octenylsuccinate",
+                "boron nitride",
+                "cetyl alcohol",
+                "simmondsia chinensis seed oil",
+                "silica",
+                "cyclopentasiloxane",
+                "phenoxyethanol",
+                "butylene glycol",
+                "tocopheryl acetate",
+                "dimethicone",
+                "panthenol",
+                "hydroxyethyl acrylate/sodium acryloyldimethyl taurate copolymer",
+                "parfum",
+                "dimethiconol",
+                "ethylhexylglycerin",
+                "glyceryl stearate",
+                "peg-100 stearate",
+                "soluble collagen",
+                "hydrolyzed elastin",
+                "honey extract",
+                "bisabolol",
+                "allantoin",
+                "sodium hyaluronate",
+                "carbomer",
+                "polysorbate-20",
+                "palmitoyl tripeptide-1",
+                "palmitoyl tripeptide-5",
+                "palmitoyl tripeptide-7",
+                "benzyl salicylate",
+                "linalool",
+                "hydroxycitronellal",
+                "alpha-isomethyl ionone",
+                "citronellol",
+                "limonene"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "toner_002",
+            "name": "Ultra Facial Oil-Free Toner",
+            "brand": "KIEHL'S",
+            "category": "TONER",
+            "description": "Oil-free facial toner that helps balance excess oil while providing lightweight hydration and a refreshed skin feel. Suitable for daily use on clean skin.",
+            "skin_types": [
+                "oily",
+                "combination"
+            ],
+            "concerns": [
+                "oiliness",
+                "dehydration",
+                "pores"
+            ],
+            "benefits": [
+                "oil_control",
+                "hydrating",
+                "refreshing",
+                "soothing"
+            ],
+            "ingredients": [
+                "aqua",
+                "glycerin",
+                "propanediol",
+                "phenoxyethanol",
+                "propylene glycol",
+                "potassium sorbate",
+                "acrylates/c10-30 alkyl acrylate crosspolymer",
+                "triethanolamine",
+                "citric acid",
+                "imperata cylindrica root extract",
+                "pseudoalteromonas ferment extract",
+                "sodium hyaluronate",
+                "cucumis sativus juice",
+                "caprylyl glycol",
+                "carbomer"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": null
+            }
+        },
+        {
+            "id": "toner_003",
+            "name": "Revitalift Glycolic Acid Toner",
+            "brand": "L'OREAL PARIS",
+            "category": "TONER",
+            "description": "Evening toner with 5% glycolic acid designed to improve skin texture, support exfoliation, brighten the skin, and help refine pores. Not suitable for sensitive skin.",
+            "skin_types": [
+                "normal",
+                "combination",
+                "oily"
+            ],
+            "concerns": [
+                "uneven_texture",
+                "dullness",
+                "pores",
+                "pigmentation"
+            ],
+            "benefits": [
+                "exfoliating",
+                "brightening",
+                "texture_smoothing",
+                "pore_refining",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "aqua",
+                "glycolic acid",
+                "hydroxyethylpiperazine ethane sulfonic acid",
+                "glycerin",
+                "sodium hydroxide",
+                "citric acid",
+                "pentylene glycol",
+                "aloe barbadensis leaf juice",
+                "citrullus lanatus fruit extract",
+                "ascorbyl glucoside",
+                "panthenol",
+                "peg-40 hydrogenated castor oil",
+                "ppg-26-buteth-26",
+                "tocopherol",
+                "bis-peg-18 methyl ether dimethyl silane",
+                "linalool",
+                "red 4",
+                "yellow 5",
+                "potassium sorbate",
+                "salicylic acid",
+                "sodium benzoate",
+                "parfum"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "cruelty_free": null,
+                "sensitive_skin_tested": null
+            }
+        },
+        {
+            "id": "toner_004",
+            "name": "Glycolic Acid Toner",
+            "brand": "THE INKEY LIST",
+            "category": "TONER",
+            "description": "Exfoliating toner with 10% glycolic acid that helps improve skin texture, brighten the skin, and support pore refinement. Not suitable for sensitive skin.",
+            "skin_types": ["normal", "combination", "oily"],
+            "concerns": ["uneven_texture", "dullness", "pores"],
+            "benefits": ["exfoliating", "brightening", "texture_smoothing", "oil_control", "antioxidant"],
+            "ingredients": [
+              "aqua",
+              "glycolic acid",
+              "propanediol",
+              "hamamelis virginiana water",
+              "sodium hydroxide",
+              "butylene glycol",
+              "phenoxyethanol",
+              "alcohol",
+              "ppg-26-buteth-26",
+              "betaine",
+              "peg-40 hydrogenated castor oil",
+              "boerhavia diffusa root extract",
+              "ethylhexylglycerin",
+              "trisodium ethylenediamine disuccinate"
+            ],
+            "flags": {
+              "contains_fragrance": false,
+              "contains_alcohol": true,
+              "pregnancy_safe": null,
+              "nursing_safe": null,
+              "cruelty_free": null,
+              "sensitive_skin_tested": null
+            }
+          },
+          {
+            "id": "moisturizer_011",
+            "name": "CICA Soothing Gel Cream for Redness-Prone Skin",
+            "brand": "SeboCalm",
+            "category": "MOISTURIZER",
+            "description": "Lightweight gel-cream facial moisturizer for redness-prone, sensitive skin. Helps soothe irritation, reduce redness, support the skin barrier, and provide lightweight hydration. Especially suitable for combination to oily skin.",
+            "skin_types": ["normal", "combination", "oily", "sensitive"],
+            "concerns": ["redness", "sensitivity", "dehydration", "barrier_damage"],
+            "benefits": ["soothing", "anti_inflammatory", "barrier_support", "hydrating", "lightweight", "antioxidant"],
+            "ingredients": [
+              "aqua",
+              "butylene glycol",
+              "glycerin",
+              "1,2-hexanediol",
+              "niacinamide",
+              "propanediol",
+              "caprylyl methicone",
+              "centella asiatica extract",
+              "hydrogenated polydecene",
+              "hydroxyethyl acrylate/sodium acryloyldimethyl taurate copolymer",
+              "ammonium acryloyl-dimethyltaurate/vp copolymer",
+              "cetearyl olivate",
+              "sorbitan olivate",
+              "melia azadirachta leaf extract",
+              "fragrance",
+              "sorbitan isostearate",
+              "disodium edta",
+              "melia azadirachta flower extract",
+              "madecassoside"
+            ],
+            "flags": {
+              "contains_fragrance": true,
+              "contains_alcohol": false,
+              "pregnancy_safe": true,
+              "nursing_safe": true,
+              "cruelty_free": null,
+              "sensitive_skin_tested": true
+            }
+          }
+    ]
+}
