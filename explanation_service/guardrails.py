@@ -48,3 +48,27 @@ def guard_sources_subset(final_sources: list[str], research_sources: list[str]) 
     if not final:
         return False
     return final.issubset(research)
+
+
+def filter_to_research_subset(
+    final_sources: list[str],
+    research_sources: list[str],
+) -> list[str]:
+    """Return only final sources that appear in the research set.
+
+    Comparison is whitespace-normalized but case-sensitive to preserve
+    deterministic source identifiers (e.g. ``ingredients_dictionary.md#p1``).
+    """
+    research_set: set[str] = {
+        s.strip() for s in research_sources if isinstance(s, str) and s.strip()
+    }
+    seen: set[str] = set()
+    filtered: list[str] = []
+    for src in final_sources:
+        if not isinstance(src, str):
+            continue
+        key = src.strip()
+        if key and key in research_set and key not in seen:
+            seen.add(key)
+            filtered.append(key)
+    return filtered

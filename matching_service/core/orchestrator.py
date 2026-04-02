@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 from matching_service.core.models import Sensitivity, SkinType, UserPreferences
 from matching_service.rules_engine import match_products
 from shared.models import Product, UserConstraints
@@ -16,8 +18,10 @@ _VALID_SIGNALS: frozenset[str] = frozenset(
 )
 
 
-def _build_constraints(user_preferences: UserPreferences) -> UserConstraints:
-    # "none" means no blocked ingredients.
+def _build_constraints(
+    user_preferences: UserPreferences,
+    request_id: str = "orchestrator",
+) -> UserConstraints:
     sensitivities: list[str]
     if Sensitivity.NONE in user_preferences.sensitivities:
         sensitivities = []
@@ -25,7 +29,7 @@ def _build_constraints(user_preferences: UserPreferences) -> UserConstraints:
         sensitivities = [s.value for s in user_preferences.sensitivities]
 
     return UserConstraints(
-        request_id="orchestrator",
+        request_id=request_id,
         sensitivities=sensitivities,
     )
 
@@ -66,10 +70,28 @@ def _merge_signals(base: list[str], extra: list[str]) -> list[str]:
     return merged
 
 
+def build_matching_context(
+    user_preferences: UserPreferences,
+    visual_signals: list[str] | None = None,
+    request_id: str = "",
+) -> tuple[list[str], UserConstraints]:
+    """Compute the merged skin conditions and user constraints.
+
+    Mirrors the internal preparation done by ``match_for_user`` so that
+    callers can build downstream event payloads without duplicating logic.
+    """
+    normalized = _normalize_visual_signals(visual_signals)
+    questionnaire = _questionnaire_signals(user_preferences)
+    skin_conditions = _merge_signals(questionnaire, normalized)
+    constraints = _build_constraints(user_preferences, request_id=request_id)
+    return skin_conditions, constraints
+
+
 def match_for_user(
     catalog: list[Product],
     user_preferences: UserPreferences,
     visual_signals: list[str] | None = None,
+    ranker: Callable[[list[str], list[Product]], list[Product]] | None = None,
 ) -> list[Product]:
     """Translate user inputs into matcher inputs and return matched products."""
     normalized_visual_signals = _normalize_visual_signals(visual_signals)
@@ -84,4 +106,5 @@ def match_for_user(
         catalog=catalog,
         constraints=constraints,
         skin_conditions=merged_signals or None,
+        ranker=ranker,
     )

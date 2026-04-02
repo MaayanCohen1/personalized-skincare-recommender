@@ -2,10 +2,16 @@
 
 from __future__ import annotations
 
+import os
+
+# Suppress CrewAI interactive prompts and telemetry before library import.
+os.environ.setdefault("CI", "true")
+os.environ.setdefault("CREWAI_TELEMETRY_OPTOUT", "true")
+os.environ.setdefault("OTEL_SDK_DISABLED", "true")
+
 import hashlib
 import json
 import logging
-import os
 import re
 from pathlib import Path
 from typing import Any
@@ -15,8 +21,8 @@ from crewai.project import CrewBase, agent, crew, task
 from pydantic import BaseModel as _BaseModel
 
 from explanation_service.guardrails import (
+    filter_to_research_subset,
     guard_no_banned_medical_terms,
-    guard_sources_subset,
     guard_two_sentences,
 )
 from explanation_service.output_models import (
@@ -25,6 +31,7 @@ from explanation_service.output_models import (
     IngredientEvidence,
     ResearchOutput,
 )
+from explanation_service.ingredients import extract_key_ingredients
 from explanation_service.tools import IngredientEvidenceTool, lookup_ingredient
 
 logger = logging.getLogger(__name__)
@@ -46,21 +53,21 @@ class ExplanationCrew:
         return Agent(
             config=self.agents_config["ingredient_analyst"],
             tools=[IngredientEvidenceTool],
-            verbose=True,
+            verbose=False,
         )
 
     @agent
     def user_explainer(self) -> Agent:
         return Agent(
             config=self.agents_config["user_explainer"],
-            verbose=True,
+            verbose=False,
         )
 
     @agent
     def safety_auditor(self) -> Agent:
         return Agent(
             config=self.agents_config["safety_auditor"],
-            verbose=True,
+            verbose=False,
         )
 
     @task
@@ -109,7 +116,7 @@ class ExplanationCrew:
             agents=self.agents,
             tasks=self.tasks,
             process=Process.sequential,
-            verbose=True,
+            verbose=False,
             cache=_is_cache_enabled(),
             output_log_file=str(output_log_file),
             task_callback=self._task_callback,
@@ -208,15 +215,37 @@ class ExplanationCrew:
             self._reset_guardrail_failures("audit_task")
             return True, output
 
-        if not guard_sources_subset(parsed.sources, research_sources):
-            self._log_guardrail_failure(
-                "audit_task",
-                "Final sources must be a subset of research sources.",
+        # Filter audit sources to the research-produced set instead of
+        # rejecting outright — avoids wasting guardrail retries on minor
+        # source-string mismatches from the LLM.
+        valid_sources = filter_to_research_subset(parsed.sources, research_sources)
+
+        if valid_sources:
+            logger.info(
+                "Audit guardrail: filtered %d -> %d valid sources.",
+                len(parsed.sources),
+                len(valid_sources),
             )
-            return False, "Final sources must be a subset of research sources."
+        else:
+            # No exact matches; inject the research sources as a
+            # deterministic fallback so the explanation is still usable.
+            seen: set[str] = set()
+            valid_sources = []
+            for s in research_sources:
+                if s not in seen:
+                    seen.add(s)
+                    valid_sources.append(s)
+            logger.warning(
+                "Audit guardrail: no valid source subset; injecting %d research source(s).",
+                len(valid_sources),
+            )
+
+        corrected = FinalExplanation(
+            explanation_text=parsed.explanation_text,
+            sources=valid_sources,
+        )
         self._reset_guardrail_failures("audit_task")
-        logger.info("Audit guardrail passed.")
-        return True, output
+        return True, corrected
 
     def _get_task_cache(self) -> dict[str, Task]:
         if not hasattr(self, "_task_cache"):
@@ -460,13 +489,21 @@ def generate_explanation_for_product(
         logger.warning("API key missing -> fallback request_id=%s", resolved_request_id)
         return _build_safe_fallback(product_name).model_dump()
 
+    key_ingredients = extract_key_ingredients(ingredients)
+    logger.info(
+        "Filtered %d -> %d key ingredients for research (request_id=%s)",
+        len(ingredients),
+        len(key_ingredients),
+        resolved_request_id,
+    )
+
     project = ExplanationCrew()
     project._current_request_id = resolved_request_id
     try:
         result = project.crew().kickoff(
             inputs={
                 "skin_conditions": ", ".join(skin_conditions),
-                "ingredients": ", ".join(ingredients),
+                "ingredients": ", ".join(key_ingredients),
                 "product_name": product_name,
             }
         )

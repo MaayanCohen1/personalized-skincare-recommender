@@ -10,14 +10,15 @@ import logging
 import os
 import pickle
 from typing import Any
+from pathlib import Path
 
 import numpy as np
 from crewai.tools import tool
 
 logger = logging.getLogger(__name__)
 
-_THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-_PKL_PATH = os.path.join(_THIS_DIR, "knowledge_base.pkl")
+_THIS_DIR = Path(__file__).resolve().parent
+_PKL_PATH = _THIS_DIR / "data" / "knowledge_base.pkl"
 _MODEL_NAME = "all-MiniLM-L6-v2"
 _SIMILARITY_THRESHOLD = 0.15
 _TOP_K = 2
@@ -40,7 +41,7 @@ def _load_kb() -> list[dict[str, Any]]:
     global _kb_cache
     if _kb_cache is not None:
         return _kb_cache
-    logger.info("Attempting to load KB from %s (exists=%s)", _PKL_PATH, os.path.isfile(_PKL_PATH))
+    logger.info("Attempting to load KB from %s (exists=%s)", _PKL_PATH, _PKL_PATH.is_file())
     try:
         with open(_PKL_PATH, "rb") as f:
             _kb_cache = pickle.load(f)
