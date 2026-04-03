@@ -68,8 +68,8 @@ def _on_message(
         logger.info(
             "Received message from %s (delivery_tag=%s)",
             QUEUE_CONSUME,
-             method.delivery_tag,
-            )
+            method.delivery_tag,
+        )
         result = handle_image_uploaded_message(body)
 
         channel.basic_publish(

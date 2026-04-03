@@ -1,11 +1,8 @@
 """API Service — async request ingress + result polling via Redis.
 
-Temporary flow:
-  POST /recommend -> publish to signals.detected queue (bypasses `vision_service`)
-  GET /result/{request_id} -> read completed result from Redis
-
 Event chain:
-  api_service -> signals.detected -> matching_service
+  api_service -> image.uploaded -> vision_service
+  -> signals.detected -> matching_service
   -> routine.matched -> explanation_service
   -> routine.completed -> api_service (background consumer -> Redis)
 """
@@ -25,7 +22,7 @@ import redis
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-from matching_service.core.models import SkinType, UserPreferences
+from matching_service.core.models import UserPreferences
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -35,9 +32,7 @@ app = FastAPI(title="SafeGlow AI — API Service")
 RABBITMQ_URL: str = os.getenv("RABBITMQ_URL", "amqp://guest:guest@localhost:5672/")
 REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
-# TEMPORARY simplified flow (for wiring checks only).
-# We bypass `vision_service` and derive `visual_signals` from questionnaire input.
-QUEUE_SIGNALS_DETECTED: str = "signals.detected"
+QUEUE_IMAGE_UPLOADED: str = "image.uploaded"
 
 EXCHANGE_ROUTINE_EVENTS: str = "routine.events"
 ROUTING_KEY_COMPLETED: str = "routine.completed"
@@ -77,36 +72,21 @@ def read_completed_result(redis_client: redis.Redis, request_id: str) -> dict[st
     return json.loads(payload)
 
 
-def _build_visual_signals_from_preferences(user_preferences: UserPreferences) -> list[str]:
-    """Derive visual signals from questionnaire input (temp flow)."""
-    signals: list[str] = []
-    if user_preferences.skin_type == SkinType.DRY:
-        signals.append("dry")
-    elif user_preferences.skin_type == SkinType.OILY:
-        signals.append("oily")
-    elif user_preferences.skin_type == SkinType.COMBINATION:
-        signals.append("combination")
-
-    if user_preferences.has_breakouts:
-        signals.append("acne")
-
-    return signals
-
-
-def publish_signals_detected(
+def publish_image_uploaded(
     channel: pika.adapters.blocking_connection.BlockingChannel,
     request_id: str,
+    image_path: str,
     user_preferences: UserPreferences,
 ) -> None:
-    """Publish a signals.detected event (temp flow)."""
+    """Publish an image.uploaded event for the vision service."""
     payload: dict[str, Any] = {
         "request_id": request_id,
-        "visual_signals": _build_visual_signals_from_preferences(user_preferences),
+        "image_path": image_path,
         "user_preferences": user_preferences.model_dump(mode="json"),
     }
     channel.basic_publish(
         exchange="",
-        routing_key=QUEUE_SIGNALS_DETECTED,
+        routing_key=QUEUE_IMAGE_UPLOADED,
         properties=pika.BasicProperties(
             content_type="application/json",
             content_encoding="utf-8",
@@ -124,7 +104,7 @@ def _build_rabbitmq_channel(
         try:
             connection = pika.BlockingConnection(pika.URLParameters(RABBITMQ_URL))
             channel = connection.channel()
-            channel.queue_declare(queue=QUEUE_SIGNALS_DETECTED, durable=True)
+            channel.queue_declare(queue=QUEUE_IMAGE_UPLOADED, durable=True)
             channel.exchange_declare(
                 exchange=EXCHANGE_ROUTINE_EVENTS,
                 exchange_type="direct",
@@ -217,12 +197,13 @@ async def recommend(request: RecommendRequest) -> dict[str, str]:
 
     connection, channel = _build_rabbitmq_channel()
     try:
-        publish_signals_detected(
+        publish_image_uploaded(
             channel,
             request_id=request_id,
+            image_path=request.image_path,
             user_preferences=request.user_preferences,
         )
-        logger.info("Published signals.detected request_id=%s", request_id)
+        logger.info("Published image.uploaded request_id=%s", request_id)
     finally:
         if channel.is_open:
             channel.close()

@@ -28,11 +28,17 @@ def publish_routine_completed(
     channel: pika.adapters.blocking_connection.BlockingChannel,
     event: RoutineCompletedEvent,
     request_id: str,
+    image_analysis: dict[str, Any] | None = None,
+    routine_rationale: dict[str, Any] | None = None,
 ) -> None:
-    body = {
+    body: dict[str, Any] = {
         "request_id": request_id,
         "event": event.model_dump(mode="json"),
     }
+    if image_analysis is not None:
+        body["image_analysis"] = image_analysis
+    if routine_rationale is not None:
+        body["routine_rationale"] = routine_rationale
     props = pika.BasicProperties(
         content_type="application/json",
         correlation_id=request_id,
@@ -91,7 +97,28 @@ def _generate_explanations(
     return explanations
 
 
-def _handle_matched_payload(payload: dict[str, Any], correlation_id: str | None) -> tuple[RoutineCompletedEvent, str]:
+class _MatchedResult:
+    """Internal container for a processed routine.matched message."""
+
+    __slots__ = ("completed", "request_id", "image_analysis", "routine_rationale")
+
+    def __init__(
+        self,
+        completed: RoutineCompletedEvent,
+        request_id: str,
+        image_analysis: dict[str, Any] | None,
+        routine_rationale: dict[str, Any] | None,
+    ) -> None:
+        self.completed = completed
+        self.request_id = request_id
+        self.image_analysis = image_analysis
+        self.routine_rationale = routine_rationale
+
+
+def _handle_matched_payload(
+    payload: dict[str, Any],
+    correlation_id: str | None,
+) -> _MatchedResult:
     request_id = payload.get("request_id") or correlation_id
     if "event" not in payload:
         raise ValueError("Missing 'event' in routine.matched envelope")
@@ -109,7 +136,13 @@ def _handle_matched_payload(payload: dict[str, Any], correlation_id: str | None)
         matched_products=matched_event.matched_products,
         explanations=explanations,
     )
-    return completed, request_id
+
+    return _MatchedResult(
+        completed=completed,
+        request_id=request_id,
+        image_analysis=payload.get("image_analysis"),
+        routine_rationale=payload.get("routine_rationale"),
+    )
 
 
 def main() -> None:
@@ -129,12 +162,18 @@ def main() -> None:
     ) -> None:
         try:
             payload = json.loads(body.decode("utf-8"))
-            completed_event, request_id = _handle_matched_payload(
+            result = _handle_matched_payload(
                 payload=payload,
                 correlation_id=properties.correlation_id,
             )
-            publish_routine_completed(ch, event=completed_event, request_id=request_id)
-            logger.info("Published routine.completed request_id=%s", request_id)
+            publish_routine_completed(
+                ch,
+                event=result.completed,
+                request_id=result.request_id,
+                image_analysis=result.image_analysis,
+                routine_rationale=result.routine_rationale,
+            )
+            logger.info("Published routine.completed request_id=%s", result.request_id)
             ch.basic_ack(delivery_tag=method.delivery_tag)
         except Exception:
             logger.exception("Failed to process routine.matched message")

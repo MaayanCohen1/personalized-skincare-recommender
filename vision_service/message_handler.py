@@ -6,9 +6,13 @@ import json
 import logging
 from typing import Any
 
-from vision_service.main import analyze_skin_image
-
 logger = logging.getLogger(__name__)
+
+
+def _get_analyze_fn():
+    """Lazy import to avoid loading heavy ML deps at module import time."""
+    from vision_service.main import analyze_skin_image
+    return analyze_skin_image
 
 
 def handle_image_uploaded_message(body: bytes) -> dict[str, Any]:
@@ -50,6 +54,7 @@ def handle_image_uploaded_message(body: bytes) -> dict[str, Any]:
         image_path,
     )
 
+    analyze_skin_image = _get_analyze_fn()
     analysis_result = analyze_skin_image(image_path)
     visual_signals: list[str] = analysis_result["visual_signals"]
 

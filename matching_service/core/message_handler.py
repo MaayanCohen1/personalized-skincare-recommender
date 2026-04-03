@@ -13,6 +13,7 @@ from typing import Any
 
 from matching_service.core.models import UserPreferences
 from matching_service.core.orchestrator import build_matching_context, match_for_user
+from matching_service.rules_engine import build_routine_rationale, filter_safe_products
 from shared.models import Product, RoutineMatchedEvent, SkinProfile, UserConstraints
 
 logger = logging.getLogger(__name__)
@@ -99,7 +100,31 @@ def handle_signals_detected_message(
         ),
     )
 
+    # Re-derive safe products (cheap, deterministic) for the rationale.
+    safe_products = filter_safe_products(catalog, constraints)
+    used_semantic = ranker is not None
+
+    image_analysis: dict[str, Any] = {
+        "visual_signals": visual_signals or [],
+        "skin_conditions": skin_conditions,
+        "source": (
+            "vision_service + questionnaire"
+            if visual_signals
+            else "questionnaire"
+        ),
+    }
+
+    routine_rationale = build_routine_rationale(
+        catalog=catalog,
+        safe_products=safe_products,
+        selected=matched_products,
+        skin_conditions=skin_conditions,
+        used_semantic_ranking=used_semantic,
+    )
+
     return {
         "request_id": request_id,
         "event": event.model_dump(mode="json"),
+        "image_analysis": image_analysis,
+        "routine_rationale": routine_rationale,
     }
