@@ -60,7 +60,6 @@ def _normalize_visual_signals(visual_signals: list[str] | None) -> list[str]:
 
 
 def _merge_signals(base: list[str], extra: list[str]) -> list[str]:
-    # Keep first-seen order and remove duplicates.
     seen: set[str] = set()
     merged: list[str] = []
     for signal in [*base, *extra]:
@@ -91,7 +90,7 @@ def match_for_user(
     catalog: list[Product],
     user_preferences: UserPreferences,
     visual_signals: list[str] | None = None,
-    ranker: Callable[[list[str], list[Product]], list[Product]] | None = None,
+    scorer: Callable[[list[str], list[Product]], dict[str, float]] | None = None,
 ) -> list[Product]:
     """Translate user inputs into matcher inputs and return matched products."""
     normalized_visual_signals = _normalize_visual_signals(visual_signals)
@@ -106,5 +105,5 @@ def match_for_user(
         catalog=catalog,
         constraints=constraints,
         skin_conditions=merged_signals or None,
-        ranker=ranker,
+        scorer=scorer,
     )

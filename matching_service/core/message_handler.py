@@ -22,14 +22,14 @@ logger = logging.getLogger(__name__)
 def handle_signals_detected_message(
     body: bytes,
     catalog: list[Product],
-    ranker: Callable[[list[str], list[Product]], list[Product]] | None = None,
+    scorer: Callable[[list[str], list[Product]], dict[str, float]] | None = None,
 ) -> dict[str, Any]:
     """Parse signals.detected payload, match products, return routine.matched envelope.
 
     Args:
         body: Raw JSON bytes from the message queue.
         catalog: Available products to match against.
-        ranker: Optional semantic ranking callable.
+        scorer: Optional semantic scoring callable (product_id -> similarity).
 
     Returns:
         Dictionary with ``request_id`` and ``event`` (a JSON-serializable
@@ -78,10 +78,9 @@ def handle_signals_detected_message(
         catalog=catalog,
         user_preferences=user_preferences,
         visual_signals=visual_signals,
-        ranker=ranker,
+        scorer=scorer,
     )
 
-    # Build the matching context for the downstream event envelope.
     skin_conditions, constraints = build_matching_context(
         user_preferences,
         visual_signals=visual_signals,
@@ -100,9 +99,8 @@ def handle_signals_detected_message(
         ),
     )
 
-    # Re-derive safe products (cheap, deterministic) for the rationale.
     safe_products = filter_safe_products(catalog, constraints)
-    used_semantic = ranker is not None
+    used_semantic = scorer is not None
 
     image_analysis: dict[str, Any] = {
         "visual_signals": visual_signals or [],

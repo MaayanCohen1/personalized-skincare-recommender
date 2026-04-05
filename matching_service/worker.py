@@ -37,22 +37,38 @@ _CATALOG_PATH: Path = _DATA_DIR / "products.json"
 
 
 def _load_catalog() -> list[Product]:
-    """Load the product catalog from the bundled JSON file."""
+    """Load the product catalog from the bundled JSON file.
+
+    Extracts ``skin_types`` and flag booleans from the full catalog schema
+    into the shared ``Product`` model so rules_engine can use them for
+    skin-type fit scoring and flag-based sensitivity filtering.
+    """
     raw = json.loads(_CATALOG_PATH.read_text(encoding="utf-8"))
     products_raw: list[dict[str, Any]] = raw.get("products", raw) if isinstance(raw, dict) else raw
-    return [Product.model_validate(p) for p in products_raw]
+    products: list[Product] = []
+    for p in products_raw:
+        flags = p.get("flags") or {}
+        products.append(Product.model_validate({
+            **p,
+            "skin_types": p.get("skin_types", []),
+            "concerns": p.get("concerns", []),
+            "benefits": p.get("benefits", []),
+            "contains_fragrance": flags.get("contains_fragrance", False),
+            "contains_alcohol": flags.get("contains_alcohol", False),
+        }))
+    return products
 
 
-def _build_semantic_ranker() -> Callable[[list[str], list[Product]], list[Product]] | None:
-    """Return a SemanticMatcher.rank callable, or None on failure."""
+def _build_semantic_scorer() -> Callable[[list[str], list[Product]], dict[str, float]] | None:
+    """Return a SemanticMatcher.score callable, or None on failure."""
     try:
         from matching_service.core.semantic_search import SemanticMatcher
 
         matcher = SemanticMatcher()
         logger.info("SemanticMatcher initialised successfully")
-        return matcher.rank
+        return matcher.score
     except Exception:
-        logger.exception("SemanticMatcher init failed; ranking falls back to category priority")
+        logger.exception("SemanticMatcher init failed; scoring falls back to deterministic fit")
         return None
 
 
@@ -89,11 +105,11 @@ def _on_message(
     properties: pika.BasicProperties,
     body: bytes,
     catalog: list[Product],
-    ranker: Callable[[list[str], list[Product]], list[Product]] | None = None,
+    scorer: Callable[[list[str], list[Product]], dict[str, float]] | None = None,
 ) -> None:
     """Process a single signals.detected message and publish routine.matched."""
     try:
-        result = handle_signals_detected_message(body, catalog, ranker=ranker)
+        result = handle_signals_detected_message(body, catalog, scorer=scorer)
 
         channel.basic_publish(
             exchange=EXCHANGE_NAME,
@@ -117,14 +133,14 @@ def main() -> None:
     catalog = _load_catalog()
     logger.info("Loaded %d products from catalog", len(catalog))
 
-    ranker = _build_semantic_ranker()
+    scorer = _build_semantic_scorer()
 
     connection, channel = _connect()
     channel.basic_qos(prefetch_count=1)
     channel.basic_consume(
         queue=QUEUE_SIGNALS_DETECTED,
         on_message_callback=lambda ch, method, props, body: _on_message(
-            ch, method, props, body, catalog, ranker,
+            ch, method, props, body, catalog, scorer,
         ),
     )
 

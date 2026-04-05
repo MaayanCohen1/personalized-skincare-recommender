@@ -70,7 +70,7 @@ def default_catalog() -> list[Product]:
 _semantic_matcher: SemanticMatcher | None = None
 
 
-def _get_semantic_ranker() -> SemanticMatcher | None:
+def _get_semantic_matcher() -> SemanticMatcher | None:
     """Return a lazily-initialised SemanticMatcher, or None on failure."""
     global _semantic_matcher
     if _semantic_matcher is not None:
@@ -79,7 +79,7 @@ def _get_semantic_ranker() -> SemanticMatcher | None:
         _semantic_matcher = SemanticMatcher()
         return _semantic_matcher
     except Exception:
-        logger.exception("SemanticMatcher init failed; ranking will use category priority")
+        logger.exception("SemanticMatcher init failed; scoring will use deterministic fit only")
         return None
 
 
@@ -140,12 +140,12 @@ def _handle_requested_payload(payload: dict[str, Any], correlation_id: str | Non
 
     profile = SkinProfile(request_id=request_id, skin_conditions=[])
 
-    matcher = _get_semantic_ranker()
+    matcher = _get_semantic_matcher()
     routine = match_products(
         catalog=default_catalog(),
         constraints=event.constraints,
         skin_conditions=profile.skin_conditions or None,
-        ranker=matcher.rank if matcher else None,
+        scorer=matcher.score if matcher else None,
     )
 
     matched_event = RoutineMatchedEvent(
