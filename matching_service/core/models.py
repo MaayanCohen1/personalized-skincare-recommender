@@ -38,7 +38,6 @@ class UserPreferences(BaseModel):
     skin_type: SkinType
     has_breakouts: bool
     sensitivities: list[Sensitivity]
-    is_cruelty_free_required: bool
     additional_notes: str | None = Field(default=None, max_length=500)
 
     @field_validator("sensitivities")
@@ -62,7 +61,6 @@ class ProductFlags(BaseModel):
     contains_alcohol: bool = False
     pregnancy_safe: bool | None = None
     nursing_safe: bool | None = None
-    cruelty_free: bool | None = None
     sensitive_skin_tested: bool | None = None
 
 

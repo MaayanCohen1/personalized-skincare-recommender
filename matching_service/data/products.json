@@ -53,7 +53,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -124,7 +123,6 @@
                 "contains_alcohol": true,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -185,7 +183,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -257,7 +254,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": null,
                 "nursing_safe": null,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -266,7 +262,7 @@
             "name": "Sensibio Gel Moussant",
             "brand": "BIODERMA",
             "category": "CLEANSER",
-            "description": "Water-based gel facial cleanser with a short ingredient list and gentle cleansing agents that help preserve the skin’s natural balance. Suitable for sensitive skin and helps leave the skin comfortable and not dry after rinsing.",
+            "description": "Water-based gel facial cleanser with a short ingredient list and gentle cleansing agents that help preserve the skin\u2019s natural balance. Suitable for sensitive skin and helps leave the skin comfortable and not dry after rinsing.",
             "skin_types": [
                 "sensitive"
             ],
@@ -305,7 +301,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -368,7 +363,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -436,7 +430,6 @@
                 "contains_alcohol": true,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -479,7 +472,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -547,7 +539,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -615,7 +606,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -663,7 +653,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -730,7 +719,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -777,7 +765,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": null,
                 "nursing_safe": null,
-                "cruelty_free": null,
                 "sensitive_skin_tested": null
             }
         },
@@ -835,7 +822,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -891,7 +877,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -952,7 +937,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -1021,7 +1005,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -1055,7 +1038,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -1110,7 +1092,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": null
             }
         },
@@ -1156,7 +1137,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -1204,7 +1184,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": null
             }
         },
@@ -1264,7 +1243,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -1315,7 +1293,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -1371,7 +1348,6 @@
                 "contains_alcohol": true,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -1428,80 +1404,11 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": null
             }
         },
         {
             "id": "spf_004",
-            "name": "Protect Body SPF50",
-            "brand": "FRE SKINCARE",
-            "category": "SPF",
-            "description": "Mineral sunscreen with 24% zinc oxide that provides broad-spectrum UVA and UVB protection while helping nourish, soothe, and support the skin barrier. Suitable for daily morning use on the body.",
-            "skin_types": [
-                "dry",
-                "normal",
-                "combination",
-                "sensitive"
-            ],
-            "concerns": [
-                "sun_protection",
-                "redness",
-                "dehydration"
-            ],
-            "benefits": [
-                "uva_uvb_protection",
-                "barrier_support",
-                "soothing",
-                "nourishing",
-                "antioxidant"
-            ],
-            "ingredients": [
-                "water",
-                "zinc oxide",
-                "coco-caprylate/caprate",
-                "dicaprylyl ether",
-                "glycerin",
-                "propanediol",
-                "polyglyceryl-6 stearate",
-                "silica",
-                "polyhydroxystearic acid",
-                "vitis vinifera seed oil",
-                "rosa canina fruit extract",
-                "niacinamide",
-                "butyrospermum parkii butter",
-                "simmondsia chinensis seed oil",
-                "triethoxycaprylylsilane",
-                "cetyl alcohol",
-                "xanthan gum",
-                "caprylyl glycol",
-                "glyceryl stearate",
-                "argania spinosa kernel oil",
-                "panthenol",
-                "lecithin",
-                "sclerotium gum",
-                "pullulan",
-                "polyglyceryl-6 behenate",
-                "caprylhydroxamic acid",
-                "tocopherol",
-                "pongamia pinnata seed extract",
-                "pongamol",
-                "argania spinosa leaf extract",
-                "argania spinosa callus culture extract",
-                "isomalt",
-                "cananga odorata flower oil"
-            ],
-            "flags": {
-                "contains_fragrance": true,
-                "contains_alcohol": false,
-                "pregnancy_safe": true,
-                "nursing_safe": true,
-                "cruelty_free": null,
-                "sensitive_skin_tested": null
-            }
-        },
-        {
-            "id": "spf_005",
             "name": "AM Facial Moisturizing Lotion SPF 50",
             "brand": "CERAVE",
             "category": "SPF",
@@ -1554,12 +1461,11 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": null,
                 "nursing_safe": null,
-                "cruelty_free": null,
                 "sensitive_skin_tested": null
             }
         },
         {
-            "id": "spf_006",
+            "id": "spf_005",
             "name": "PROTECT & GO SUPER LIGHT SUNSCREEN SPF50+",
             "brand": "PROMISE",
             "category": "SPF",
@@ -1618,7 +1524,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -1682,12 +1587,11 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
         {
-            "id": "spf_007",
+            "id": "spf_006",
             "name": "SPF 50+ Sun Spray for Face and Body",
             "brand": "AVENE",
             "category": "SPF",
@@ -1748,12 +1652,11 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
         {
-            "id": "spf_008",
+            "id": "spf_007",
             "name": "Daily Tinted Fluid Sunscreen SPF30",
             "brand": "BEAUTY OF JOSEON",
             "category": "SPF",
@@ -1815,7 +1718,6 @@
                 "contains_alcohol": true,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": null
             }
         },
@@ -1872,7 +1774,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": null
             }
         },
@@ -1927,7 +1828,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": null
             }
         },
@@ -1986,7 +1886,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -2046,7 +1945,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -2105,7 +2003,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": null
             }
         },
@@ -2157,7 +2054,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": null
             }
         },
@@ -2237,7 +2133,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": true
             }
         },
@@ -2284,7 +2179,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": null
             }
         },
@@ -2341,7 +2235,6 @@
                 "contains_alcohol": false,
                 "pregnancy_safe": true,
                 "nursing_safe": true,
-                "cruelty_free": null,
                 "sensitive_skin_tested": null
             }
         },
@@ -2351,72 +2244,823 @@
             "brand": "THE INKEY LIST",
             "category": "TONER",
             "description": "Exfoliating toner with 10% glycolic acid that helps improve skin texture, brighten the skin, and support pore refinement. Not suitable for sensitive skin.",
-            "skin_types": ["normal", "combination", "oily"],
-            "concerns": ["uneven_texture", "dullness", "pores"],
-            "benefits": ["exfoliating", "brightening", "texture_smoothing", "oil_control", "antioxidant"],
+            "skin_types": [
+                "normal",
+                "combination",
+                "oily"
+            ],
+            "concerns": [
+                "uneven_texture",
+                "dullness",
+                "pores"
+            ],
+            "benefits": [
+                "exfoliating",
+                "brightening",
+                "texture_smoothing",
+                "oil_control",
+                "antioxidant"
+            ],
             "ingredients": [
-              "aqua",
-              "glycolic acid",
-              "propanediol",
-              "hamamelis virginiana water",
-              "sodium hydroxide",
-              "butylene glycol",
-              "phenoxyethanol",
-              "alcohol",
-              "ppg-26-buteth-26",
-              "betaine",
-              "peg-40 hydrogenated castor oil",
-              "boerhavia diffusa root extract",
-              "ethylhexylglycerin",
-              "trisodium ethylenediamine disuccinate"
+                "aqua",
+                "glycolic acid",
+                "propanediol",
+                "hamamelis virginiana water",
+                "sodium hydroxide",
+                "butylene glycol",
+                "phenoxyethanol",
+                "alcohol",
+                "ppg-26-buteth-26",
+                "betaine",
+                "peg-40 hydrogenated castor oil",
+                "boerhavia diffusa root extract",
+                "ethylhexylglycerin",
+                "trisodium ethylenediamine disuccinate"
             ],
             "flags": {
-              "contains_fragrance": false,
-              "contains_alcohol": true,
-              "pregnancy_safe": null,
-              "nursing_safe": null,
-              "cruelty_free": null,
-              "sensitive_skin_tested": null
+                "contains_fragrance": false,
+                "contains_alcohol": true,
+                "pregnancy_safe": null,
+                "nursing_safe": null,
+                "sensitive_skin_tested": null
             }
-          },
-          {
+        },
+        {
             "id": "moisturizer_011",
             "name": "CICA Soothing Gel Cream for Redness-Prone Skin",
             "brand": "SeboCalm",
             "category": "MOISTURIZER",
             "description": "Lightweight gel-cream facial moisturizer for redness-prone, sensitive skin. Helps soothe irritation, reduce redness, support the skin barrier, and provide lightweight hydration. Especially suitable for combination to oily skin.",
-            "skin_types": ["normal", "combination", "oily", "sensitive"],
-            "concerns": ["redness", "sensitivity", "dehydration", "barrier_damage"],
-            "benefits": ["soothing", "anti_inflammatory", "barrier_support", "hydrating", "lightweight", "antioxidant"],
+            "skin_types": [
+                "normal",
+                "combination",
+                "oily",
+                "sensitive"
+            ],
+            "concerns": [
+                "redness",
+                "sensitivity",
+                "dehydration",
+                "barrier_damage"
+            ],
+            "benefits": [
+                "soothing",
+                "anti_inflammatory",
+                "barrier_support",
+                "hydrating",
+                "lightweight",
+                "antioxidant"
+            ],
             "ingredients": [
-              "aqua",
-              "butylene glycol",
-              "glycerin",
-              "1,2-hexanediol",
-              "niacinamide",
-              "propanediol",
-              "caprylyl methicone",
-              "centella asiatica extract",
-              "hydrogenated polydecene",
-              "hydroxyethyl acrylate/sodium acryloyldimethyl taurate copolymer",
-              "ammonium acryloyl-dimethyltaurate/vp copolymer",
-              "cetearyl olivate",
-              "sorbitan olivate",
-              "melia azadirachta leaf extract",
-              "fragrance",
-              "sorbitan isostearate",
-              "disodium edta",
-              "melia azadirachta flower extract",
-              "madecassoside"
+                "aqua",
+                "butylene glycol",
+                "glycerin",
+                "1,2-hexanediol",
+                "niacinamide",
+                "propanediol",
+                "caprylyl methicone",
+                "centella asiatica extract",
+                "hydrogenated polydecene",
+                "hydroxyethyl acrylate/sodium acryloyldimethyl taurate copolymer",
+                "ammonium acryloyl-dimethyltaurate/vp copolymer",
+                "cetearyl olivate",
+                "sorbitan olivate",
+                "melia azadirachta leaf extract",
+                "fragrance",
+                "sorbitan isostearate",
+                "disodium edta",
+                "melia azadirachta flower extract",
+                "madecassoside"
             ],
             "flags": {
-              "contains_fragrance": true,
-              "contains_alcohol": false,
-              "pregnancy_safe": true,
-              "nursing_safe": true,
-              "cruelty_free": null,
-              "sensitive_skin_tested": true
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "sensitive_skin_tested": true
             }
-          }
+        },
+        {
+            "id": "spf_008",
+            "name": "Relief Sun: Rice + Probiotics SPF50+ PA++++",
+            "brand": "BEAUTY OF JOSEON",
+            "category": "SPF",
+            "description": "Lightweight facial sunscreen with SPF50+ PA++++ and a moisturizer-like texture for daily morning use. Provides broad-spectrum UV protection while supporting hydration, antioxidant care, and skin barrier comfort with niacinamide, rice extract, and vitamin E.",
+            "skin_types": [
+                "normal",
+                "dry",
+                "combination",
+                "sensitive"
+            ],
+            "concerns": [
+                "sun protection",
+                "dehydration",
+                "barrier damage",
+                "sensitivity"
+            ],
+            "benefits": [
+                "uva uvb protection",
+                "lightweight",
+                "hydrating",
+                "barrier support",
+                "soothing",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "aqua",
+                "dibutyl adipate",
+                "propanediol",
+                "diethylamino hydroxybenzoyl hexyl benzoate",
+                "polymethylsilsesquioxane",
+                "ethylhexyl triazone",
+                "methylene bis-benzotriazolyl tetramethylbutylphenol",
+                "niacinamide",
+                "coco-caprylate/caprate",
+                "caprylyl methicone",
+                "diethylhexyl butamido triazone",
+                "glycerin",
+                "1,2-hexanediol",
+                "butylene glycol",
+                "pentylene glycol",
+                "behenyl alcohol",
+                "poly c10-30 alkyl acrylate",
+                "polyglyceryl-3 methylglucose distearate",
+                "decyl glucoside",
+                "oryza sativa extract",
+                "tromethamine",
+                "carbomer",
+                "acrylates/c10-30 alkyl acrylate crosspolymer",
+                "sodium stearoyl glutamate",
+                "polyacrylate crosspolymer-6",
+                "ethylhexylglycerin",
+                "adenosine",
+                "xanthan gum",
+                "t-butyl alcohol",
+                "tocopherol",
+                "oryza sativa germ extract",
+                "camellia sinensis leaf extract",
+                "aspergillus ferment",
+                "bacillus/soybean ferment extract",
+                "cocos nucifera fruit extract",
+                "lactobacillus/pumpkin ferment extract",
+                "macrocystis pyrifera extract",
+                "monascus/rice ferment",
+                "panax ginseng root extract",
+                "saccharomyces/rice ferment filtrate",
+                "saccharum officinarum extract"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": true,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "sensitive_skin_tested": false
+            }
+        },
+        {
+            "id": "spf_009",
+            "name": "SUN PROTECT SPF50+",
+            "brand": "SeboCalm",
+            "category": "SPF",
+            "description": "Advanced facial sunscreen lotion with SPF50+ based on new-generation chemical UV filters for daily morning use. Provides broad-spectrum UVA and UVB protection while supporting the skin with soothing extracts, antioxidant oils, panthenol, and lightweight hydration. Suitable for daily use and tested for sensitive skin.",
+            "skin_types": [
+                "dry",
+                "normal",
+                "combination",
+                "oily",
+                "sensitive"
+            ],
+            "concerns": [
+                "sun protection",
+                "dehydration",
+                "sensitivity",
+                "redness"
+            ],
+            "benefits": [
+                "uva uvb protection",
+                "hydrating",
+                "soothing",
+                "antioxidant",
+                "barrier support"
+            ],
+            "ingredients": [
+                "aqua",
+                "dicaprylyl carbonate",
+                "bis-ethylhexyloxyphenol methoxyphenyl triazine",
+                "diethylamino hydroxybenzoyl hexyl benzoate",
+                "dibutyl adipate",
+                "ethylhexyl triazone",
+                "silica",
+                "cetyl alcohol",
+                "glyceryl stearate",
+                "c12-15 alkyl benzoate",
+                "diethylhexyl butamido triazone",
+                "peg-75 stearate",
+                "phenoxyethanol",
+                "tapioca starch",
+                "ceteth-20",
+                "steareth-20",
+                "parfum",
+                "ethylhexylglycerin",
+                "c12-20 alkyl glucoside",
+                "chlorphenesin",
+                "disodium edta",
+                "tocopheryl acetate",
+                "c14-22 alcohols",
+                "glycerin",
+                "acrylates/c10-30 alkyl acrylate crosspolymer",
+                "rubus idaeus seed oil",
+                "xanthan gum",
+                "panthenol",
+                "linalool",
+                "sodium hydroxide",
+                "butylene glycol",
+                "persea gratissima oil",
+                "4-tert-butyldihydrocinnamaldehyde",
+                "centella asiatica leaf extract",
+                "dunaliella salina extract",
+                "limonene",
+                "citronellol"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "spf_010",
+            "name": "Protect SPF50+",
+            "brand": "A-DERMA",
+            "category": "SPF",
+            "description": "Facial and body sunscreen cream with SPF50+ for daily morning use. Designed especially for dry, irritated, red, and sensitive skin. Provides broad-spectrum UVA and UVB protection while supporting skin comfort with soothing oat oil, sunflower seed oil, and antioxidant vitamin E.",
+            "skin_types": [
+                "dry",
+                "sensitive",
+                "normal"
+            ],
+            "concerns": [
+                "sun protection",
+                "dryness",
+                "dehydration",
+                "sensitivity",
+                "redness",
+                "barrier damage"
+            ],
+            "benefits": [
+                "uva uvb protection",
+                "hydrating",
+                "soothing",
+                "barrier support",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "water",
+                "c12-15 alkyl benzoate",
+                "methylene bis-benzotriazolyl tetramethylbutylphenol",
+                "diisopropyl adipate",
+                "pentaerythrityl tetracaprylate/tetracaprate",
+                "dicaprylyl carbonate",
+                "bis-ethylhexyloxyphenol methoxyphenyl triazine",
+                "diethylhexyl butamido triazone",
+                "aluminum starch octenyl succinate",
+                "butylene glycol",
+                "butyl methoxydibenzoylmethane",
+                "potassium cetyl phosphate",
+                "decyl glucoside",
+                "c10-18 triglycerides",
+                "glyceryl stearate",
+                "peg-100 stearate",
+                "acrylates/c10-30 alkyl acrylate crosspolymer",
+                "avena sativa sprout oil",
+                "benzoic acid",
+                "caprylyl glycol",
+                "disodium edta",
+                "glyceryl behenate",
+                "glyceryl dibehenate",
+                "helianthus annuus seed oil",
+                "peg-30 dipolyhydroxystearate",
+                "propylene glycol",
+                "sodium hydroxide",
+                "tocopherol",
+                "tocopheryl acetate",
+                "tribehenin",
+                "trideceth-6",
+                "xanthan gum"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "sensitive_skin_tested": false
+            }
+        },
+        {
+            "id": "spf_011",
+            "name": "Invisible Finish SPF50 for Dry Sensitive Skin",
+            "brand": "AVENE",
+            "category": "SPF",
+            "description": "Facial sunscreen with SPF50 for daily morning use, designed especially for dry and sensitive skin. Provides broad-spectrum UVA and UVB protection with new-generation chemical filters while supporting hydration and skin comfort with Av\u00e8ne thermal spring water, glycerin, triglycerides, and antioxidant vitamin E.",
+            "skin_types": [
+                "dry",
+                "sensitive",
+                "normal"
+            ],
+            "concerns": [
+                "sun protection",
+                "dryness",
+                "dehydration",
+                "sensitivity",
+                "barrier damage"
+            ],
+            "benefits": [
+                "uva uvb protection",
+                "hydrating",
+                "soothing",
+                "barrier support",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "avene thermal spring water",
+                "c12-15 alkyl benzoate",
+                "diethylamino hydroxybenzoyl hexyl benzoate",
+                "ethylhexyl triazone",
+                "glycerin",
+                "oryza sativa starch",
+                "phenylene bis-diphenyltriazine",
+                "water",
+                "bis-ethylhexyloxyphenol methoxyphenyl triazine",
+                "glyceryl stearate",
+                "potassium cetyl phosphate",
+                "stearyl alcohol",
+                "vp/eicosene copolymer",
+                "benzoic acid",
+                "caprylic/capric triglyceride",
+                "caprylyl glycol",
+                "glyceryl behenate",
+                "glyceryl dibehenate",
+                "ppg-1-peg-9 lauryl glycol ether",
+                "red 33",
+                "tocopheryl glucoside",
+                "tribehenin",
+                "xanthan gum"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "spf_012",
+            "name": "Fluide SPF50 for Normal to Combination Skin",
+            "brand": "AVENE",
+            "category": "SPF",
+            "description": "Light facial sunscreen with SPF50 for daily morning use, designed for normal to combination skin. Provides broad-spectrum UVA and UVB protection while helping reduce excess shine with rice starch and tapioca starch, and supporting skin comfort with Av\u00e8ne thermal spring water, glycerin, and antioxidant vitamin E derivative.",
+            "skin_types": [
+                "normal",
+                "combination",
+                "sensitive"
+            ],
+            "concerns": [
+                "sun protection",
+                "excess oil",
+                "shine",
+                "sensitivity"
+            ],
+            "benefits": [
+                "uva uvb protection",
+                "lightweight",
+                "soothing",
+                "oil control",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "avene thermal spring water",
+                "c12-15 alkyl benzoate",
+                "diethylamino hydroxybenzoyl hexyl benzoate",
+                "ethylhexyl triazone",
+                "oryza sativa starch",
+                "phenylene bis-diphenyltriazine",
+                "water",
+                "glycerin",
+                "bis-ethylhexyloxyphenol methoxyphenyl triazine",
+                "potassium cetyl phosphate",
+                "glyceryl stearate",
+                "stearyl alcohol",
+                "tapioca starch",
+                "vp/eicosene copolymer",
+                "benzoic acid",
+                "caprylic/capric triglyceride",
+                "caprylyl glycol",
+                "glyceryl behenate",
+                "glyceryl dibehenate",
+                "ppg-1-peg-9 lauryl glycol ether",
+                "red 33",
+                "tocopheryl glucoside",
+                "tribehenin",
+                "xanthan gum"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "spf_013",
+            "name": "Cleanance SPF50+ for Combination to Oily Skin",
+            "brand": "AVENE",
+            "category": "SPF",
+            "description": "Facial sunscreen with SPF50+ for daily morning use, developed especially for combination to oily skin. Provides broad-spectrum UVA and UVB protection with a combination of modern chemical filters while helping reduce shine and excess oil with absorbent powders and zinc gluconate. Lightweight texture absorbs quickly and supports skin comfort with Av\u00e8ne thermal spring water and antioxidant vitamin E derivative.",
+            "skin_types": [
+                "oily",
+                "combination",
+                "sensitive"
+            ],
+            "concerns": [
+                "sun protection",
+                "excess oil",
+                "shine",
+                "sensitivity",
+                "blemishes"
+            ],
+            "benefits": [
+                "uva uvb protection",
+                "lightweight",
+                "oil control",
+                "soothing",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "avene thermal spring water",
+                "c12-15 alkyl benzoate",
+                "cetearyl isononanoate",
+                "diisopropyl adipate",
+                "isodecyl neopentanoate",
+                "methylene bis-benzotriazolyl tetramethylbutylphenol",
+                "water",
+                "aluminum starch octenylsuccinate",
+                "bis-ethylhexyloxyphenol methoxyphenyl triazine",
+                "diethylhexyl butamido triazone",
+                "butyl methoxydibenzoylmethane",
+                "potassium cetyl phosphate",
+                "silica",
+                "acrylates/c10-30 alkyl acrylate crosspolymer",
+                "benzoic acid",
+                "caprylic/capric triglyceride",
+                "caprylyl glycol",
+                "decyl glucoside",
+                "disodium edta",
+                "fragrance",
+                "glyceryl behenate",
+                "glyceryl dibehenate",
+                "glyceryl laurate",
+                "hydrogenated palm glycerides",
+                "hydrogenated palm kernel glycerides",
+                "propylene glycol",
+                "sodium hydroxide",
+                "tocopheryl glucoside",
+                "tribehenin",
+                "xanthan gum",
+                "zinc gluconate"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "serum_007",
+            "name": "Glow Serum Propolis + Niacinamide",
+            "brand": "Beauty of Joseon",
+            "category": "SERUM",
+            "description": "Facial serum with high-concentration propolis extract and 2% niacinamide for nourishment, tone evening, and overall skin texture improvement. Helps calm inflammation, support the skin barrier, provide antioxidant protection, and lightly exfoliate congested pores with betaine salicylate. Especially suitable for oily and combination skin prone to breakouts.",
+            "skin_types": [
+                "combination",
+                "oily",
+                "sensitive",
+                "normal"
+            ],
+            "concerns": [
+                "acne",
+                "clogged_pores",
+                "uneven_skin_tone",
+                "redness",
+                "dehydration"
+            ],
+            "benefits": [
+                "anti_inflammatory",
+                "acne_support",
+                "tone_evening",
+                "soothing",
+                "hydrating",
+                "antioxidant",
+                "barrier_support",
+                "gentle_exfoliation"
+            ],
+            "ingredients": [
+                "water",
+                "dipropylene glycol",
+                "glycerin",
+                "butylene glycol",
+                "propolis extract",
+                "niacinamide",
+                "1,2-hexanediol",
+                "betaine salicylate",
+                "sodium polyacryloyldimethyl taurate",
+                "tromethamine",
+                "polyglyceryl-10 laurate",
+                "xanthan gum",
+                "carbomer",
+                "ethylhexylglycerin",
+                "melia azadirachta flower extract",
+                "ocimum sanctum leaf extract",
+                "melia azadirachta leaf extract",
+                "sodium hyaluronate",
+                "curcuma longa root extract",
+                "dextrin",
+                "theobroma cacao seed extract",
+                "corallina officinalis extract",
+                "melaleuca alternifolia extract",
+                "centella asiatica extract",
+                "methylpropanediol",
+                "lotus corniculatus seed extract",
+                "pentylene glycol",
+                "octanediol",
+                "calophyllum inophyllum seed oil",
+                "tocopherol"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "sensitive_skin_tested": null
+            }
+        },
+        {
+            "id": "serum_008",
+            "name": "BIO BALANCE Hypoallergenic Moisture Serum",
+            "brand": "Kamedis",
+            "category": "SERUM",
+            "description": "Hypoallergenic facial hydration serum designed to strengthen the skin barrier and boost moisture levels. Suitable for all skin types, including oily, sensitive, and atopic-prone skin. Helps calm redness, support barrier function, provide lasting hydration, and soothe irritation with humectants, niacinamide, panthenol, allantoin, sodium hyaluronate, and botanical extracts.",
+            "skin_types": [
+                "normal",
+                "combination",
+                "oily",
+                "dry",
+                "sensitive"
+            ],
+            "concerns": [
+                "dehydration",
+                "barrier_damage",
+                "redness",
+                "irritation"
+            ],
+            "benefits": [
+                "hydrating",
+                "barrier_support",
+                "soothing",
+                "anti_inflammatory",
+                "antioxidant"
+            ],
+            "ingredients": [
+                "water",
+                "c13-15 alkane",
+                "glycerin",
+                "anhydroxylitol",
+                "xylitylglucoside",
+                "xylitol",
+                "ailanthus altissima bark extract",
+                "cnidium monnieri fruit extract",
+                "glycyrrhiza glabra root extract",
+                "rheum palmatum root extract",
+                "sanguisorba officinalis root extract",
+                "scutellaria baicalensis root extract",
+                "sodium hyaluronate",
+                "niacinamide",
+                "allantoin",
+                "tocopheryl acetate",
+                "panthenol",
+                "magnesium aspartate",
+                "zinc gluconate",
+                "copper gluconate",
+                "polyacrylate crosspolymer-6",
+                "ammonium acryloyldimethyl taurate/vp copolymer",
+                "pentylene glycol",
+                "phenoxyethanol",
+                "tropolone"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "toner_005",
+            "name": "Heartleaf 77 Soothing Toner",
+            "brand": "Anua",
+            "category": "TONER",
+            "description": "Soothing toner with 77% houttuynia cordata extract and calming botanical extracts, designed to calm sensitive, irritated, or inflamed skin while helping maintain skin hydration and pH balance. Suitable for all skin types, especially sensitive and acne-prone skin.",
+            "skin_types": [
+                "normal",
+                "combination",
+                "oily",
+                "dry",
+                "sensitive"
+            ],
+            "concerns": [
+                "redness",
+                "irritation",
+                "acne",
+                "dehydration"
+            ],
+            "benefits": [
+                "soothing",
+                "anti_inflammatory",
+                "hydrating",
+                "antioxidant",
+                "ph_balancing",
+                "gentle_exfoliation"
+            ],
+            "ingredients": [
+                "houttuynia cordata extract",
+                "water",
+                "1,2-hexanediol",
+                "glycerin",
+                "betaine",
+                "panthenol",
+                "saccharum officinarum extract",
+                "portulaca oleracea extract",
+                "butylene glycol",
+                "vitex agnus castus extract",
+                "chamomilla recutita flower extract",
+                "arctium lappa root extract",
+                "phellinus linteus extract",
+                "vitis vinifera fruit extract",
+                "pyrus malus fruit extract",
+                "centella asiatica extract",
+                "isopentyldiol",
+                "methylpropanediol",
+                "acrylates/c10-30 alkyl acrylate crosspolymer",
+                "tromethamine",
+                "disodium edta"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "sensitive_skin_tested": null
+            }
+        },
+        {
+            "id": "toner_006",
+            "name": "Daily Routine Toner",
+            "brand": "SeboCalm",
+            "category": "TONER",
+            "description": "Exfoliating facial toner with alpha hydroxy acids, including lactic acid and glycolic acid, for gentle resurfacing and skin texture improvement. Helps support skin renewal while combining soothing and hydrating ingredients such as rose flower water, cucumber extract, aloe, glycerin, urea, sodium lactate, and allantoin. Contains fragrance and may not be ideal for very sensitive skin.",
+            "skin_types": [
+                "normal",
+                "combination",
+                "oily",
+                "dry"
+            ],
+            "concerns": [
+                "uneven_texture",
+                "dullness",
+                "dehydration"
+            ],
+            "benefits": [
+                "exfoliating",
+                "brightening",
+                "texture_smoothing",
+                "hydrating",
+                "soothing"
+            ],
+            "ingredients": [
+                "aqua",
+                "glycerin",
+                "ppg-1-peg-9 lauryl glycol ether",
+                "rosa centifolia flower water",
+                "cucumis sativus fruit extract",
+                "lactic acid",
+                "glycolic acid",
+                "aloe barbadensis leaf juice powder",
+                "glycine",
+                "glucose",
+                "triethanolamine",
+                "urea",
+                "serine",
+                "sorbitol",
+                "phenoxyethanol",
+                "benzoic acid",
+                "dehydroacetic acid",
+                "sodium lactate",
+                "allantoin",
+                "parfum",
+                "linalool",
+                "citronellol",
+                "geraniol",
+                "limonene",
+                "hexyl cinnamal",
+                "benzyl salicylate"
+            ],
+            "flags": {
+                "contains_fragrance": true,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "sensitive_skin_tested": true
+            }
+        },
+        {
+            "id": "moisturizer_012",
+            "name": "BIO-HYDRATE",
+            "brand": "ICONIX",
+            "category": "MOISTURIZER",
+            "description": "Lightweight facial moisturizer with probiotic technology and active ingredients that support the skin microbiome, provide hydration, help balance excess oil, reduce the look of enlarged pores, improve pigmentation appearance, and strengthen the skin barrier. Suitable for all skin types, including sensitive skin.",
+            "skin_types": [
+                "normal",
+                "combination",
+                "oily",
+                "dry",
+                "sensitive"
+            ],
+            "concerns": [
+                "dehydration",
+                "pores",
+                "excess_oil",
+                "pigmentation",
+                "barrier_damage",
+                "acne",
+                "redness"
+            ],
+            "benefits": [
+                "hydrating",
+                "barrier_support",
+                "oil_control",
+                "pore_refining",
+                "tone_evening",
+                "anti_inflammatory",
+                "antioxidant",
+                "microbiome_support",
+                "soothing"
+            ],
+            "ingredients": [
+                "aqua",
+                "glyceryl polymethacrylate",
+                "glycerin",
+                "aloe barbadensis leaf extract",
+                "butylene glycol",
+                "propanediol",
+                "dimethicone",
+                "potassium azeloyl diglycinate",
+                "isopentyldiol",
+                "hyaluronic acid",
+                "ammonium acryloyldimethyltaurate/vp copolymer",
+                "lactobacillus ferment",
+                "zea mays starch",
+                "ethoxydiglycol",
+                "glycogen",
+                "hexacarboxymethyl dipeptide-12",
+                "centella asiatica leaf extract",
+                "camellia sinensis leaf extract",
+                "bacillus ferment",
+                "lactic acid",
+                "caprylyl glycol",
+                "ethylhexylglycerin",
+                "1,2-hexanediol",
+                "triethyl citrate",
+                "butyrospermum parkii butter",
+                "polysilicone-11",
+                "sodium polyacrylate",
+                "decyl glucoside",
+                "phenylpropanol",
+                "phenoxyethanol",
+                "potassium sorbate"
+            ],
+            "flags": {
+                "contains_fragrance": false,
+                "contains_alcohol": false,
+                "pregnancy_safe": true,
+                "nursing_safe": true,
+                "sensitive_skin_tested": true
+            }
+        }
     ]
 }

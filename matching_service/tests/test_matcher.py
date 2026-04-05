@@ -24,7 +24,6 @@ def oily_prefs() -> UserPreferences:
         skin_type=SkinType.OILY,
         has_breakouts=True,
         sensitivities=[Sensitivity.FRAGRANCE],
-        is_cruelty_free_required=True,
     )
 
 
@@ -35,7 +34,6 @@ def minimal_prefs() -> UserPreferences:
         skin_type=SkinType.NOT_SURE,
         has_breakouts=False,
         sensitivities=[],
-        is_cruelty_free_required=False,
     )
 
 
@@ -48,7 +46,6 @@ def test_valid_construction(oily_prefs: UserPreferences) -> None:
     assert oily_prefs.skin_type == SkinType.OILY
     assert oily_prefs.has_breakouts is True
     assert oily_prefs.sensitivities == [Sensitivity.FRAGRANCE]
-    assert oily_prefs.is_cruelty_free_required is True
     assert oily_prefs.additional_notes is None
 
 
@@ -61,7 +58,6 @@ def test_additional_notes_accepts_string() -> None:
         skin_type=SkinType.DRY,
         has_breakouts=False,
         sensitivities=[Sensitivity.NONE],
-        is_cruelty_free_required=False,
         additional_notes="I prefer fragrance-free products.",
     )
     assert prefs.additional_notes == "I prefer fragrance-free products."
@@ -76,7 +72,6 @@ def test_multiple_sensitivities() -> None:
         skin_type=SkinType.COMBINATION,
         has_breakouts=True,
         sensitivities=[Sensitivity.FRAGRANCE, Sensitivity.ALCOHOL],
-        is_cruelty_free_required=True,
     )
     assert len(prefs.sensitivities) == 2
     assert Sensitivity.FRAGRANCE in prefs.sensitivities
@@ -129,7 +124,6 @@ def test_invalid_skin_type_rejected() -> None:
             skin_type="greasy",  # type: ignore[arg-type]
             has_breakouts=False,
             sensitivities=[],
-            is_cruelty_free_required=False,
         )
 
 
@@ -139,7 +133,6 @@ def test_invalid_sensitivity_rejected() -> None:
             skin_type=SkinType.DRY,
             has_breakouts=False,
             sensitivities=["sulfate"],  # type: ignore[list-item]
-            is_cruelty_free_required=False,
         )
 
 
@@ -148,7 +141,6 @@ def test_missing_required_field_rejected() -> None:
         UserPreferences(  # type: ignore[call-arg]
             has_breakouts=True,
             sensitivities=[],
-            is_cruelty_free_required=False,
         )
 
 
@@ -157,7 +149,6 @@ def test_none_sensitivity_alone_is_valid() -> None:
         skin_type=SkinType.DRY,
         has_breakouts=False,
         sensitivities=[Sensitivity.NONE],
-        is_cruelty_free_required=False,
     )
     assert prefs.sensitivities == [Sensitivity.NONE]
 
@@ -168,7 +159,6 @@ def test_none_combined_with_other_sensitivity_rejected() -> None:
             skin_type=SkinType.OILY,
             has_breakouts=False,
             sensitivities=[Sensitivity.NONE, Sensitivity.FRAGRANCE],
-            is_cruelty_free_required=False,
         )
 
 
@@ -178,7 +168,6 @@ def test_none_combined_with_alcohol_rejected() -> None:
             skin_type=SkinType.OILY,
             has_breakouts=False,
             sensitivities=[Sensitivity.ALCOHOL, Sensitivity.NONE],
-            is_cruelty_free_required=False,
         )
 
 
@@ -188,7 +177,6 @@ def test_additional_notes_exceeding_max_length_rejected() -> None:
             skin_type=SkinType.OILY,
             has_breakouts=False,
             sensitivities=[],
-            is_cruelty_free_required=False,
             additional_notes="x" * 501,
         )
 
@@ -198,7 +186,6 @@ def test_additional_notes_at_max_length_accepted() -> None:
         skin_type=SkinType.OILY,
         has_breakouts=False,
         sensitivities=[],
-        is_cruelty_free_required=False,
         additional_notes="x" * 500,
     )
     assert len(prefs.additional_notes) == 500  # type: ignore[arg-type]
@@ -221,7 +208,6 @@ def test_model_validate_from_dict() -> None:
         "skin_type": "combination",
         "has_breakouts": True,
         "sensitivities": ["alcohol"],
-        "is_cruelty_free_required": False,
         "additional_notes": "Prefer lightweight textures.",
     }
     prefs = UserPreferences.model_validate(raw)

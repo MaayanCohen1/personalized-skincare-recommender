@@ -19,7 +19,6 @@ def valid_payload() -> dict[str, Any]:
             "skin_type": "oily",
             "has_breakouts": True,
             "sensitivities": ["fragrance"],
-            "is_cruelty_free_required": False,
         },
     }
 
@@ -35,8 +34,8 @@ def test_valid_payload_returns_expected_dictionary_shape(
 ) -> None:
     """Valid payload should return dict with all expected keys."""
     monkeypatch.setattr(
-        "vision_service.message_handler.analyze_skin_image",
-        lambda path: {"visual_signals": ["oily", "acne"]},
+        "vision_service.message_handler._get_analyze_fn",
+        lambda: (lambda path: {"visual_signals": ["oily", "acne"]}),
     )
 
     body = json.dumps(valid_payload).encode("utf-8")
@@ -93,15 +92,14 @@ def test_preserves_original_user_preferences(
 ) -> None:
     """user_preferences from the payload should be passed through unchanged."""
     monkeypatch.setattr(
-        "vision_service.message_handler.analyze_skin_image",
-        lambda path: {"visual_signals": []},
+        "vision_service.message_handler._get_analyze_fn",
+        lambda: (lambda path: {"visual_signals": []}),
     )
 
     prefs = {
         "skin_type": "dry",
         "has_breakouts": False,
         "sensitivities": ["alcohol"],
-        "is_cruelty_free_required": True,
         "additional_notes": "Prefer lightweight textures.",
     }
     payload = {
@@ -120,8 +118,8 @@ def test_user_preferences_none_when_absent(
 ) -> None:
     """When user_preferences is not in the payload, result should contain None."""
     monkeypatch.setattr(
-        "vision_service.message_handler.analyze_skin_image",
-        lambda path: {"visual_signals": ["combination"]},
+        "vision_service.message_handler._get_analyze_fn",
+        lambda: (lambda path: {"visual_signals": ["combination"]}),
     )
 
     payload = {"request_id": "req-no-prefs", "image_path": "/images/face.jpg"}
@@ -142,8 +140,8 @@ def test_passes_image_path_correctly_into_analyze(
         return {"visual_signals": ["dry"]}
 
     monkeypatch.setattr(
-        "vision_service.message_handler.analyze_skin_image",
-        _spy,
+        "vision_service.message_handler._get_analyze_fn",
+        lambda: _spy,
     )
 
     payload = {
