@@ -142,25 +142,33 @@ def _flag_sentences(flags: ProductFlags) -> list[str]:
 
 
 def _build_product_text(product: CatalogProduct) -> str:
-    """Build a compact, semantically rich text string for embedding."""
+    """Build a structured, keyword-rich text string for embedding.
+
+    Uses explicit tagged fields so that skin-type and concern signals
+    are directly visible to the embedding model.
+    """
     parts: list[str] = [
         f"Brand: {product.brand}.",
-        f"Category: {product.category}.",
+        f"Category: {_humanize(product.category)}.",
         f"Name: {product.name}.",
-        product.description.rstrip(".") + ".",
     ]
 
+    if product.skin_types:
+        parts.append(f"Skin Types: {', '.join(_humanize(t) for t in product.skin_types)}.")
+
     if product.concerns:
-        humanized = [_humanize(c) for c in product.concerns]
-        parts.append(f"Helps with {_join_natural(humanized)}.")
+        parts.append(f"Concerns: {', '.join(_humanize(c) for c in product.concerns)}.")
 
     if product.benefits:
-        humanized = [_humanize(b) for b in product.benefits]
-        parts.append(f"Benefits include {_join_natural(humanized)}.")
+        parts.append(f"Benefits: {', '.join(_humanize(b) for b in product.benefits)}.")
+
+    desc = product.description.strip()
+    if desc:
+        parts.append(f"Description: {desc.rstrip('.')}.")
 
     key_ings = _select_key_ingredients(product.ingredients)
     if key_ings:
-        parts.append(f"Key ingredients: {', '.join(key_ings)}.")
+        parts.append(f"Key Ingredients: {', '.join(key_ings)}.")
 
     parts.extend(_flag_sentences(product.flags))
 
