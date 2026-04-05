@@ -8,8 +8,11 @@ from unittest.mock import MagicMock
 import pytest
 
 from api_service.main import (
+    EXCHANGE_ROUTINE_EVENTS,
+    QUEUE_COMPLETED,
     QUEUE_IMAGE_UPLOADED,
     RESULT_TTL_SECONDS,
+    ROUTING_KEY_COMPLETED,
     extract_request_id,
     publish_image_uploaded,
     redis_result_key,
@@ -23,7 +26,6 @@ def _sample_prefs() -> UserPreferences:
         skin_type=SkinType.OILY,
         has_breakouts=True,
         sensitivities=[Sensitivity.FRAGRANCE],
-        is_cruelty_free_required=False,
     )
 
 
@@ -54,7 +56,6 @@ def test_redis_result_key_helper() -> None:
 # publish_image_uploaded
 # ------------------------------------------------------------------
 
-
 def test_publish_image_uploaded_sends_correct_payload() -> None:
     channel = MagicMock()
     request_id = "req-xyz"
@@ -63,7 +64,7 @@ def test_publish_image_uploaded_sends_correct_payload() -> None:
     publish_image_uploaded(
         channel,
         request_id=request_id,
-        image_path="/images/face.jpg",
+        image_path="/uploads/face.jpg",
         user_preferences=prefs,
     )
 
@@ -75,10 +76,11 @@ def test_publish_image_uploaded_sends_correct_payload() -> None:
 
     payload = json.loads(kwargs["body"])
     assert payload["request_id"] == request_id
-    assert payload["image_path"] == "/images/face.jpg"
+    assert payload["image_path"] == "/uploads/face.jpg"
     assert payload["user_preferences"]["skin_type"] == "oily"
     assert payload["user_preferences"]["has_breakouts"] is True
     assert payload["user_preferences"]["sensitivities"] == ["fragrance"]
+    assert "visual_signals" not in payload
 
 
 def test_publish_image_uploaded_body_is_bytes() -> None:
@@ -86,7 +88,7 @@ def test_publish_image_uploaded_body_is_bytes() -> None:
     publish_image_uploaded(
         channel,
         request_id="req-bytes",
-        image_path="/img.jpg",
+        image_path="/uploads/face.jpg",
         user_preferences=_sample_prefs(),
     )
     body = channel.basic_publish.call_args.kwargs["body"]
@@ -111,3 +113,15 @@ def test_extract_request_id_rejects_missing_id() -> None:
 def test_extract_request_id_rejects_empty_string() -> None:
     with pytest.raises(ValueError, match="Missing request_id"):
         extract_request_id({"request_id": ""})
+
+
+# ------------------------------------------------------------------
+# routing constants
+# ------------------------------------------------------------------
+
+
+def test_completed_queue_constants() -> None:
+    """Verify the API service binds to the correct exchange/queue/routing_key."""
+    assert EXCHANGE_ROUTINE_EVENTS == "routine.events"
+    assert ROUTING_KEY_COMPLETED == "routine.completed"
+    assert QUEUE_COMPLETED == "api.routine.completed.q"

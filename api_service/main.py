@@ -15,11 +15,14 @@ import os
 import threading
 import time
 import uuid
+from pathlib import Path
 from typing import Any
 
 import pika
 import redis
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from matching_service.core.models import UserPreferences
@@ -28,6 +31,8 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 
 app = FastAPI(title="SafeGlow AI — API Service")
+
+_STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 RABBITMQ_URL: str = os.getenv("RABBITMQ_URL", "amqp://guest:guest@localhost:5672/")
 REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
@@ -230,3 +235,11 @@ def extract_request_id(payload: dict[str, Any]) -> str:
     if not request_id:
         raise ValueError("Missing request_id in routine.completed payload")
     return request_id
+
+
+@app.get("/")
+async def root() -> FileResponse:
+    return FileResponse(_STATIC_DIR / "index.html")
+
+
+app.mount("/static", StaticFiles(directory=str(_STATIC_DIR)), name="static")

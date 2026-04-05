@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SafeGlow AI — Demo</title>
+<style>
+  :root {
+    --bg: #f6f7f9;
+    --card: #fff;
+    --border: #e2e5eb;
+    --text: #1a1d26;
+    --muted: #5c6370;
+    --accent: #2d6a4f;
+    --chip-bg: #eef1f6;
+    --placeholder: #d8dce6;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 1.5rem 1rem 3rem;
+    line-height: 1.45;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  h2 { font-weight: 600; font-size: 1.35rem; margin: 0 0 1rem; letter-spacing: -0.02em; }
+  label { display: block; margin-top: .85rem; font-size: 0.9rem; color: var(--muted); }
+  input[type=text], select {
+    width: 100%;
+    margin-top: 0.25rem;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    background: #fff;
+  }
+  .cb-group label { display: inline; margin-right: 1rem; color: var(--text); }
+  fieldset {
+    margin-top: 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.65rem 0.85rem;
+    background: #fff;
+  }
+  button {
+    margin-top: 1rem;
+    padding: 0.55rem 1.25rem;
+    border: none;
+    border-radius: 6px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+  button:hover { filter: brightness(1.05); }
+  #status { margin-top: 1rem; font-weight: 600; font-size: 0.9rem; color: var(--muted); }
+
+  .results-main { margin-top: 1.5rem; }
+  .summary {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.9rem;
+  }
+  .summary h3 { margin: 0 0 0.5rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .summary dl { margin: 0; display: grid; gap: 0.35rem 1rem; }
+  .summary dt { font-weight: 600; color: var(--muted); font-size: 0.8rem; }
+  .summary dd { margin: 0; }
+
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
+  @media (min-width: 640px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .card-media {
+    aspect-ratio: 4 / 3;
+    background: linear-gradient(145deg, var(--placeholder), #e8ebf2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 2rem;
+    font-weight: 600;
+    user-select: none;
+  }
+  .card-media .icon-fallback { font-size: 0.75rem; font-weight: 500; text-align: center; padding: 0.5rem; line-height: 1.3; }
+  .card-body { padding: 1rem 1.05rem 1.1rem; flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+  .card-cat {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .card-title { font-size: 1.05rem; font-weight: 600; margin: 0; line-height: 1.25; }
+  .card-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-why { margin-top: 0.25rem; }
+  .card-why h4 { margin: 0 0 0.35rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+  .card-why p { margin: 0; font-size: 0.88rem; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.15rem; }
+  .chip {
+    font-size: 0.72rem;
+    padding: 0.2rem 0.45rem;
+    border-radius: 999px;
+    background: var(--chip-bg);
+    color: var(--text);
+  }
+
+  .card-meta {
+    margin-top: auto;
+    padding-top: 0.65rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.75rem;
+  }
+  .card-meta span { white-space: nowrap; }
+
+  .empty-state {
+    text-align: center;
+    padding: 2rem 1rem;
+    background: var(--card);
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .debug-json {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+  }
+  .debug-json summary { cursor: pointer; color: var(--muted); }
+  .debug-json pre {
+    margin: 0.5rem 0 0;
+    background: #1e222a;
+    color: #e6e8ee;
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    max-height: 50vh;
+    font-size: 0.75rem;
+  }
+</style>
+</head>
+<body>
+<h2>SafeGlow AI — Demo</h2>
+<form id="form">
+  <label>Image path (absolute)
+    <input type="text" id="imagePath" placeholder="/path/to/face.jpg" required>
+  </label>
+
+  <label>Skin type
+    <select id="skinType">
+      <option value="dry">Dry</option>
+      <option value="oily">Oily</option>
+      <option value="combination">Combination</option>
+      <option value="not_sure">Not sure</option>
+    </select>
+  </label>
+
+  <label><input type="checkbox" id="hasBreakouts"> Has breakouts</label>
+
+  <fieldset>
+    <legend>Sensitivities</legend>
+    <div class="cb-group">
+      <label><input type="checkbox" class="sens" value="fragrance"> Fragrance</label>
+      <label><input type="checkbox" class="sens" value="alcohol"> Alcohol</label>
+      <label><input type="checkbox" class="sens" value="none"> None</label>
+    </div>
+  </fieldset>
+
+  <button type="submit">Submit</button>
+</form>
+
+<div id="status"></div>
+
+<div id="resultsMain" class="results-main" hidden>
+  <div id="resultsSummary" class="summary"></div>
+  <div id="resultsCards" class="cards"></div>
+  <details class="debug-json">
+    <summary>Raw response (debug)</summary>
+    <pre><code id="json"></code></pre>
+  </details>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  function safeStr(v) {
+    if (v == null) return "";
+    const s = String(v);
+    return s.trim() ? s : "";
+  }
+
+  function safeArray(a) {
+    return Array.isArray(a) ? a.map(function (x) { return safeStr(x); }).filter(Boolean) : [];
+  }
+
+  function normalizeItems(data) {
+    var result = data && data.result;
+    if (!result) return [];
+    var evt = result.event || {};
+    var products = Array.isArray(evt.matched_products) ? evt.matched_products : [];
+    var explanations = (evt.explanations && typeof evt.explanations === "object") ? evt.explanations : {};
+    var rationaleRoot = result.routine_rationale;
+    var prMap = (rationaleRoot && rationaleRoot.product_rationales && typeof rationaleRoot.product_rationales === "object")
+      ? rationaleRoot.product_rationales
+      : {};
+
+    return products.map(function (product) {
+      if (!product || typeof product !== "object") {
+        return {
+          id: "",
+          brand: "",
+          product_name: "",
+          category: "",
+          brand_image: null,
+          description: "",
+          why_it_fits: "",
+          role: "",
+          fit_score: null,
+          concerns: [],
+          benefits: [],
+          skin_types: [],
+          contains_fragrance: false,
+          contains_alcohol: false,
+        };
+      }
+      var id = product.id != null ? String(product.id) : "";
+      var rationale = prMap[id];
+      var fitRaw = rationale && rationale.fit_score;
+      var fit_score = (fitRaw != null && typeof fitRaw === "number") ? fitRaw : null;
+
+      return {
+        id: id,
+        brand: "",
+        product_name: safeStr(product.name),
+        category: safeStr(product.category),
+        brand_image: null,
+        description: safeStr(product.description),
+        why_it_fits: safeStr(explanations[id]),
+        role: rationale ? safeStr(rationale.role) : "",
+        fit_score: fit_score,
+        concerns: safeArray(product.concerns),
+        benefits: safeArray(product.benefits),
+        skin_types: safeArray(product.skin_types),
+        contains_fragrance: Boolean(product.contains_fragrance),
+        contains_alcohol: Boolean(product.contains_alcohol),
+      };
+    });
+  }
+
+  function renderSummary(data) {
+    var el = document.getElementById("resultsSummary");
+    if (!el) return;
+    var ia = data && data.result && data.result.image_analysis;
+    if (!ia) {
+      el.innerHTML = "";
+      el.hidden = true;
+      return;
+    }
+    el.hidden = false;
+    var vs = safeArray(ia.visual_signals);
+    var sc = safeArray(ia.skin_conditions);
+    var src = safeStr(ia.source);
+
+    el.innerHTML = "";
+    var h3 = document.createElement("h3");
+    h3.textContent = "Your profile";
+    el.appendChild(h3);
+
+    var dl = document.createElement("dl");
+
+    function addRow(label, values) {
+      var dt = document.createElement("dt");
+      dt.textContent = label;
+      dl.appendChild(dt);
+      var dd = document.createElement("dd");
+      dd.textContent = values.length ? values.join(", ") : "—";
+      dl.appendChild(dd);
+    }
+
+    addRow("Visual signals", vs);
+    addRow("Skin conditions", sc);
+    if (src) {
+      addRow("Source", [src]);
+    }
+    el.appendChild(dl);
+  }
+
+  function categoryPlaceholderLetter(category) {
+    var c = safeStr(category);
+    if (!c) return "◆";
+    var m = c.match(/[A-Za-z0-9]/);
+    return m ? m[0].toUpperCase() : "◆";
+  }
+
+  function appendChips(container, label, items) {
+    if (!items.length) return;
+    var wrap = document.createElement("div");
+    var h = document.createElement("h4");
+    h.textContent = label;
+    h.style.cssText = "margin:0.4rem 0 0.25rem;font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);";
+    wrap.appendChild(h);
+    var chips = document.createElement("div");
+    chips.className = "chips";
+    items.forEach(function (t) {
+      var span = document.createElement("span");
+      span.className = "chip";
+      span.textContent = t;
+      chips.appendChild(span);
+    });
+    wrap.appendChild(chips);
+    container.appendChild(wrap);
+  }
+
+  function createCard(item) {
+    var article = document.createElement("article");
+    article.className = "card";
+
+    var media = document.createElement("div");
+    media.className = "card-media";
+    var letter = categoryPlaceholderLetter(item.category);
+    if (letter.length === 1) {
+      media.textContent = letter;
+    } else {
+      var fb = document.createElement("span");
+      fb.className = "icon-fallback";
+      fb.textContent = "Skincare";
+      media.appendChild(fb);
+    }
+    article.appendChild(media);
+
+    var body = document.createElement("div");
+    body.className = "card-body";
+
+    var cat = document.createElement("div");
+    cat.className = "card-cat";
+    cat.textContent = item.category || "Product";
+    body.appendChild(cat);
+
+    var title = document.createElement("h3");
+    title.className = "card-title";
+    title.textContent = item.product_name || "Unnamed product";
+    body.appendChild(title);
+
+    if (item.description) {
+      var desc = document.createElement("p");
+      desc.className = "card-desc";
+      desc.textContent = item.description;
+      body.appendChild(desc);
+    }
+
+    var whyWrap = document.createElement("div");
+    whyWrap.className = "card-why";
+    var whyH = document.createElement("h4");
+    whyH.textContent = "Why it suits you";
+    whyWrap.appendChild(whyH);
+    var whyP = document.createElement("p");
+    whyP.textContent = item.why_it_fits || "No explanation available for this product.";
+    whyWrap.appendChild(whyP);
+    body.appendChild(whyWrap);
+
+    appendChips(body, "Skin types", item.skin_types);
+    appendChips(body, "Benefits", item.benefits);
+    appendChips(body, "Concerns", item.concerns);
+
+    var meta = document.createElement("div");
+    meta.className = "card-meta";
+    function metaPart(text) {
+      var s = document.createElement("span");
+      s.textContent = text;
+      meta.appendChild(s);
+    }
+    metaPart(item.contains_fragrance ? "Contains fragrance" : "Fragrance-free");
+    metaPart(item.contains_alcohol ? "Contains alcohol" : "Alcohol-free");
+    if (item.role) metaPart("Role: " + item.role);
+    if (item.fit_score != null) metaPart("Fit score: " + item.fit_score);
+
+    body.appendChild(meta);
+    article.appendChild(body);
+    return article;
+  }
+
+  function renderResults(data) {
+    var container = document.getElementById("resultsCards");
+    if (!container) return;
+    container.innerHTML = "";
+
+    var items = normalizeItems(data);
+    if (!items.length) {
+      var empty = document.createElement("div");
+      empty.className = "empty-state";
+      empty.textContent = "No products were matched for this request. Try adjusting your profile or try again later.";
+      container.appendChild(empty);
+      return;
+    }
+
+    items.forEach(function (item) {
+      container.appendChild(createCard(item));
+    });
+  }
+
+  function showCompletedUI(data) {
+    var main = document.getElementById("resultsMain");
+    var jsonEl = document.getElementById("json");
+    if (main) main.hidden = false;
+    renderSummary(data);
+    renderResults(data);
+    if (jsonEl) jsonEl.textContent = JSON.stringify(data, null, 2);
+  }
+
+  function hideResultsUI() {
+    var main = document.getElementById("resultsMain");
+    var jsonEl = document.getElementById("json");
+    if (main) main.hidden = true;
+    if (jsonEl) jsonEl.textContent = "";
+    var cards = document.getElementById("resultsCards");
+    var sum = document.getElementById("resultsSummary");
+    if (cards) cards.innerHTML = "";
+    if (sum) { sum.innerHTML = ""; sum.hidden = true; }
+  }
+
+  var form = document.getElementById("form");
+  var statusEl = document.getElementById("status");
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    statusEl.textContent = "Submitting…";
+    hideResultsUI();
+
+    var sensBoxes = document.querySelectorAll(".sens:checked");
+    var sensitivities = Array.from(sensBoxes).map(function (cb) { return cb.value; });
+    if (sensitivities.length === 0) sensitivities.push("none");
+
+    var body = {
+      image_path: document.getElementById("imagePath").value,
+      user_preferences: {
+        skin_type: document.getElementById("skinType").value,
+        has_breakouts: document.getElementById("hasBreakouts").checked,
+        sensitivities: sensitivities,
+      },
+    };
+
+    var requestId;
+    try {
+      var res = await fetch("/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      var data = await res.json();
+      if (!res.ok) {
+        statusEl.textContent = "Error: " + JSON.stringify(data);
+        return;
+      }
+      requestId = data.request_id;
+      statusEl.textContent = "Processing… (request_id: " + requestId + ")";
+    } catch (err) {
+      statusEl.textContent = "Network error: " + err.message;
+      return;
+    }
+
+    var POLL_MS = 3000;
+    var MAX_POLLS = 120;
+    for (var i = 0; i < MAX_POLLS; i++) {
+      await new Promise(function (r) { setTimeout(r, POLL_MS); });
+      try {
+        var res2 = await fetch("/result/" + requestId);
+        var pollData = await res2.json();
+        if (pollData.status === "completed") {
+          statusEl.textContent = "Completed";
+          showCompletedUI(pollData);
+          return;
+        }
+        statusEl.textContent = "Processing… poll " + (i + 1) + " (request_id: " + requestId + ")";
+      } catch (err2) {
+        statusEl.textContent = "Poll error: " + err2.message;
+      }
+    }
+    statusEl.textContent = "Timed out waiting for result.";
+  });
+})();
+</script>
+</body>
+</html>
