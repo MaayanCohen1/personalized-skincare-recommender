@@ -15,9 +15,13 @@ draft_task:
     Using the strict JSON evidence from research_task, write a friendly plain-English
     explanation for why the product may suit the provided skin conditions.
 
+    {condition_guidance}
+
     Rules:
     - Exactly 2 sentences.
     - Plain English, user-friendly tone.
+    - Match wording to the user's skin conditions — do NOT emphasise
+      benefits for a different skin type.
     - Forbidden medical terms: diagnose, diagnosis, cure, treat, treatment,
       medication, prescription, heal, therapy, disease, clinical, medical.
     - Forbidden phrases: guaranteed results, will cure.

@@ -1,132 +1,207 @@
 [
-    {
-      "ingredient": "niacinamide",
-      "fact": "A water-soluble form of vitamin B3 that helps support the skin barrier, improve uneven tone, and reduce the look of excess oil.",
-      "source": "Dermatology reference"
-    },
-    {
-      "ingredient": "retinol",
-      "fact": "A vitamin A derivative that supports skin renewal and helps improve the appearance of fine lines and uneven texture. It can increase sensitivity, so gradual use is recommended.",
-      "source": "Cosmetic ingredient review"
-    },
-    {
-      "ingredient": "hyaluronic acid",
-      "fact": "A humectant that helps attract and retain water in the skin, improving hydration and skin comfort.",
-      "source": "Skincare reference"
-    },
-    {
-      "ingredient": "sodium hyaluronate",
-      "fact": "A salt form of hyaluronic acid commonly used in skincare to help support hydration and improve skin comfort.",
-      "source": "Skincare reference"
-    },
-    {
-      "ingredient": "salicylic acid",
-      "fact": "A beta hydroxy acid that helps clear pores and improve the appearance of blemish-prone skin.",
-      "source": "Dermatology reference"
-    },
-    {
-      "ingredient": "glycolic acid",
-      "fact": "An alpha hydroxy acid that helps remove surface dead skin cells and improve the look of texture and dullness.",
-      "source": "Dermatology reference"
-    },
-    {
-      "ingredient": "lactic acid",
-      "fact": "An alpha hydroxy acid that helps with gentle exfoliation while also supporting skin hydration.",
-      "source": "Dermatology reference"
-    },
-    {
-      "ingredient": "azelaic acid",
-      "fact": "A multifunctional ingredient that helps improve the appearance of redness, blemishes, and uneven tone.",
-      "source": "Dermatology reference"
-    },
-    {
-      "ingredient": "panthenol",
-      "fact": "A form of provitamin B5 that helps soothe the skin and support moisture retention.",
-      "source": "Skincare reference"
-    },
-    {
-      "ingredient": "ceramide np",
-      "fact": "A skin-identical lipid that helps support the barrier and reduce moisture loss.",
-      "source": "Barrier-support reference"
-    },
-    {
-      "ingredient": "ceramide ap",
-      "fact": "A skin-identical lipid used to help support the skin barrier and improve moisture retention.",
-      "source": "Barrier-support reference"
-    },
-    {
-      "ingredient": "ceramide eop",
-      "fact": "A ceramide used in skincare to help support the skin barrier and improve dryness-related discomfort.",
-      "source": "Barrier-support reference"
-    },
-    {
-      "ingredient": "zinc oxide",
-      "fact": "A mineral UV filter that provides broad-spectrum sun protection and is often considered suitable for sensitive skin.",
-      "source": "Sunscreen reference"
-    },
-    {
-      "ingredient": "titanium dioxide",
-      "fact": "A mineral UV filter commonly used to help provide sun protection in sunscreen formulations.",
-      "source": "Sunscreen reference"
-    },
-    {
-      "ingredient": "centella asiatica",
-      "fact": "A botanical ingredient commonly used to help soothe the skin and support barrier comfort.",
-      "source": "Botanical skincare reference"
-    },
-    {
-      "ingredient": "madecassoside",
-      "fact": "A centella-derived compound commonly used for soothing support and skin comfort.",
-      "source": "Botanical skincare reference"
-    },
-    {
-      "ingredient": "bakuchiol",
-      "fact": "A plant-derived ingredient often used in skincare to support smoother-looking skin and improve the appearance of fine lines.",
-      "source": "Cosmetic ingredient reference"
-    },
-    {
-      "ingredient": "glycerin",
-      "fact": "A humectant that helps draw moisture into the outer layers of the skin and support hydration.",
-      "source": "Cosmetic ingredient review"
-    },
-    {
-      "ingredient": "squalane",
-      "fact": "An emollient that helps support softness and reduce moisture loss without a heavy feel.",
-      "source": "Skincare reference"
-    },
-    {
-      "ingredient": "allantoin",
-      "fact": "A soothing ingredient commonly used to support skin comfort and reduce feelings of irritation.",
-      "source": "Cosmetic ingredient reference"
-    },
-    {
-      "ingredient": "tocopherol",
-      "fact": "A form of vitamin E used in skincare for antioxidant support.",
-      "source": "Cosmetic ingredient reference"
-    },
-    {
-      "ingredient": "ascorbic acid",
-      "fact": "A form of vitamin C used in skincare for antioxidant support and to help improve the appearance of uneven tone.",
-      "source": "Dermatology reference"
-    },
-    {
-      "ingredient": "ascorbyl glucoside",
-      "fact": "A vitamin C derivative used in skincare for antioxidant support and to help improve the appearance of uneven tone.",
-      "source": "Cosmetic ingredient reference"
-    },
-    {
-      "ingredient": "fragrance",
-      "fact": "A general fragrance component that may improve product scent but can be irritating for some sensitive users.",
-      "source": "Skincare safety reference"
-    },
-    {
-      "ingredient": "parfum",
-      "fact": "A fragrance label used in cosmetic formulations that may be a concern for fragrance-sensitive users.",
-      "source": "Skincare safety reference"
-    },
-    {
-      "ingredient": "alcohol denat",
-      "fact": "A fast-evaporating alcohol sometimes used for texture and finish, but it may feel drying for some users.",
-      "source": "Formulation reference"
-    }
-  ]
+  {
+    "ingredient": "niacinamide",
+    "fact": "A water-soluble form of vitamin B3 that helps support the skin barrier, improve uneven tone, and reduce the look of excess oil.",
+    "source": "Dermatology reference"
+  },
+  {
+    "ingredient": "retinol",
+    "fact": "A vitamin A derivative that supports skin renewal and helps improve the appearance of fine lines and uneven texture. It can increase sensitivity, so gradual use is recommended.",
+    "source": "Cosmetic ingredient review"
+  },
+  {
+    "ingredient": "hyaluronic acid",
+    "fact": "A humectant that helps attract and retain water in the skin, improving hydration and skin comfort.",
+    "source": "Skincare reference"
+  },
+  {
+    "ingredient": "sodium hyaluronate",
+    "fact": "A salt form of hyaluronic acid commonly used in skincare to help support hydration and improve skin comfort.",
+    "source": "Skincare reference"
+  },
+  {
+    "ingredient": "salicylic acid",
+    "fact": "A beta hydroxy acid that helps clear pores and improve the appearance of blemish-prone skin.",
+    "source": "Dermatology reference"
+  },
+  {
+    "ingredient": "glycolic acid",
+    "fact": "An alpha hydroxy acid that helps remove surface dead skin cells and improve the look of texture and dullness.",
+    "source": "Dermatology reference"
+  },
+  {
+    "ingredient": "lactic acid",
+    "fact": "An alpha hydroxy acid that helps with gentle exfoliation while also supporting skin hydration.",
+    "source": "Dermatology reference"
+  },
+  {
+    "ingredient": "azelaic acid",
+    "fact": "A multifunctional ingredient that helps improve the appearance of redness, blemishes, and uneven tone.",
+    "source": "Dermatology reference"
+  },
+  {
+    "ingredient": "panthenol",
+    "fact": "A form of provitamin B5 that helps soothe the skin and support moisture retention.",
+    "source": "Skincare reference"
+  },
+  {
+    "ingredient": "ceramide np",
+    "fact": "A skin-identical lipid that helps support the barrier and reduce moisture loss.",
+    "source": "Barrier-support reference"
+  },
+  {
+    "ingredient": "ceramide ap",
+    "fact": "A skin-identical lipid used to help support the skin barrier and improve moisture retention.",
+    "source": "Barrier-support reference"
+  },
+  {
+    "ingredient": "ceramide eop",
+    "fact": "A ceramide used in skincare to help support the skin barrier and improve dryness-related discomfort.",
+    "source": "Barrier-support reference"
+  },
+  {
+    "ingredient": "zinc oxide",
+    "fact": "A mineral UV filter that provides broad-spectrum sun protection and is often considered suitable for sensitive skin.",
+    "source": "Sunscreen reference"
+  },
+  {
+    "ingredient": "titanium dioxide",
+    "fact": "A mineral UV filter commonly used to help provide sun protection in sunscreen formulations.",
+    "source": "Sunscreen reference"
+  },
+  {
+    "ingredient": "centella asiatica",
+    "fact": "A botanical ingredient commonly used to help soothe the skin and support barrier comfort.",
+    "source": "Botanical skincare reference"
+  },
+  {
+    "ingredient": "madecassoside",
+    "fact": "A centella-derived compound commonly used for soothing support and skin comfort.",
+    "source": "Botanical skincare reference"
+  },
+  {
+    "ingredient": "bakuchiol",
+    "fact": "A plant-derived ingredient often used in skincare to support smoother-looking skin and improve the appearance of fine lines.",
+    "source": "Cosmetic ingredient reference"
+  },
+  {
+    "ingredient": "glycerin",
+    "fact": "A humectant that helps draw moisture into the outer layers of the skin and support hydration.",
+    "source": "Cosmetic ingredient review"
+  },
+  {
+    "ingredient": "squalane",
+    "fact": "An emollient that helps support softness and reduce moisture loss without a heavy feel.",
+    "source": "Skincare reference"
+  },
+  {
+    "ingredient": "allantoin",
+    "fact": "A soothing ingredient commonly used to support skin comfort and reduce feelings of irritation.",
+    "source": "Cosmetic ingredient reference"
+  },
+  {
+    "ingredient": "tocopherol",
+    "fact": "A form of vitamin E used in skincare for antioxidant support.",
+    "source": "Cosmetic ingredient reference"
+  },
+  {
+    "ingredient": "ascorbic acid",
+    "fact": "A form of vitamin C used in skincare for antioxidant support and to help improve the appearance of uneven tone.",
+    "source": "Dermatology reference"
+  },
+  {
+    "ingredient": "ascorbyl glucoside",
+    "fact": "A vitamin C derivative used in skincare for antioxidant support and to help improve the appearance of uneven tone.",
+    "source": "Cosmetic ingredient reference"
+  },
+  {
+    "ingredient": "fragrance",
+    "fact": "A general fragrance component that may improve product scent but can be irritating for some sensitive users.",
+    "source": "Skincare safety reference"
+  },
+  {
+    "ingredient": "parfum",
+    "fact": "A fragrance label used in cosmetic formulations that may be a concern for fragrance-sensitive users.",
+    "source": "Skincare safety reference"
+  },
+  {
+    "ingredient": "alcohol denat",
+    "fact": "A fast-evaporating alcohol sometimes used for texture and finish, but it may feel drying for some users.",
+    "source": "Formulation reference"
+  },
+  {
+    "ingredient": "avene thermal spring water",
+    "fact": "Thermal spring water commonly used in skincare to help soothe skin discomfort and support skin comfort, especially in sensitive-feeling skin.",
+    "source": "Thermal water reference"
+  },
+  {
+    "ingredient": "nitrogen",
+    "fact": "An inert gas sometimes used in sterile cosmetic packaging; it does not provide a direct skincare effect on the skin itself.",
+    "source": "Cosmetic formulation reference"
+  },
+  {
+    "ingredient": "centella asiatica extract",
+    "fact": "A centella-derived botanical ingredient commonly used to help soothe the skin and support barrier comfort.",
+    "source": "Botanical skincare reference"
+  },
+  {
+    "ingredient": "centella asiatica leaf extract",
+    "fact": "A centella-derived botanical extract commonly used to help calm the skin and support barrier comfort.",
+    "source": "Botanical skincare reference"
+  },
+  {
+    "ingredient": "aloe barbadensis leaf extract",
+    "fact": "A botanical ingredient commonly used to help soothe the skin and support skin comfort.",
+    "source": "Botanical skincare reference"
+  },
+  {
+    "ingredient": "aloe barbadensis leaf juice powder",
+    "fact": "A powdered aloe-derived ingredient commonly used in skincare for soothing support and skin comfort.",
+    "source": "Botanical skincare reference"
+  },
+  {
+    "ingredient": "tocopheryl acetate",
+    "fact": "A vitamin E derivative used in skincare for antioxidant support and formulation stability.",
+    "source": "Cosmetic ingredient reference"
+  },
+  {
+    "ingredient": "ectoine",
+    "fact": "A protective ingredient used in skincare to help support hydration and skin comfort under environmental stress.",
+    "source": "Cosmetic ingredient reference"
+  },
+  {
+    "ingredient": "bisabolol",
+    "fact": "A soothing ingredient commonly used in skincare to help reduce feelings of irritation and support skin comfort.",
+    "source": "Cosmetic ingredient reference"
+  },
+  {
+    "ingredient": "capryloyl glycine",
+    "fact": "A cosmetic ingredient sometimes used in formulations targeting excess oil and skin balance.",
+    "source": "Formulation reference"
+  },
+  {
+    "ingredient": "cananga odorata flower oil",
+    "fact": "A fragrant essential oil used for scent that may be a concern for fragrance-sensitive users.",
+    "source": "Skincare safety reference"
+  },
+  {
+    "ingredient": "lavandula angustifolia flower oil",
+    "fact": "A fragrant botanical oil used for scent that may be a concern for fragrance-sensitive users.",
+    "source": "Skincare safety reference"
+  },
+  {
+    "ingredient": "citrus aurantium bergamia fruit oil",
+    "fact": "A fragrant citrus oil used in cosmetic products that may be a concern for fragrance-sensitive users.",
+    "source": "Skincare safety reference"
+  },
+  {
+    "ingredient": "pelargonium graveolens flower oil",
+    "fact": "A fragrant botanical oil used in cosmetic formulations that may be a concern for fragrance-sensitive users.",
+    "source": "Skincare safety reference"
+  },
+  {
+    "ingredient": "melaleuca alternifolia extract",
+    "fact": "A tea-tree-derived ingredient sometimes used in products for blemish-prone skin, though it may be sensitizing for some users.",
+    "source": "Botanical skincare reference"
+  }
+]

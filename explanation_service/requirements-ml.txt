@@ -1,0 +1,4 @@
+# Heavyweight ML dependencies for RAG knowledge-base encoding.
+# Install on top of requirements.txt when building the vectorised KB:
+#   pip install -r requirements.txt -r requirements-ml.txt
+sentence-transformers>=2.7.0

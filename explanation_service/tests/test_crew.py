@@ -20,6 +20,15 @@ def _set_dummy_api_key(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("OPENAI_API_KEY", "dummy-key")
 
 
+@pytest.fixture(autouse=True)
+def _stub_lookup_ingredient(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Prevent crew-level tests from reaching the real RAG/vector pipeline."""
+    monkeypatch.setattr(
+        "explanation_service.crew.lookup_ingredient",
+        lambda ingredient_name: {"fact": "stub", "source": f"stub:{ingredient_name}"},
+    )
+
+
 def _mock_project_with_raw(raw_output: str) -> MagicMock:
     kickoff_result = MagicMock()
     kickoff_result.raw = raw_output
@@ -295,6 +304,167 @@ def test_audit_pydantic_object_in_raw_parses_without_exception() -> None:
     assert isinstance(result, dict)
     assert isinstance(result["explanation_text"], str)
     assert isinstance(result["sources"], list)
+
+
+def test_key_ingredients_filter_applied_before_kickoff() -> None:
+    """Only key ingredients should reach the crew, not the full INCI list."""
+    captured_inputs: dict[str, Any] = {}
+
+    kickoff_result = MagicMock()
+    kickoff_result.raw = (
+        '{"explanation_text":"Niacinamide supports skin barrier comfort. '
+        'It is widely used in daily routines.","sources":["generic"]}'
+    )
+
+    crew_instance = MagicMock()
+    crew_instance.kickoff.side_effect = lambda inputs: (
+        captured_inputs.update(inputs) or kickoff_result
+    )
+
+    project = MagicMock()
+    project.crew.return_value = crew_instance
+
+    with patch("explanation_service.crew.ExplanationCrew", return_value=project):
+        generate_explanation_for_product(
+            skin_conditions=["dryness"],
+            product_name="Test Product",
+            ingredients=[
+                "water",
+                "niacinamide",
+                "carbomer",
+                "xanthan gum",
+                "retinol",
+                "sodium chloride",
+            ],
+        )
+
+    ingredients_sent = captured_inputs["ingredients"]
+    assert "niacinamide" in ingredients_sent
+    assert "retinol" in ingredients_sent
+    assert "water" not in ingredients_sent
+    assert "carbomer" not in ingredients_sent
+    assert "xanthan gum" not in ingredients_sent
+
+
+def test_audit_guardrail_filters_sources_to_research_subset() -> None:
+    """Audit guardrail should keep only sources that match research output."""
+    project = ExplanationCrew()
+    project._last_research_sources = ["dict.md#p1", "safety.md#p0"]
+
+    final = FinalExplanation(
+        explanation_text=(
+            "This product supports skin barrier comfort. "
+            "It is suitable for daily use."
+        ),
+        sources=["dict.md#p1", "completely_unknown"],
+    )
+    passed, result = project._audit_guardrail(final)
+
+    assert passed is True
+    assert result.sources == ["dict.md#p1"]
+
+
+def test_audit_guardrail_injects_research_sources_when_none_match() -> None:
+    """When no audit sources match research, inject research sources as fallback."""
+    project = ExplanationCrew()
+    project._last_research_sources = ["dict.md#p1", "guide.md#p2"]
+
+    final = FinalExplanation(
+        explanation_text=(
+            "This product supports skin barrier comfort. "
+            "It is suitable for daily use."
+        ),
+        sources=["unknown_a", "unknown_b"],
+    )
+    passed, result = project._audit_guardrail(final)
+
+    assert passed is True
+    assert set(result.sources) == {"dict.md#p1", "guide.md#p2"}
+
+
+def test_audit_guardrail_accepts_fallback_sources_unchanged() -> None:
+    """Generic/fallback sources should be accepted without filtering."""
+    project = ExplanationCrew()
+    project._last_research_sources = ["dict.md#p1"]
+
+    final = FinalExplanation(
+        explanation_text=(
+            "This product includes common skincare ingredients. "
+            "Introduce it gradually."
+        ),
+        sources=["generic"],
+    )
+    passed, _ = project._audit_guardrail(final)
+    assert passed is True
+
+
+def test_tracing_env_vars_set_on_import() -> None:
+    """Importing crew.py should set CI and telemetry env vars."""
+    import os
+    assert os.environ.get("CI") == "true"
+    assert os.environ.get("CREWAI_TELEMETRY_OPTOUT") == "true"
+    assert os.environ.get("OTEL_SDK_DISABLED") == "true"
+
+
+def test_oily_only_condition_guidance_passed_to_kickoff() -> None:
+    """For oily-only conditions, condition_guidance in kickoff inputs
+    should instruct the LLM to avoid dry-skin framing."""
+    captured_inputs: dict[str, Any] = {}
+
+    kickoff_result = MagicMock()
+    kickoff_result.raw = (
+        '{"explanation_text":"This lightweight formula helps control oil. '
+        'It supports barrier comfort without heaviness.","sources":["generic"]}'
+    )
+
+    crew_instance = MagicMock()
+    crew_instance.kickoff.side_effect = lambda inputs: (
+        captured_inputs.update(inputs) or kickoff_result
+    )
+
+    project = MagicMock()
+    project.crew.return_value = crew_instance
+
+    with patch("explanation_service.crew.ExplanationCrew", return_value=project):
+        generate_explanation_for_product(
+            skin_conditions=["oily"],
+            product_name="Oil Control Cleanser",
+            ingredients=["niacinamide"],
+        )
+
+    assert "condition_guidance" in captured_inputs
+    guidance = captured_inputs["condition_guidance"]
+    assert "lightweight" in guidance.lower()
+    assert "NOT" in guidance
+
+
+def test_acne_condition_guidance_passed_to_kickoff() -> None:
+    """For oily+acne, guidance should mention pore care."""
+    captured_inputs: dict[str, Any] = {}
+
+    kickoff_result = MagicMock()
+    kickoff_result.raw = (
+        '{"explanation_text":"This formula supports pore care. '
+        'It helps balance oily skin.","sources":["generic"]}'
+    )
+
+    crew_instance = MagicMock()
+    crew_instance.kickoff.side_effect = lambda inputs: (
+        captured_inputs.update(inputs) or kickoff_result
+    )
+
+    project = MagicMock()
+    project.crew.return_value = crew_instance
+
+    with patch("explanation_service.crew.ExplanationCrew", return_value=project):
+        generate_explanation_for_product(
+            skin_conditions=["oily", "acne"],
+            product_name="Acne Cleanser",
+            ingredients=["salicylic acid"],
+        )
+
+    guidance = captured_inputs["condition_guidance"]
+    assert "pore" in guidance.lower()
 
 
 def test_missing_api_key_uses_deterministic_fallback(

@@ -31,6 +31,7 @@ from explanation_service.output_models import (
     IngredientEvidence,
     ResearchOutput,
 )
+from explanation_service.condition_hints import build_condition_guidance
 from explanation_service.ingredients import extract_key_ingredients
 from explanation_service.tools import IngredientEvidenceTool, lookup_ingredient
 
@@ -497,6 +498,8 @@ def generate_explanation_for_product(
         resolved_request_id,
     )
 
+    condition_guidance = build_condition_guidance(skin_conditions)
+
     project = ExplanationCrew()
     project._current_request_id = resolved_request_id
     try:
@@ -505,6 +508,7 @@ def generate_explanation_for_product(
                 "skin_conditions": ", ".join(skin_conditions),
                 "ingredients": ", ".join(key_ingredients),
                 "product_name": product_name,
+                "condition_guidance": condition_guidance,
             }
         )
     except Exception as exc:  # pragma: no cover - exercised in integration test
