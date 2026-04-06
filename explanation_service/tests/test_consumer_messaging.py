@@ -3,12 +3,27 @@
 from __future__ import annotations
 
 import json
+from typing import Any
 from unittest.mock import MagicMock
 
 import pytest
 
+import explanation_service.consumer as consumer_mod
 from explanation_service.consumer import _handle_matched_payload, publish_routine_completed
 from shared.models import Product, ProductCategory, RoutineCompletedEvent
+
+
+@pytest.fixture(autouse=True)
+def _stub_explain_product(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Avoid importing CrewAI when tests exercise the RabbitMQ handler only."""
+
+    def _fake(*args: Any, **kwargs: Any) -> dict[str, Any]:
+        return {
+            "explanation_text": "Stub sentence one. Stub sentence two.",
+            "sources": ["generic"],
+        }
+
+    monkeypatch.setattr(consumer_mod, "_explain_product", _fake)
 
 
 def test_publish_routine_completed_routing_and_correlation() -> None:
@@ -142,6 +157,59 @@ def test_matched_payload_passes_through_analysis_fields() -> None:
     result = _handle_matched_payload(payload=payload, correlation_id=None)
     assert result.image_analysis == image_analysis
     assert result.routine_rationale == routine_rationale
+
+
+def test_generate_explanations_forwards_product_context(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Stage 2: per-product catalog fields and matcher rationale reach explain API."""
+    captured: list[dict[str, Any]] = []
+
+    def fake_explain(*args: Any, **kwargs: Any) -> dict[str, str]:
+        captured.append(kwargs)
+        return {"explanation_text": "One. Two.", "sources": ["generic"]}
+
+    monkeypatch.setattr(consumer_mod, "_explain_product", fake_explain)
+
+    product = Product(
+        id="p-spf",
+        name="Sun Spray",
+        category=ProductCategory.SPF,
+        ingredients=["homosalate"],
+        description="Lightweight spray.",
+        skin_types=["oily"],
+        concerns=["uv"],
+        benefits=["protection"],
+        contains_fragrance=False,
+        contains_alcohol=False,
+    )
+    routine_rationale = {
+        "product_rationales": {
+            "p-spf": {"role": "essential", "fit_score": 0.71},
+        }
+    }
+    image_analysis = {"visual_signals": ["shine"]}
+
+    out = consumer_mod._generate_explanations(
+        [product],
+        skin_conditions=["oily"],
+        request_id="req-stage2",
+        image_analysis=image_analysis,
+        routine_rationale=routine_rationale,
+    )
+
+    assert out == {"p-spf": "One. Two."}
+    assert len(captured) == 1
+    kw = captured[0]
+    assert kw["product_category"] == "SPF"
+    assert kw["product_description"] == "Lightweight spray."
+    assert kw["product_skin_types"] == ["oily"]
+    assert kw["product_concerns"] == ["uv"]
+    assert kw["product_benefits"] == ["protection"]
+    assert kw["contains_fragrance"] is False
+    assert kw["contains_alcohol"] is False
+    assert kw["product_rationale"] == {"role": "essential", "fit_score": 0.71}
+    assert kw["image_analysis"] == image_analysis
 
 
 def test_matched_payload_missing_analysis_fields_returns_none() -> None:

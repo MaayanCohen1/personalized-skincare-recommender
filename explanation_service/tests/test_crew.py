@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any
 from unittest.mock import MagicMock, patch
 
@@ -25,7 +26,22 @@ def _stub_lookup_ingredient(monkeypatch: pytest.MonkeyPatch) -> None:
     """Prevent crew-level tests from reaching the real RAG/vector pipeline."""
     monkeypatch.setattr(
         "explanation_service.crew.lookup_ingredient",
-        lambda ingredient_name: {"fact": "stub", "source": f"stub:{ingredient_name}"},
+        lambda ingredient_name: {
+            "fact": "stub",
+            "sources": [f"stub:{ingredient_name}"],
+        },
+    )
+
+
+@pytest.fixture(autouse=True)
+def _stub_retrieve_contextual_guidance(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Avoid loading SentenceTransformer + KB during crew unit tests."""
+    monkeypatch.setattr(
+        "explanation_service.crew.retrieve_contextual_guidance",
+        lambda **kwargs: {
+            "guidance_text": "[test_guidance.md#p0] Stub contextual guidance for unit tests.",
+            "sources": ["test_guidance.md#p0"],
+        },
     )
 
 
@@ -222,6 +238,72 @@ def test_task_identity_is_shared_across_context(monkeypatch: pytest.MonkeyPatch)
     assert draft.context[0] is research
     assert audit.context[0] is research
     assert audit.context[1] is draft
+    assert getattr(draft, "output_pydantic", None) is None
+    assert audit.output_pydantic is FinalExplanation
+
+
+def test_draft_guardrail_accepts_plain_text_raw() -> None:
+    """Draft stage is plain string output; guardrail must not require DraftExplanation."""
+    project = ExplanationCrew()
+    task_out = MagicMock()
+    task_out.raw = (
+        "This moisturizer supports everyday hydration comfort. "
+        "It fits a gentle daily routine."
+    )
+    task_out.pydantic = None
+    passed, _ = project._draft_guardrail(task_out)
+    assert passed is True
+
+
+def test_draft_guardrail_rejects_wrong_sentence_count() -> None:
+    project = ExplanationCrew()
+    task_out = MagicMock()
+    task_out.raw = "Only one sentence."
+    task_out.pydantic = None
+    passed, msg = project._draft_guardrail(task_out)
+    assert passed is False
+    assert "2 sentences" in msg
+
+
+def test_draft_guardrail_rejects_three_sentences() -> None:
+    project = ExplanationCrew()
+    task_out = MagicMock()
+    task_out.raw = "First sentence here. Second sentence here. Third sentence here."
+    task_out.pydantic = None
+    passed, msg = project._draft_guardrail(task_out)
+    assert passed is False
+    assert "2 sentences" in msg
+
+
+def test_draft_guardrail_passes_with_abbreviation_in_one_sentence() -> None:
+    """Spurious periods in e.g. should not fail draft count after shielding."""
+    project = ExplanationCrew()
+    task_out = MagicMock()
+    task_out.raw = (
+        "This moisturizer fits dry skin (e.g. barrier comfort). "
+        "It includes humectants from the research evidence for daily support."
+    )
+    task_out.pydantic = None
+    passed, _ = project._draft_guardrail(task_out)
+    assert passed is True
+
+
+def test_draft_guardrail_logs_include_request_and_product(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    caplog.set_level(logging.INFO)
+    project = ExplanationCrew()
+    project._current_request_id = "req-test-123"
+    project._current_product_name = "Test Moisturizer"
+    task_out = MagicMock()
+    task_out.raw = "Sentence one here. Sentence two here."
+    task_out.pydantic = None
+    project._draft_guardrail(task_out)
+    joined = " ".join(r.message for r in caplog.records)
+    assert "req-test-123" in joined
+    assert "Test Moisturizer" in joined
+    assert "sentence_count=2" in joined
+    assert "PASSED" in joined
 
 
 def test_crew_configures_output_log_file(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -398,6 +480,30 @@ def test_audit_guardrail_accepts_fallback_sources_unchanged() -> None:
     assert passed is True
 
 
+def test_coerce_research_output_splits_legacy_source_string() -> None:
+    from explanation_service.crew import _coerce_research_output
+
+    raw = (
+        '[{"ingredient":"niacinamide","fact":"Supports barrier function.",'
+        '"source":"a.md#p1; b.md#p2"}]'
+    )
+    out = _coerce_research_output(raw)
+    assert out is not None
+    assert len(out.items) == 1
+    assert out.items[0].sources == ["a.md#p1", "b.md#p2"]
+
+
+def test_coerce_research_output_wraps_single_object_with_legacy_source() -> None:
+    import json
+
+    from explanation_service.crew import _coerce_research_output
+
+    payload = {"ingredient": "x", "fact": "y", "source": "only.md#p0"}
+    out = _coerce_research_output(json.dumps(payload))
+    assert out is not None
+    assert out.items[0].sources == ["only.md#p0"]
+
+
 def test_tracing_env_vars_set_on_import() -> None:
     """Importing crew.py should set CI and telemetry env vars."""
     import os
@@ -465,6 +571,61 @@ def test_acne_condition_guidance_passed_to_kickoff() -> None:
 
     guidance = captured_inputs["condition_guidance"]
     assert "pore" in guidance.lower()
+
+
+def test_stage2_product_context_passed_to_kickoff() -> None:
+    """Rich product + selection + image context should reach crew kickoff inputs."""
+    captured_inputs: dict[str, Any] = {}
+
+    kickoff_result = MagicMock()
+    kickoff_result.raw = (
+        '{"explanation_text":"This daily SPF supports consistent protection. '
+        'It includes filters noted in reference materials.","sources":["generic"]}'
+    )
+
+    crew_instance = MagicMock()
+    crew_instance.kickoff.side_effect = lambda inputs: (
+        captured_inputs.update(inputs) or kickoff_result
+    )
+
+    project = MagicMock()
+    project.crew.return_value = crew_instance
+
+    rationale = {"role": "essential", "category": "SPF", "fit_score": 0.88}
+
+    with patch("explanation_service.crew.ExplanationCrew", return_value=project):
+        generate_explanation_for_product(
+            skin_conditions=["dry"],
+            product_name="Sun Spray",
+            ingredients=["zinc oxide"],
+            product_category="SPF",
+            product_description="Lightweight spray SPF 50.",
+            product_skin_types=["dry"],
+            product_concerns=["sun protection"],
+            product_benefits=["spf"],
+            contains_fragrance=True,
+            contains_alcohol=False,
+            product_rationale=rationale,
+            image_analysis={"visual_signals": ["dry patches"]},
+        )
+
+    for key in (
+        "product_category",
+        "product_profile",
+        "selection_context",
+        "visual_context",
+        "condition_guidance",
+        "contextual_guidance",
+        "ingredients",
+        "skin_conditions",
+        "product_name",
+    ):
+        assert key in captured_inputs
+    assert captured_inputs["product_category"] == "SPF"
+    assert "Sun Spray" in captured_inputs["product_profile"]
+    assert "essential" in captured_inputs["selection_context"].lower()
+    assert "Visual signals" in captured_inputs["visual_context"]
+    assert "zinc oxide" in captured_inputs["ingredients"].lower()
 
 
 def test_missing_api_key_uses_deterministic_fallback(

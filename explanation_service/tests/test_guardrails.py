@@ -3,8 +3,14 @@
 from __future__ import annotations
 
 from explanation_service.guardrails import (
+    draft_text_for_sentence_check,
     filter_to_research_subset,
     guard_sources_subset,
+    guard_two_sentences,
+    guard_two_sentences_draft,
+    normalize_draft_whitespace,
+    preview_for_log,
+    sentence_count_draft,
 )
 
 
@@ -83,3 +89,43 @@ class TestGuardSourcesSubset:
 
     def test_empty_final_sources_returns_false(self) -> None:
         assert guard_sources_subset([], ["dict.md#p1"]) is False
+
+
+# ---------------------------------------------------------------------------
+# Draft sentence helpers (draft_task guardrail only)
+# ---------------------------------------------------------------------------
+
+
+class TestDraftSentenceNormalization:
+    def test_preview_for_log_truncates(self) -> None:
+        long = "word " * 200
+        p = preview_for_log(long, max_len=50)
+        assert len(p) <= 50
+        assert p.endswith("...")
+
+    def test_normalize_draft_whitespace_collapses_newlines(self) -> None:
+        t = normalize_draft_whitespace("  One  two.\n\n  Three.  ")
+        assert t == "One two. Three."
+
+    def test_normalize_strips_light_markdown_noise(self) -> None:
+        t = normalize_draft_whitespace("**Bold** start. Second `here`.")
+        assert "`" not in t
+        assert "**" not in t
+
+    def test_abbreviation_shield_reduces_spurious_sentence_count(self) -> None:
+        raw = "This fits routine needs (e.g. barrier comfort). It uses gentle hydration daily."
+        assert guard_two_sentences(raw) is False
+        assert sentence_count_draft(raw) == 2
+        assert guard_two_sentences_draft(raw) is True
+
+    def test_three_real_sentences_still_fails_draft_guard(self) -> None:
+        raw = "One thing here. Two things here. Three things here."
+        assert sentence_count_draft(raw) == 3
+        assert guard_two_sentences_draft(raw) is False
+
+    def test_draft_check_does_not_change_audit_sentence_counter(self) -> None:
+        """Audit/final path still uses strict count_sentences / guard_two_sentences."""
+        raw = "This fits routine needs (e.g. barrier comfort). It uses gentle hydration daily."
+        assert guard_two_sentences(raw) is False
+        checked = draft_text_for_sentence_check(raw)
+        assert guard_two_sentences(checked) is True
