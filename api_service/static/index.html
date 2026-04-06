@@ -407,7 +407,6 @@
     metaPart(item.contains_fragrance ? "Contains fragrance" : "Fragrance-free");
     metaPart(item.contains_alcohol ? "Contains alcohol" : "Alcohol-free");
     if (item.role) metaPart("Role: " + item.role);
-    if (item.fit_score != null) metaPart("Fit score: " + item.fit_score);
 
     body.appendChild(meta);
     article.appendChild(body);
