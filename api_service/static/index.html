@@ -29,7 +29,7 @@
   }
   h2 { font-weight: 600; font-size: 1.35rem; margin: 0 0 1rem; letter-spacing: -0.02em; }
   label { display: block; margin-top: .85rem; font-size: 0.9rem; color: var(--muted); }
-  input[type=text], select {
+  input[type=text], input[type=file], select {
     width: 100%;
     margin-top: 0.25rem;
     padding: 0.5rem 0.6rem;
@@ -38,6 +38,7 @@
     font-size: 0.95rem;
     background: #fff;
   }
+  input[type=file] { padding: 0.4rem 0.5rem; }
   .cb-group label { display: inline; margin-right: 1rem; color: var(--text); }
   fieldset {
     margin-top: 0.85rem;
@@ -111,6 +112,12 @@
     color: var(--accent);
     font-weight: 600;
   }
+  .card-brand {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin: 0.2rem 0 0;
+  }
   .card-title { font-size: 1.05rem; font-weight: 600; margin: 0; line-height: 1.25; }
   .card-desc {
     font-size: 0.88rem;
@@ -176,8 +183,8 @@
 <body>
 <h2>SafeGlow AI — Demo</h2>
 <form id="form">
-  <label>Image path (absolute)
-    <input type="text" id="imagePath" placeholder="/path/to/face.jpg" required>
+  <label>Face photo (upload)
+    <input type="file" id="imageFile" accept="image/*" required>
   </label>
 
   <label>Skin type
@@ -265,7 +272,7 @@
 
       return {
         id: id,
-        brand: "",
+        brand: safeStr(product.brand),
         product_name: safeStr(product.name),
         category: safeStr(product.category),
         brand_image: null,
@@ -371,6 +378,13 @@
     cat.textContent = item.category || "Product";
     body.appendChild(cat);
 
+    if (item.brand) {
+      var brandEl = document.createElement("div");
+      brandEl.className = "card-brand";
+      brandEl.textContent = item.brand;
+      body.appendChild(brandEl);
+    }
+
     var title = document.createElement("h3");
     title.className = "card-title";
     title.textContent = item.product_name || "Unnamed product";
@@ -460,29 +474,32 @@
     statusEl.textContent = "Submitting…";
     hideResultsUI();
 
+    var fileInput = document.getElementById("imageFile");
+    var file = fileInput && fileInput.files && fileInput.files[0];
+    if (!file) {
+      statusEl.textContent = "Please choose an image file.";
+      return;
+    }
+
     var sensBoxes = document.querySelectorAll(".sens:checked");
     var sensitivities = Array.from(sensBoxes).map(function (cb) { return cb.value; });
     if (sensitivities.length === 0) sensitivities.push("none");
 
-    var body = {
-      image_path: document.getElementById("imagePath").value,
-      user_preferences: {
-        skin_type: document.getElementById("skinType").value,
-        has_breakouts: document.getElementById("hasBreakouts").checked,
-        sensitivities: sensitivities,
-      },
-    };
+    var fd = new FormData();
+    fd.append("image", file, file.name);
+    fd.append("skin_type", document.getElementById("skinType").value);
+    fd.append("has_breakouts", document.getElementById("hasBreakouts").checked ? "true" : "false");
+    fd.append("sensitivities", JSON.stringify(sensitivities));
 
     var requestId;
     try {
-      var res = await fetch("/recommend", {
+      var res = await fetch("/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: fd,
       });
       var data = await res.json();
       if (!res.ok) {
-        statusEl.textContent = "Error: " + JSON.stringify(data);
+        statusEl.textContent = "Error: " + (data.detail ? JSON.stringify(data.detail) : JSON.stringify(data));
         return;
       }
       requestId = data.request_id;
@@ -492,8 +509,8 @@
       return;
     }
 
-    var POLL_MS = 3000;
-    var MAX_POLLS = 120;
+    var POLL_MS = 2000;
+    var MAX_POLLS = 180;
     for (var i = 0; i < MAX_POLLS; i++) {
       await new Promise(function (r) { setTimeout(r, POLL_MS); });
       try {
@@ -502,6 +519,10 @@
         if (pollData.status === "completed") {
           statusEl.textContent = "Completed";
           showCompletedUI(pollData);
+          return;
+        }
+        if (pollData.status === "failed") {
+          statusEl.textContent = "Failed: " + (pollData.error || "Something went wrong.");
           return;
         }
         statusEl.textContent = "Processing… poll " + (i + 1) + " (request_id: " + requestId + ")";

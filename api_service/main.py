@@ -1,10 +1,15 @@
 """API Service — async request ingress + result polling via Redis.
 
-Event chain:
+Event chain (local pipeline):
   api_service -> image.uploaded -> vision_service
   -> signals.detected -> matching_service
   -> routine.matched -> explanation_service
   -> routine.completed -> api_service (background consumer -> Redis)
+
+Bridge demo (Azure UI + local workers):
+  Browser -> POST /submit -> forward to LOCAL_BRIDGE -> local RabbitMQ pipeline
+  -> bridge POST /internal/result-callback -> in-memory store
+  -> browser polls GET /result/{request_id}
 """
 
 from __future__ import annotations
@@ -20,11 +25,13 @@ from typing import Any
 
 import pika
 import redis
-from fastapi import FastAPI
+from fastapi import BackgroundTasks, FastAPI, File, Form, Header, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
+from api_service.bridge_forward import post_to_local_bridge
+from api_service.request_store import bridge_request_store
 from matching_service.core.models import UserPreferences
 
 logger = logging.getLogger(__name__)
@@ -36,6 +43,10 @@ _STATIC_DIR = Path(__file__).resolve().parent / "static"
 
 RABBITMQ_URL: str = os.getenv("RABBITMQ_URL", "amqp://guest:guest@localhost:5672/")
 REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+# Set to false on Azure when using only the local-bridge flow (no RabbitMQ in the cloud).
+ENABLE_RABBIT_RESULT_CONSUMER: bool = os.getenv(
+    "ENABLE_RABBIT_RESULT_CONSUMER", "true"
+).strip().lower() in ("1", "true", "yes", "on")
 
 QUEUE_IMAGE_UPLOADED: str = "image.uploaded"
 
@@ -53,6 +64,13 @@ _redis_client: redis.Redis | None = None
 class RecommendRequest(BaseModel):
     image_path: str
     user_preferences: UserPreferences
+
+
+class ResultCallbackBody(BaseModel):
+    request_id: str
+    status: str = Field(..., pattern="^(completed|failed)$")
+    result: dict[str, Any] | None = None
+    error: str | None = None
 
 
 def redis_result_key(request_id: str) -> str:
@@ -184,6 +202,11 @@ def on_startup() -> None:
     global _consumer_thread, _redis_client
 
     _redis_client = redis.Redis.from_url(REDIS_URL, decode_responses=False)
+    if not ENABLE_RABBIT_RESULT_CONSUMER:
+        logger.info(
+            "Skipping RabbitMQ routine.completed consumer (ENABLE_RABBIT_RESULT_CONSUMER=false)"
+        )
+        return
     _stop_event.clear()
     _consumer_thread = threading.Thread(target=_consume_completed_events, daemon=True)
     _consumer_thread.start()
@@ -192,8 +215,125 @@ def on_startup() -> None:
 @app.on_event("shutdown")
 def on_shutdown() -> None:
     _stop_event.set()
-    if _consumer_thread and _consumer_thread.is_alive():
+    if _consumer_thread is not None and _consumer_thread.is_alive():
         _consumer_thread.join(timeout=3)
+
+
+def _forward_to_bridge_task(
+    request_id: str,
+    file_content: bytes,
+    filename: str,
+    skin_type: str,
+    has_breakouts: bool,
+    sensitivities_json: str,
+    bridge_url: str,
+    callback_url: str,
+    callback_token: str,
+) -> None:
+    """Background: POST multipart to local tunnel bridge."""
+    try:
+        bridge_request_store.set_status(request_id, "processing")
+        post_to_local_bridge(
+            bridge_url,
+            file_content=file_content,
+            filename=filename,
+            request_id=request_id,
+            skin_type=skin_type,
+            has_breakouts=has_breakouts,
+            sensitivities_json=sensitivities_json,
+            callback_url=callback_url,
+            callback_token=callback_token,
+        )
+        logger.info("Bridge forward finished for request_id=%s (awaiting callback)", request_id)
+    except Exception:
+        logger.exception("Bridge forward failed request_id=%s", request_id)
+        bridge_request_store.fail(request_id, "Failed to reach local bridge or bridge rejected request")
+
+
+@app.post("/submit")
+async def submit_demo(
+    background_tasks: BackgroundTasks,
+    image: UploadFile = File(...),
+    skin_type: str = Form(...),
+    has_breakouts: str = Form("false"),
+    sensitivities: str = Form(...),
+) -> dict[str, Any]:
+    """Multipart demo submit for Azure UI: forwards to ``LOCAL_BRIDGE_URL``."""
+    bridge_url = os.getenv("LOCAL_BRIDGE_URL", "").strip()
+    result_callback_url = os.getenv("RESULT_CALLBACK_URL", "").strip()
+    callback_token = os.getenv("CALLBACK_TOKEN", "").strip()
+    if not bridge_url:
+        raise HTTPException(
+            status_code=503,
+            detail="LOCAL_BRIDGE_URL is not configured on this server.",
+        )
+    if not result_callback_url or not callback_token:
+        raise HTTPException(
+            status_code=503,
+            detail="RESULT_CALLBACK_URL and CALLBACK_TOKEN must be configured.",
+        )
+
+    request_id = uuid.uuid4().hex
+    file_content = await image.read()
+    filename = image.filename or "upload.jpg"
+    hb = has_breakouts.lower() in ("true", "1", "yes", "on")
+
+    bridge_request_store.create(request_id, "queued")
+    logger.info(
+        "submit received request_id=%s skin_type=%s has_breakouts=%s filename=%r size=%d",
+        request_id,
+        skin_type,
+        hb,
+        filename,
+        len(file_content),
+    )
+
+    background_tasks.add_task(
+        _forward_to_bridge_task,
+        request_id,
+        file_content,
+        filename,
+        skin_type,
+        hb,
+        sensitivities,
+        bridge_url,
+        result_callback_url,
+        callback_token,
+    )
+
+    return {"request_id": request_id, "status": "queued"}
+
+
+@app.post("/internal/result-callback")
+async def result_callback(
+    body: ResultCallbackBody,
+    x_callback_token: str | None = Header(default=None, alias="X-Callback-Token"),
+) -> dict[str, str]:
+    """Local bridge posts final routine payload here (protected)."""
+    expected_token = os.getenv("CALLBACK_TOKEN", "").strip()
+    if not expected_token:
+        raise HTTPException(status_code=503, detail="CALLBACK_TOKEN not configured")
+    if x_callback_token != expected_token:
+        logger.warning("Callback rejected: invalid or missing X-Callback-Token")
+        raise HTTPException(status_code=401, detail="Invalid callback token")
+
+    if body.status == "completed":
+        if not body.result:
+            raise HTTPException(status_code=400, detail="result required when status is completed")
+        ok = bridge_request_store.complete(body.request_id, body.result)
+        if not ok:
+            logger.warning("Callback for unknown request_id=%s", body.request_id)
+            raise HTTPException(status_code=404, detail="Unknown request_id")
+        logger.info("Callback received request_id=%s status=completed", body.request_id)
+        return {"ok": "true"}
+
+    err = body.error or "Unknown error"
+    ok = bridge_request_store.fail(body.request_id, err)
+    if not ok:
+        logger.warning("Callback fail for unknown request_id=%s", body.request_id)
+        raise HTTPException(status_code=404, detail="Unknown request_id")
+    logger.info("Callback received request_id=%s status=failed", body.request_id)
+    return {"ok": "true"}
 
 
 @app.post("/recommend")
@@ -220,6 +360,18 @@ async def recommend(request: RecommendRequest) -> dict[str, str]:
 
 @app.get("/result/{request_id}")
 async def get_result(request_id: str) -> dict[str, Any]:
+    bridge_row = bridge_request_store.get(request_id)
+    if bridge_row is not None:
+        out: dict[str, Any] = {
+            "request_id": request_id,
+            "status": bridge_row["status"],
+        }
+        if bridge_row["status"] == "completed" and bridge_row["result"] is not None:
+            out["result"] = bridge_row["result"]
+        if bridge_row["status"] == "failed" and bridge_row["error"]:
+            out["error"] = bridge_row["error"]
+        return out
+
     if _redis_client is None:
         raise RuntimeError("Redis client was not initialized")
 
