@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY matching_service/ ./matching_service/
 COPY shared/ ./shared/
 
-CMD ["python", "-m", "matching_service.matching"]
+CMD ["python", "-m", "matching_service.worker"]

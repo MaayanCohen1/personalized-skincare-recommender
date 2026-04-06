@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   rabbitmq:
     image: rabbitmq:3.13-management
@@ -43,6 +41,18 @@ services:
       redis:
         condition: service_healthy
 
+  vision_service:
+    build:
+      context: .
+      dockerfile: vision_service/Dockerfile
+    container_name: vision_service
+    restart: unless-stopped
+    environment:
+      - RABBITMQ_URL=${RABBITMQ_URL}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
   matching_service:
     build:
       context: .
@@ -64,6 +74,9 @@ services:
     environment:
       - RABBITMQ_URL=${RABBITMQ_URL}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - CI=true
+      - CREWAI_TELEMETRY_OPTOUT=true
+      - OTEL_SDK_DISABLED=true
     depends_on:
       rabbitmq:
         condition: service_healthy
