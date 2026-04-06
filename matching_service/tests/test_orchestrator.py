@@ -8,7 +8,7 @@ from typing import Any
 import pytest
 
 from matching_service.core.models import Sensitivity, SkinType, UserPreferences
-from matching_service.core.orchestrator import match_for_user
+from matching_service.core.orchestrator import build_matching_context, match_for_user
 from shared.models import Product, ProductCategory, UserConstraints
 
 
@@ -35,7 +35,6 @@ def _prefs(
         skin_type=skin_type,
         has_breakouts=has_breakouts,
         sensitivities=sensitivities or [],
-        is_cruelty_free_required=False,
     )
 
 
@@ -48,12 +47,12 @@ def _install_match_spy(
         catalog: list[Product],
         constraints: UserConstraints,
         skin_conditions: list[str] | None = None,
-        ranker: Callable[[list[str], list[Product]], list[Product]] | None = None,
+        scorer: Callable[[list[str], list[Product]], dict[str, float]] | None = None,
     ) -> list[Product]:
         captured["catalog"] = catalog
         captured["constraints"] = constraints
         captured["skin_conditions"] = skin_conditions
-        captured["ranker"] = ranker
+        captured["scorer"] = scorer
         return list(catalog)
 
     monkeypatch.setattr("matching_service.core.orchestrator.match_products", _spy)
@@ -159,3 +158,45 @@ def test_empty_catalog_returns_empty_list(monkeypatch: pytest.MonkeyPatch) -> No
     )
 
     assert result == []
+
+
+def test_scorer_is_forwarded_to_rules_engine(
+    monkeypatch: pytest.MonkeyPatch,
+    catalog: list[Product],
+) -> None:
+    captured = _install_match_spy(monkeypatch)
+    scorer = lambda skin_conditions, products: {p.id: 0.5 for p in products}
+
+    match_for_user(
+        catalog=catalog,
+        user_preferences=_prefs(skin_type=SkinType.DRY, has_breakouts=False),
+        scorer=scorer,
+    )
+
+    assert captured["scorer"] is scorer
+
+
+# ---------------------------------------------------------------------------
+# build_matching_context
+# ---------------------------------------------------------------------------
+
+
+def test_build_matching_context_merges_signals_and_builds_constraints() -> None:
+    """build_matching_context should return merged skin conditions and UserConstraints."""
+    prefs = _prefs(skin_type=SkinType.DRY, has_breakouts=True, sensitivities=[Sensitivity.FRAGRANCE])
+
+    skin_conditions, constraints = build_matching_context(
+        prefs, visual_signals=["oily"], request_id="ctx-1"
+    )
+
+    assert skin_conditions == ["dry", "acne", "oily"]
+    assert constraints.request_id == "ctx-1"
+    assert constraints.sensitivities == ["fragrance"]
+
+
+def test_build_matching_context_none_sensitivity_yields_empty_list() -> None:
+    prefs = _prefs(skin_type=SkinType.OILY, has_breakouts=False, sensitivities=[Sensitivity.NONE])
+
+    _, constraints = build_matching_context(prefs, request_id="ctx-2")
+
+    assert constraints.sensitivities == []

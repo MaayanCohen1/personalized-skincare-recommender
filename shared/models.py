@@ -33,11 +33,26 @@ class Product(BaseModel):
     category: ProductCategory
     ingredients: list[str]
     description: str
+    skin_types: list[str] = Field(default_factory=list)
+    concerns: list[str] = Field(default_factory=list)
+    benefits: list[str] = Field(default_factory=list)
+    contains_fragrance: bool = False
+    contains_alcohol: bool = False
 
     @field_validator("ingredients", mode="before")
     @classmethod
     def normalize_ingredients(cls, v: list[str]) -> list[str]:
         return [ingredient.lower() for ingredient in v]
+
+    @field_validator("skin_types", mode="before")
+    @classmethod
+    def normalize_skin_types(cls, v: list[str]) -> list[str]:
+        return [t.lower().strip() for t in v]
+
+    @field_validator("concerns", "benefits", mode="before")
+    @classmethod
+    def normalize_string_list(cls, v: list[str]) -> list[str]:
+        return [s.lower().strip().replace("_", " ") for s in v]
 
 
 class UserConstraints(BaseModel):
