@@ -1,43 +1,112 @@
 research_task:
   description: >
     User skin conditions: {skin_conditions}.
-    Product: {product_name}.
-    Ingredients: {ingredients}.
+    Product: {product_name} (category: {product_category}).
+
+    Product profile (from catalog — use only to choose relevant angles, not as medical fact):
+    {product_profile}
+
+    Routine / selection context (from matcher — internal hints, not medical claims):
+    {selection_context}
+
+    Optional image-linked context (may be empty):
+    {visual_context}
+
+    Retrieved knowledge-base guidance (condition framing, category fit, formulation cues —
+    NOT a substitute for IngredientEvidenceTool; cite these source ids only when you echo
+    ideas clearly supported by a bracketed excerpt below):
+    {contextual_guidance}
+
+    Ingredients to research (call the tool for EACH listed name): {ingredients}.
 
     For EACH ingredient, call IngredientEvidenceTool and return STRICT JSON only.
+    Each item's ``sources`` must be the ids returned by that tool (ingredient evidence rows).
   expected_output: >
     STRICT JSON array only (no markdown, no prose, no code fences):
-    [{"ingredient":"<name>","fact":"<safe guidance>","source":"<source_id>"}]
+    [{"ingredient":"<name>","fact":"<safe guidance>","sources":["<source_id>", "..."]}]
   agent: ingredient_analyst
 
 draft_task:
   description: >
-    Using the strict JSON evidence from research_task, write a friendly plain-English
-    explanation for why the product may suit the provided skin conditions.
+    You are drafting the user-facing explanation for ONE selected product in their routine.
+
+    CRITICAL — output format (must pass automated validation):
+    - Return ONLY plain text: exactly TWO sentences, no more, no less.
+    - Each sentence must end with a single period (.), question mark (?), or exclamation (!).
+    - Do not add a title, greeting, sign-off, bullet points, numbered lists, or line breaks
+      between sentences (use one space after the first sentence, then the second sentence).
+    - Do not write "e.g." or "i.e." or similar abbreviations with periods — write "for example"
+      or "that is" if needed.
+    - Do not paste source ids, brackets, markdown, code fences, or JSON in the draft text.
+
+    User skin conditions: {skin_conditions}.
 
     {condition_guidance}
 
-    Rules:
-    - Exactly 2 sentences.
-    - Plain English, user-friendly tone.
-    - Match wording to the user's skin conditions — do NOT emphasise
-      benefits for a different skin type.
+    Product profile (make moisturizer, SPF, cleanser, toner, and serum sound distinct):
+    {product_profile}
+
+    Routine / selection context (why this SKU was chosen — use for fit, not hype):
+    {selection_context}
+
+    Optional image-linked context:
+    {visual_context}
+
+    Retrieved guidance excerpts (each line starts with a source id in brackets — use for ideas
+    only; do not copy brackets or ids into your draft):
+    {contextual_guidance}
+
+    Strict JSON evidence from research_task (ingredient facts — provided via task context):
+    (provided via task context from research_task)
+
+    Sentence 1 — product fit (one sentence only):
+    Why this product type, routine role (essential vs optional from selection context), and
+    formulation fit the user's skin conditions. Prefer guidance-aligned wording; avoid sounding
+    like a generic ingredient dictionary.
+
+    Sentence 2 — supporting facts (one sentence only):
+    One or two ideas grounded ONLY in the research_task JSON facts and/or paraphrases of the
+    guidance excerpts. Do not add claims with no support in that evidence.
+
+    Category hints (keep each in one clause inside sentence 1 when relevant):
+    SPF: daily protection and comfortable finish for this skin type.
+    Cleanser: cleansing step and skin feel.
+    Toner: optional supportive step, not the core routine.
+    Serum: targeted add-on, not a replacement for moisturizer or SPF.
+    Moisturizer: hydration and barrier comfort matched to oily vs dry.
+
+    Safety:
     - Forbidden medical terms: diagnose, diagnosis, cure, treat, treatment,
       medication, prescription, heal, therapy, disease, clinical, medical.
     - Forbidden phrases: guaranteed results, will cure.
+    - No marketing superlatives or promises; stay factual and cautious.
   expected_output: >
-    Exactly 2 sentences of plain-English text.
+    Exactly two plain-English sentences as a single line of text, nothing else.
   agent: user_explainer
 
 audit_task:
   description: >
     Validate the drafted explanation and produce final STRICT JSON.
 
+    User skin conditions: {skin_conditions}.
+    Product profile (for grounding check only):
+    {product_profile}
+
+    Retrieved guidance (citable chunk ids in brackets — may be used in ``sources`` when
+    sentence 2 reflects them):
+    {contextual_guidance}
+
     Rules:
     - explanation_text must be exactly 2 sentences.
-    - No forbidden medical terms or forbidden phrases.
-    - sources must be a subset of the research_task sources.
-    - If only generic sources exist, return a safe generic explanation and
+    - Sentence 1 should reflect product category, essential vs optional role, benefits or
+      concerns when provided; avoid a generic ingredient-glossary opening when richer context
+      exists.
+    - Sentence 2 must only restate ideas supportable from research_task JSON and/or the
+      retrieved guidance excerpts; reject unsupported medical or ingredient claims.
+    - ``sources`` must be a subset of the UNION of (research_task per-ingredient source ids)
+      AND the guidance source ids shown in brackets above. Use at least one source when
+      non-generic evidence exists.
+    - If only generic sources exist from research, return a safe generic explanation and
       sources as ["generic"].
 
     Forbidden medical terms: diagnose, diagnosis, cure, treat, treatment,

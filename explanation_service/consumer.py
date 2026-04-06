@@ -10,11 +10,18 @@ from typing import Any
 
 import pika
 
-from explanation_service.crew import generate_explanation_for_product
 from shared.models import Product, RoutineCompletedEvent, RoutineMatchedEvent
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+
+
+def _explain_product(*args: Any, **kwargs: Any) -> dict[str, Any]:
+    """Lazy-bound entry to the Crew pipeline; patch this symbol in unit tests."""
+    from explanation_service.crew import generate_explanation_for_product
+
+    return generate_explanation_for_product(*args, **kwargs)
+
 
 RABBITMQ_URL = os.getenv("RABBITMQ_URL", "amqp://guest:guest@localhost:5672/")
 
@@ -84,14 +91,35 @@ def _generate_explanations(
     matched_products: list[Product],
     skin_conditions: list[str],
     request_id: str,
+    image_analysis: dict[str, Any] | None = None,
+    routine_rationale: dict[str, Any] | None = None,
 ) -> dict[str, str]:
     explanations: dict[str, str] = {}
+    product_rationales: dict[str, Any] = {}
+    if isinstance(routine_rationale, dict):
+        raw_pr = routine_rationale.get("product_rationales")
+        if isinstance(raw_pr, dict):
+            product_rationales = raw_pr
+
     for product in matched_products:
-        response = generate_explanation_for_product(
+        per_rationale = product_rationales.get(product.id)
+        if not isinstance(per_rationale, dict):
+            per_rationale = None
+
+        response = _explain_product(
             skin_conditions=skin_conditions,
             product_name=product.name,
             ingredients=product.ingredients,
             request_id=request_id,
+            product_category=product.category.value,
+            product_description=product.description,
+            product_skin_types=product.skin_types,
+            product_concerns=product.concerns,
+            product_benefits=product.benefits,
+            contains_fragrance=product.contains_fragrance,
+            contains_alcohol=product.contains_alcohol,
+            product_rationale=per_rationale,
+            image_analysis=image_analysis,
         )
         explanations[product.id] = str(response.get("explanation_text", ""))
     return explanations
@@ -130,6 +158,8 @@ def _handle_matched_payload(
         matched_products=matched_event.matched_products,
         skin_conditions=matched_event.profile.skin_conditions,
         request_id=request_id,
+        image_analysis=payload.get("image_analysis"),
+        routine_rationale=payload.get("routine_rationale"),
     )
 
     completed = RoutineCompletedEvent(

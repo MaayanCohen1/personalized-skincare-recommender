@@ -21,19 +21,26 @@ from crewai.project import CrewBase, agent, crew, task
 from pydantic import BaseModel as _BaseModel
 
 from explanation_service.guardrails import (
+    draft_text_for_sentence_check,
     filter_to_research_subset,
     guard_no_banned_medical_terms,
     guard_two_sentences,
+    guard_two_sentences_draft,
+    preview_for_log,
+    sentence_count_draft,
 )
 from explanation_service.output_models import (
-    DraftExplanation,
     FinalExplanation,
     IngredientEvidence,
     ResearchOutput,
 )
 from explanation_service.condition_hints import build_condition_guidance
 from explanation_service.ingredients import extract_key_ingredients
-from explanation_service.tools import IngredientEvidenceTool, lookup_ingredient
+from explanation_service.tools import (
+    IngredientEvidenceTool,
+    lookup_ingredient,
+    retrieve_contextual_guidance,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -45,9 +52,11 @@ class ExplanationCrew:
     agents_config = "config/agents.yaml"
     tasks_config = "config/tasks.yaml"
     _last_research_sources: list[str] = []
+    _contextual_citation_sources: list[str] = []
     _task_cache: dict[str, Task]
     _guardrail_failures: dict[str, int]
     _current_request_id: str = "unknown"
+    _current_product_name: str = "unknown"
 
     @agent
     def ingredient_analyst(self) -> Agent:
@@ -91,7 +100,6 @@ class ExplanationCrew:
             cache["draft_task"] = Task(
                 config=self.tasks_config["draft_task"],
                 context=[self.research_task()],
-                output_pydantic=DraftExplanation,
                 guardrail=self._draft_guardrail,
                 guardrail_max_retries=3,
             )
@@ -104,6 +112,7 @@ class ExplanationCrew:
             cache["audit_task"] = Task(
                 config=self.tasks_config["audit_task"],
                 context=[self.research_task(), self.draft_task()],
+                output_pydantic=FinalExplanation,
                 guardrail=self._audit_guardrail,
                 guardrail_max_retries=3,
             )
@@ -133,12 +142,18 @@ class ExplanationCrew:
             return False, "Research output must parse into ResearchOutput(items=[...])."
 
         for item in parsed.items:
-            if not item.ingredient.strip() or not item.fact.strip() or not item.source.strip():
+            if not item.ingredient.strip() or not item.fact.strip() or not item.sources:
                 self._log_guardrail_failure(
                     "research_task",
-                    "Each research item must include non-empty ingredient/fact/source.",
+                    "Each research item must include non-empty ingredient, fact, and sources.",
                 )
-                return False, "Each research item must include non-empty ingredient/fact/source."
+                return False, "Each research item must include non-empty ingredient, fact, and sources."
+            if not all(isinstance(s, str) and s.strip() for s in item.sources):
+                self._log_guardrail_failure(
+                    "research_task",
+                    "Each research item sources entry must be a non-empty string.",
+                )
+                return False, "Each research item sources entry must be a non-empty string."
             if not guard_no_banned_medical_terms(item.fact):
                 self._log_guardrail_failure(
                     "research_task",
@@ -146,35 +161,83 @@ class ExplanationCrew:
                 )
                 return False, "Research facts contain banned medical terms or forbidden phrases."
 
-        self._last_research_sources = [item.source for item in parsed.items]
+        seen: set[str] = set()
+        flat: list[str] = []
+        for item in parsed.items:
+            for s in item.sources:
+                t = s.strip()
+                if t and t not in seen:
+                    seen.add(t)
+                    flat.append(t)
+        self._last_research_sources = flat
         self._reset_guardrail_failures("research_task")
         logger.info("Research guardrail passed.")
         return True, output
 
     def _draft_guardrail(self, output: Any):
-        parsed = _coerce_draft_output(output)
-        if parsed is None:
+        raw_draft = _coerce_draft_plain_text(output)
+        req_id = getattr(self, "_current_request_id", "unknown") or "unknown"
+        product = getattr(self, "_current_product_name", "unknown") or "unknown"
+
+        if not raw_draft:
+            logger.info(
+                "draft_guardrail request_id=%s product_name=%r raw_preview=<empty> sentence_count=n/a",
+                req_id,
+                product,
+            )
             self._log_guardrail_failure(
                 "draft_task",
-                "Draft output must parse into DraftExplanation.",
+                "Draft output must be non-empty plain text (two sentences).",
             )
-            return False, "Draft output must parse into DraftExplanation."
+            return False, "Draft output must be non-empty plain text (two sentences)."
 
-        text = parsed.explanation_text.strip()
-        if not guard_two_sentences(text):
+        logger.info(
+            "draft_guardrail request_id=%s product_name=%r raw_preview=%r",
+            req_id,
+            product,
+            preview_for_log(raw_draft, max_len=400),
+        )
+
+        checked = draft_text_for_sentence_check(raw_draft)
+        n_sent = sentence_count_draft(raw_draft)
+        logger.info(
+            "draft_guardrail request_id=%s product_name=%r sentence_count=%d checked_preview=%r",
+            req_id,
+            product,
+            n_sent,
+            preview_for_log(checked, max_len=400),
+        )
+
+        if not guard_two_sentences_draft(raw_draft):
+            logger.warning(
+                "draft_guardrail FAILED request_id=%s product_name=%r sentence_count=%d (expected 2)",
+                req_id,
+                product,
+                n_sent,
+            )
             self._log_guardrail_failure(
                 "draft_task",
                 "Draft explanation must contain exactly 2 sentences.",
             )
             return False, "Draft explanation must contain exactly 2 sentences."
-        if not guard_no_banned_medical_terms(text):
+        if not guard_no_banned_medical_terms(raw_draft):
+            logger.warning(
+                "draft_guardrail FAILED request_id=%s product_name=%r banned_terms",
+                req_id,
+                product,
+            )
             self._log_guardrail_failure(
                 "draft_task",
                 "Draft explanation contains banned medical terms or phrases.",
             )
             return False, "Draft explanation contains banned medical terms or phrases."
         self._reset_guardrail_failures("draft_task")
-        logger.info("Draft guardrail passed.")
+        logger.info(
+            "draft_guardrail PASSED request_id=%s product_name=%r sentence_count=%d",
+            req_id,
+            product,
+            n_sent,
+        )
         return True, output
 
     def _audit_guardrail(self, output: Any):
@@ -200,7 +263,7 @@ class ExplanationCrew:
             )
             return False, "Final explanation contains banned medical terms or phrases."
 
-        _FALLBACK_SOURCES = {"generic", "fallback", "_GENERIC_ENTRY"}
+        _FALLBACK_SOURCES = {"generic", "fallback"}
 
         final_source_set = {s.strip().lower() for s in parsed.sources if s.strip()}
         is_fallback = (not parsed.sources) or final_source_set.issubset(_FALLBACK_SOURCES)
@@ -210,15 +273,21 @@ class ExplanationCrew:
             self._reset_guardrail_failures("audit_task")
             return True, output
 
-        research_sources = self._last_research_sources
+        ctx_extra = getattr(self, "_contextual_citation_sources", None) or []
+        seen_merge: set[str] = set()
+        research_sources: list[str] = []
+        for s in list(self._last_research_sources) + list(ctx_extra):
+            t = s.strip() if isinstance(s, str) else ""
+            if t and t not in seen_merge:
+                seen_merge.add(t)
+                research_sources.append(t)
+
         if not research_sources:
             logger.warning("Audit guardrail: no research sources available — accepting output as-is.")
             self._reset_guardrail_failures("audit_task")
             return True, output
 
-        # Filter audit sources to the research-produced set instead of
-        # rejecting outright — avoids wasting guardrail retries on minor
-        # source-string mismatches from the LLM.
+        # Filter audit sources to ingredient-research + contextual-guidance ids.
         valid_sources = filter_to_research_subset(parsed.sources, research_sources)
 
         if valid_sources:
@@ -309,8 +378,8 @@ def _coerce_research_output(output: Any) -> ResearchOutput | None:
             parsed = json.loads(_strip_json_fence(payload))
             payload = {"items": parsed} if isinstance(parsed, list) else parsed
         if isinstance(payload, dict):
-            if "items" not in payload and all(
-                key in payload for key in ("ingredient", "fact", "source")
+            if "items" not in payload and all(k in payload for k in ("ingredient", "fact")) and (
+                "sources" in payload or "source" in payload
             ):
                 payload = {"items": [payload]}
             return ResearchOutput.model_validate(payload)
@@ -319,23 +388,19 @@ def _coerce_research_output(output: Any) -> ResearchOutput | None:
     return None
 
 
-def _coerce_draft_output(output: Any) -> DraftExplanation | None:
+def _coerce_draft_plain_text(output: Any) -> str | None:
+    """Extract plain-text draft from TaskOutput or string (no structured draft schema)."""
     payload = _extract_payload(output)
-    try:
-        if isinstance(payload, DraftExplanation):
-            return payload
-        if isinstance(payload, FinalExplanation):
-            return DraftExplanation(explanation_text=payload.explanation_text)
-        if isinstance(payload, str):
-            candidate = _strip_json_fence(payload)
-            if candidate.startswith("{"):
-                parsed = json.loads(candidate)
-                return DraftExplanation.model_validate(parsed)
-            return DraftExplanation(explanation_text=candidate)
-        if isinstance(payload, dict):
-            return DraftExplanation.model_validate(payload)
-    except (json.JSONDecodeError, TypeError, ValueError):
+    if payload is None:
         return None
+    if isinstance(payload, str):
+        t = _strip_json_fence(payload).strip()
+        return t if t else None
+    # Defensive: CrewAI retry paths may still surface a Pydantic instance briefly.
+    if isinstance(payload, _BaseModel):
+        et = getattr(payload, "explanation_text", None)
+        if isinstance(et, str) and et.strip():
+            return et.strip()
     return None
 
 
@@ -392,7 +457,26 @@ def _safe_generic_explanation(product_name: str) -> str:
 
 
 def _allowed_sources_from_ingredients(ingredients: list[str]) -> set[str]:
-    return {lookup_ingredient(ingredient)["source"] for ingredient in ingredients}
+    """Union of RAG chunk ids from ``lookup_ingredient`` (``sources`` list only)."""
+    allowed: set[str] = set()
+    for ingredient in ingredients:
+        data = lookup_ingredient(ingredient)
+        for s in data.get("sources") or []:
+            if isinstance(s, str) and s.strip():
+                allowed.add(s.strip())
+    return allowed
+
+
+def _allowed_citation_sources(
+    ingredients: list[str],
+    contextual_sources: list[str] | None,
+) -> set[str]:
+    """Ingredient tool ids plus contextual guidance chunk ids (for final filtering)."""
+    allowed = _allowed_sources_from_ingredients(ingredients)
+    for s in contextual_sources or []:
+        if isinstance(s, str) and (t := s.strip()):
+            allowed.add(t)
+    return allowed
 
 
 def _build_safe_fallback(product_name: str) -> FinalExplanation:
@@ -400,6 +484,145 @@ def _build_safe_fallback(product_name: str) -> FinalExplanation:
         explanation_text=_safe_generic_explanation(product_name),
         sources=["generic"],
     )
+
+
+def _truncate_text(text: str, max_len: int) -> str:
+    t = text.strip()
+    if len(t) <= max_len:
+        return t
+    cut = t[: max_len - 3].rsplit(" ", 1)[0]
+    return cut + "..." if cut else t[: max_len - 3] + "..."
+
+
+def _format_product_profile(
+    *,
+    product_name: str,
+    product_category: str | None,
+    product_description: str | None,
+    product_skin_types: list[str] | None,
+    product_concerns: list[str] | None,
+    product_benefits: list[str] | None,
+    contains_fragrance: bool | None,
+    contains_alcohol: bool | None,
+) -> str:
+    lines: list[str] = []
+    cat = (product_category or "").strip() or "Not specified"
+    lines.append(f"- Category: {cat}")
+    lines.append(f"- Product name: {product_name}")
+    desc = (product_description or "").strip()
+    if desc:
+        lines.append(f"- Description: {_truncate_text(desc, 400)}")
+    if product_skin_types:
+        joined = ", ".join(product_skin_types[:12])
+        lines.append(f"- Target / listed skin types: {joined}")
+    if product_concerns:
+        lines.append(
+            "- Product concerns (from catalog): "
+            + ", ".join(product_concerns[:12])
+        )
+    if product_benefits:
+        lines.append(
+            "- Product benefits (from catalog): "
+            + ", ".join(product_benefits[:12])
+        )
+    if contains_fragrance is True:
+        lines.append("- Formulation note: listed as containing fragrance.")
+    elif contains_fragrance is False:
+        lines.append("- Formulation note: listed as fragrance-free.")
+    if contains_alcohol is True:
+        lines.append("- Formulation note: listed as containing alcohol.")
+    elif contains_alcohol is False:
+        lines.append("- Formulation note: listed without alcohol.")
+    return "\n".join(lines)
+
+
+def _format_selection_context(product_rationale: dict[str, Any] | None) -> str:
+    if not product_rationale:
+        return "No matching-layer rationale was provided for this product."
+    lines: list[str] = []
+    role = product_rationale.get("role")
+    if isinstance(role, str) and role.strip():
+        lines.append(
+            "- Routine role: "
+            f"{role.strip()} (essential = core step such as cleanse, moisturize, or SPF; "
+            "optional = add-on such as serum or toner)."
+        )
+    cat = product_rationale.get("category")
+    if isinstance(cat, str) and cat.strip():
+        lines.append(f"- Selected category slot: {cat.strip()}.")
+    fs = product_rationale.get("fit_score")
+    if fs is not None:
+        lines.append(f"- Condition fit score (from matcher): {fs}.")
+    sa = product_rationale.get("strong_actives")
+    if isinstance(sa, list) and sa:
+        actives = ", ".join(str(x) for x in sa[:10])
+        lines.append(f"- Notable active families: {actives}.")
+    tier = product_rationale.get("fragrance_ranking_penalty_tier")
+    if isinstance(tier, str) and tier.strip():
+        lines.append(
+            "- Fragrance policy note (internal ranking): "
+            f"{tier.strip()} — use only to justify gentle vs leave-on wording, not as a medical claim."
+        )
+    return (
+        "\n".join(lines)
+        if lines
+        else "No matching-layer rationale was provided for this product."
+    )
+
+
+def _format_visual_context(image_analysis: dict[str, Any] | None) -> str:
+    if not image_analysis:
+        return "None provided."
+    parts: list[str] = []
+    vs = image_analysis.get("visual_signals")
+    if isinstance(vs, list) and vs:
+        parts.append("Visual signals: " + ", ".join(str(x) for x in vs[:10]) + ".")
+    sc = image_analysis.get("skin_conditions")
+    if isinstance(sc, list) and sc:
+        parts.append(
+            "Image-linked conditions: " + ", ".join(str(x) for x in sc[:10]) + "."
+        )
+    return " ".join(parts) if parts else "None provided."
+
+
+def _build_explanation_inputs(
+    *,
+    skin_conditions: list[str],
+    product_name: str,
+    key_ingredients: list[str],
+    condition_guidance: str,
+    product_category: str | None = None,
+    product_description: str | None = None,
+    product_skin_types: list[str] | None = None,
+    product_concerns: list[str] | None = None,
+    product_benefits: list[str] | None = None,
+    contains_fragrance: bool | None = None,
+    contains_alcohol: bool | None = None,
+    product_rationale: dict[str, Any] | None = None,
+    image_analysis: dict[str, Any] | None = None,
+    contextual_guidance: str = "",
+) -> dict[str, str]:
+    profile = _format_product_profile(
+        product_name=product_name,
+        product_category=product_category,
+        product_description=product_description,
+        product_skin_types=product_skin_types,
+        product_concerns=product_concerns,
+        product_benefits=product_benefits,
+        contains_fragrance=contains_fragrance,
+        contains_alcohol=contains_alcohol,
+    )
+    return {
+        "skin_conditions": ", ".join(skin_conditions),
+        "ingredients": ", ".join(key_ingredients),
+        "product_name": product_name,
+        "product_category": (product_category or "").strip() or "Not specified",
+        "product_profile": profile,
+        "selection_context": _format_selection_context(product_rationale),
+        "visual_context": _format_visual_context(image_analysis),
+        "condition_guidance": condition_guidance,
+        "contextual_guidance": contextual_guidance,
+    }
 
 
 def _has_any_llm_api_key() -> bool:
@@ -478,6 +701,16 @@ def generate_explanation_for_product(
     product_name: str,
     ingredients: list[str],
     request_id: str | None = None,
+    *,
+    product_category: str | None = None,
+    product_description: str | None = None,
+    product_skin_types: list[str] | None = None,
+    product_concerns: list[str] | None = None,
+    product_benefits: list[str] | None = None,
+    contains_fragrance: bool | None = None,
+    contains_alcohol: bool | None = None,
+    product_rationale: dict[str, Any] | None = None,
+    image_analysis: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Generate final explanation JSON from the audit task output."""
     resolved_request_id = request_id or _build_request_id(
@@ -499,18 +732,42 @@ def generate_explanation_for_product(
     )
 
     condition_guidance = build_condition_guidance(skin_conditions)
+    ctx_pack = retrieve_contextual_guidance(
+        skin_conditions=skin_conditions,
+        product_category=product_category,
+        product_description=product_description,
+        product_skin_types=product_skin_types,
+        product_concerns=product_concerns,
+        product_benefits=product_benefits,
+        contains_fragrance=contains_fragrance,
+        contains_alcohol=contains_alcohol,
+        product_rationale=product_rationale,
+        image_analysis=image_analysis,
+        condition_guidance=condition_guidance,
+    )
+    kickoff_inputs = _build_explanation_inputs(
+        skin_conditions=skin_conditions,
+        product_name=product_name,
+        key_ingredients=key_ingredients,
+        condition_guidance=condition_guidance,
+        product_category=product_category,
+        product_description=product_description,
+        product_skin_types=product_skin_types,
+        product_concerns=product_concerns,
+        product_benefits=product_benefits,
+        contains_fragrance=contains_fragrance,
+        contains_alcohol=contains_alcohol,
+        product_rationale=product_rationale,
+        image_analysis=image_analysis,
+        contextual_guidance=ctx_pack["guidance_text"],
+    )
 
     project = ExplanationCrew()
+    project._contextual_citation_sources = list(ctx_pack.get("sources") or [])
     project._current_request_id = resolved_request_id
+    project._current_product_name = product_name
     try:
-        result = project.crew().kickoff(
-            inputs={
-                "skin_conditions": ", ".join(skin_conditions),
-                "ingredients": ", ".join(key_ingredients),
-                "product_name": product_name,
-                "condition_guidance": condition_guidance,
-            }
-        )
+        result = project.crew().kickoff(inputs=kickoff_inputs)
     except Exception as exc:  # pragma: no cover - exercised in integration test
         logger.exception(
             "Crew kickoff failed, using safe generic fallback. reason=%s",
@@ -535,7 +792,10 @@ def generate_explanation_for_product(
         )
         final = _build_safe_fallback(product_name)
 
-    allowed_sources = _allowed_sources_from_ingredients(ingredients)
+    allowed_sources = _allowed_citation_sources(
+        ingredients,
+        ctx_pack.get("sources"),
+    )
     filtered_sources = [source for source in final.sources if source in allowed_sources]
 
     if allowed_sources == {"generic"}:
